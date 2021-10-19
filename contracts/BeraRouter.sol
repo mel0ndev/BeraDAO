@@ -95,7 +95,7 @@ contract BeraRouter {
                     tokenIn: DAI_ADDRESS,
                     tokenOut: tokenToShort,
                     fee: poolFee,
-                    recipient: msg.sender, //refers to pool that will hold tokens on behalf of the user
+                    recipient: msg.sender, //send back to user to execute next leg
                     deadline: block.timestamp, //solhint-disable not-rely-on-time
                     amountIn: amountOfCollateral,
                     amountOutMinimum: amountOutMin,
@@ -130,6 +130,7 @@ contract BeraRouter {
         address user,
         address tokenToClose,
         uint amount,
+        uint priceAtClose,
         uint24 poolFee,
         uint amountOutMin,
         uint _positionID) external returns(uint amountOut) {
@@ -164,36 +165,41 @@ contract BeraRouter {
             address(this),
             tokenToClose,
             amountOut, //how much tokenOut is being sent to swap back into dai (in this case weth)
+            priceAtClose,
             poolFee,
             amountOutMin
         );
 
         //calculate if the user made or lost money on the position
         //also tranfers the profits to the user and distributes user losses amongst the pool
-        calculatePNL(user, priceAtClose);
+        calculatePNL(msg.sender, priceAtClose);
 
         //reset user short status
         inShort[msg.sender] = false; //solhint-disable reentrancy
     }
 
-    function calculatePNL(address user, uint priceAtClose) internal returns(uint profits) {
-        if (entryPrice[user] - priceAtClose > 0) {
-            return profits = entryPrice[user] - priceAtClose; //case where user makes money
-            IERC20(DAI_ADDRESS).transfer(user, profits);
+    function calculatePNL(address user, uint priceAtClose) internal {
+        int remaining = int(entryPrice[user]) - int(priceAtClose);
+        if (remaining > 0) {
+            uint profits = entryPrice[user] - priceAtClose;
+            IERC20(DAI_ADDRESS).transfer(user, profits); //case where user makes money
         } else {
             int loss = int(entryPrice[user]) - int(priceAtClose); //case where user loses money
             //make negative num postive
             int userLoss = (loss * (-1));
-            if (uint(userLoss) <= userCollateralBalance[user]) {
-                return profits = uint(userLoss) - userCollateralBalance[user];
+            require(uint(userLoss) <= userCollateralBalance[user],
+                "PNL: loss exceeds user balance, liquidation function will be called");
+            uint profits = uint(userLoss) - userCollateralBalance[user];
 
-                //distribute remaining amongst pool holders
-                beraPool.distributeProfits(profits);
+            //distribute remaining amongst pool holders
+            beraPool.distributeProfits(profits);
 
-                //update user collateral balance to reflect loss
-                userCollateralBalance[user] -= uint(userLoss);
-            }
+            //update user collateral balance to reflect loss
+            userCollateralBalance[user] -= uint(userLoss);
         }
+
+
+
     }
 
 }

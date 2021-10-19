@@ -15,6 +15,11 @@
 				"internalType": "contract BeraWrapper",
 				"name": "_beraWrapper",
 				"type": "address"
+			},
+			{
+				"internalType": "contract BeraPool",
+				"name": "_beraPool",
+				"type": "address"
 			}
 		],
 		"stateMutability": "nonpayable",
@@ -48,6 +53,19 @@
 	},
 	{
 		"inputs": [],
+		"name": "beraPool",
+		"outputs": [
+			{
+				"internalType": "contract BeraPool",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
 		"name": "beraPoolStandardRisk",
 		"outputs": [
 			{
@@ -73,19 +91,6 @@
 		"type": "function"
 	},
 	{
-		"inputs": [],
-		"name": "checkDeposit",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
 		"inputs": [
 			{
 				"internalType": "uint256",
@@ -104,8 +109,14 @@
 		"type": "function"
 	},
 	{
-		"inputs": [],
-		"name": "getUserBalance",
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "entryPrice",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -195,6 +206,11 @@
 			{
 				"internalType": "uint256",
 				"name": "amount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "priceAtClose",
 				"type": "uint256"
 			},
 			{

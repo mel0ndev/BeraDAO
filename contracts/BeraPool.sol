@@ -38,7 +38,7 @@ contract BeraPool {
         return true;
     }
 
-    //TODO 
+    //TODO
     //could be very costly, use a uint instead and just allow users to withdaw that amount later?
     function distributeProfits(uint percentToSendToUser) external {
         for (uint i = 0; i < poolList.length; i++) {

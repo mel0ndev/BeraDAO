@@ -12,6 +12,8 @@ const routerABI = require('./routerAbi.json'); //Uniswap Router
 const beraRouterABI = require('./BeraRouter.json');
 const beraPoolStandardRiskABI = require('./BeraPoolStandardRisk.json');
 const beraWrapperABI = require('./BeraWrapper.json');
+const beraPoolABI = require('./BeraPool.json');
+const gttABI = require('./GTTAbi.json');
 
 //load contract addresses
 //mainnet
@@ -22,12 +24,14 @@ const routerAddress = "0xE592427A0AEce92De3Edee1F18E0157C05861564";
 //locals
 const beraWrapperAddress = '0x5a8489277D7721456f3FcB68B5Ef84d75f28292a';
 const beraPoolStandardRiskAddress = '0xe82FAE1B06B063c2562240b098A00D48660c905F';
+const gttAddress = '0xB8a1B45d2d7ad262aEeF0216c0A1E6cFE2c44DAB';
+const beraPoolAddress = '0xb115C25412896CA1750411f072454247B40Dd01f';
 const beraRouterAddress = '0x25b8B2b2c9dCd4f31283712f8503f15F0C1eeBef';
 
 //load accounts
 const unlockedAccount = '0x2feb1512183545f48f6b9c5b4ebfcaf49cfca6f3';
-const recipient = '0x2D084B720e6Ba92012c1847C432a765Ad84DC378';
-const privateKey = '0xa15877bd9ec8e4885d07e489eef9a698f8d5eec94c3f35b85506a99475461f3e';
+const recipient = '0x2FFb9E843252D7231Feb2648E78f24D98b87bFB3';
+const privateKey = '0x1270acbe9d82d9e944b7c881206ed8173335fe0ecfcd909069c2972b22aecf42';
 
 
 //Contract Instances
@@ -44,6 +48,16 @@ let beraWrapper = new web3.eth.Contract(
 let beraPoolStandardRisk = new web3.eth.Contract(
   beraPoolStandardRiskABI,
   beraPoolStandardRiskAddress
+);
+
+let beraPool = new web3.eth.Contract(
+  beraPoolABI,
+  beraPoolAddress
+);
+
+let gtt = new web3.eth.Contract(
+  gttABI,
+  gttAddress
 );
 
 let routerContract = new web3.eth.Contract(
@@ -155,7 +169,7 @@ console.log(`Bera Router can deposit: ${daiAllowance / 1e18} DAI`);
 await beraRouter.methods.depositCollateral('1000000000000000000000', daiAddress).send({
   from: recipient,
   to: beraRouterAddress,
-  gas: 500000
+  gas: 600000
 });
 let depositCollateral = await beraRouter.methods.checkDeposit().call();
 console.log(`Deposit Amount: ${depositCollateral / 1e18} DAI`);
@@ -237,6 +251,9 @@ console.log(`User Balance after trade: ${userBal / 1e18}`);
 
 //it works!!!!
 console.log('Success!');
+
+//TODO WHEN GET BACK
+//import new ABIs from remix
 
 
 //TODO:

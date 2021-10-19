@@ -77,10 +77,10 @@ contract BeraPoolStandardRisk is ERC1155Holder {
     }
 
     function closeShortForUser(
-        address pool,
+        address user,
         address tokenToClose,
         uint amount,
-      //  uint priceAtClose,
+        uint priceAtClose,
         uint24 poolFee,
         uint amountOutMin)
         external returns(uint amountOut) {
@@ -94,7 +94,7 @@ contract BeraPoolStandardRisk is ERC1155Holder {
                 tokenIn: tokenToClose,
                 tokenOut: DAI_ADDRESS,
                 fee: poolFee,
-                recipient: pool, //refers to pool that will hold tokens on behalf of the user before disribution 
+                recipient: user, //refers to pool that will hold tokens on behalf of the user before disribution
                 deadline: block.timestamp, //solhint-disable not-rely-on-time
                 amountIn: amount,
                 amountOutMinimum: amountOutMin,
