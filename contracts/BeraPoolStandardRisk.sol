@@ -94,7 +94,7 @@ contract BeraPoolStandardRisk is ERC1155Holder {
                 tokenIn: tokenToClose,
                 tokenOut: DAI_ADDRESS,
                 fee: poolFee,
-                recipient: user, //refers to pool that will hold tokens on behalf of the user before disribution
+                recipient: msg.sender, //refers to router in this case
                 deadline: block.timestamp, //solhint-disable not-rely-on-time
                 amountIn: amount,
                 amountOutMinimum: amountOutMin,
@@ -104,8 +104,6 @@ contract BeraPoolStandardRisk is ERC1155Holder {
             //execute the sell order
             amountOut = swapRouter.exactInputSingle(tokenParams);
 
-            //calculate and transfer profits
-            //IERC20(tokenToClose).transfer(user, profits);
         }
 }
 

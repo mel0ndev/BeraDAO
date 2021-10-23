@@ -19,25 +19,6 @@
 			}
 		],
 		"name": "depositGTT",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "percentToSendToUser",
-				"type": "uint256"
-			}
-		],
-		"name": "distributeProfits",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -82,25 +63,12 @@
 				"type": "uint256"
 			}
 		],
-		"name": "poolList",
+		"name": "gttPoolList",
 		"outputs": [
 			{
 				"internalType": "address",
 				"name": "",
 				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "totalPoolSize",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",
@@ -114,7 +82,7 @@
 				"type": "address"
 			}
 		],
-		"name": "userPercentOfPool",
+		"name": "userPercentOfGTTPool",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -134,13 +102,7 @@
 			}
 		],
 		"name": "withdawGTT",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
+		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	}

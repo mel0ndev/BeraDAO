@@ -25,7 +25,7 @@
 - UI/UX design
 - hook up contracts to front end
 - art!
-- landing page 
+- landing page
 
 
 
@@ -37,3 +37,6 @@
 - refactor code to prevent reentrancy
 - create erc20 token
 - create erc20 pool with features for holding
+- POOL CONTRACT:
+    - incentives for depositors is being on opposite end of losing shorts
+    - GTT depositors earn extra GTT which collect fees  

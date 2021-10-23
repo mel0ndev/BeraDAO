@@ -9,10 +9,10 @@ contract BeraPool {
 
     IERC20 public goblinTownToken;
 
-    mapping(address => uint) public userPercentOfPool;
-    uint public totalPoolSize;
+    mapping(address => uint) public userPercentOfGTTPool;
+    mapping(address => bool) internal hasDeposited;
 
-    address[] public poolList;
+    address[] public gttPoolList;
 
     address private constant DAI_ADDRESS = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
 
@@ -20,35 +20,31 @@ contract BeraPool {
         goblinTownToken = _goblinTownToken;
     }
 
-    function depositGTT(uint amount) external returns(bool) {
+    function depositGTT(uint amount) external {
         IERC20(goblinTownToken).transferFrom(msg.sender, address(this), amount);
-        userPercentOfPool[msg.sender] += amount;
+        userPercentOfGTTPool[msg.sender] += amount;
 
-        poolList.push(msg.sender);
-
-        return true;
-    }
-
-    function withdawGTT(uint amount) external returns(bool) {
-        require(amount <= userPercentOfPool[msg.sender],
-        "GTT: you cannot withdraw more tokens than you have deposited!");
-
-        IERC20(goblinTownToken).transfer(msg.sender, amount);
-
-        return true;
-    }
-
-    //TODO
-    //could be very costly, use a uint instead and just allow users to withdaw that amount later?
-    function distributeProfits(uint percentToSendToUser) external {
-        for (uint i = 0; i < poolList.length; i++) {
-            percentToSendToUser = userPercentOfPool[poolList[i]] / totalPoolSize;
-            IERC20(DAI_ADDRESS).transfer(poolList[i], percentToSendToUser);
+        if (hasDeposited[msg.sender] == false) {
+            gttPoolList.push(msg.sender);
+            hasDeposited[msg.sender] = true;
         }
     }
 
+    function withdawGTT(uint amount) external {
+        require(amount <= userPercentOfGTTPool[msg.sender],
+        "GTT: you cannot withdraw more tokens than you have deposited!");
+
+        userPercentOfGTTPool[msg.sender] -= amount;
+
+        if (userPercentOfGTTPool[msg.sender] <= 0) {
+            hasDeposited[msg.sender] = false;
+        }
+
+        IERC20(goblinTownToken).transfer(msg.sender, amount);
+    }
+
     function getUserPercentage(address user) external view returns(uint) {
-        return userPercentOfPool[user] / totalPoolSize;
+        return userPercentOfGTTPool[user] / IERC20(goblinTownToken).balanceOf(address(this));
     }
 
 

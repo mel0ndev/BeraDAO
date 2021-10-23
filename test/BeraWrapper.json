@@ -366,6 +366,34 @@
 		"inputs": [
 			{
 				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "from",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_positionID",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "transferPosition",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
 				"name": "positionOwner",
 				"type": "address"
 			},
@@ -376,6 +404,24 @@
 			}
 		],
 		"name": "unwrapPosition",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "newPositionOwner",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_positionID",
+				"type": "uint256"
+			}
+		],
+		"name": "updatePosition",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"

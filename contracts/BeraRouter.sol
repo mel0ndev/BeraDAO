@@ -15,11 +15,10 @@ import "./BeraPool.sol";
 contract BeraRouter {
 
     mapping(address => uint) public userCollateralBalance;
-    mapping(address => address) public nftPositionToken;
-    mapping(address => bool) public inShort;
-    uint public poolTokenBalance;
-
     mapping(address => uint) public entryPrice;
+    mapping(address => bool) public inShort;
+    mapping(address => bool) internal hasCollateral;
+    address[] public poolList;
 
     address private constant DAI_ADDRESS = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
 
@@ -31,11 +30,9 @@ contract BeraRouter {
     //might have to change if implement 1inch api
     ISwapRouter public  swapRouter;
     BeraPoolStandardRisk public beraPoolStandardRisk;
-    IERC20 public token;
     BeraWrapper public beraWrapper;
     BeraPool public beraPool;
 
-    ////
     address public owner;
 
     constructor(ISwapRouter _swapRouter,
@@ -49,30 +46,37 @@ contract BeraRouter {
         beraPool = _beraPool;
     }
 
-//
-// deposit collateral into user account
     function depositCollateral(uint amount, address collateral) external {
-        require(IERC20(collateral) == IERC20(DAI_ADDRESS), "Not DAI");
+        require(IERC20(collateral) == IERC20(DAI_ADDRESS), "POOL: Not DAI");
 
-        IERC20(collateral).transferFrom(msg.sender, address(this), amount);
-
-        //testing purposes only for now
-        poolTokenBalance += amount;
+        //used for withdrawl later
         userCollateralBalance[msg.sender] += amount;
 
+        if (hasCollateral[msg.sender] == false) {
+            poolList.push(msg.sender);
+            hasCollateral[msg.sender] = true;
+        }
+
+        IERC20(collateral).transferFrom(msg.sender, address(this), amount);
     }
 
     function withdrawCollateral(uint amount, address collateral) external {
-        require(amount >= userCollateralBalance[msg.sender], "user balance too low!");
-        require(inShort[msg.sender] == false, "not in a position");
+        require(amount <= userCollateralBalance[msg.sender],
+            "COLLATERAL: trying to withdraw more collateral than deposited");
+        require(inShort[msg.sender] == false,
+            "COLLATEAL: close your current position before trying to withdraw");
+
+        //reset balance of user on withdraw
+        userCollateralBalance[msg.sender] -= amount;
+
+        if (userCollateralBalance[msg.sender] <= 0) {
+            hasCollateral[msg.sender] = false;
+        }
 
         IERC20(collateral).transfer(msg.sender, amount);
-
-        //reset balance of user and pool on withdraw
-        poolTokenBalance -= amount;
-        userCollateralBalance[msg.sender] -= amount;
     }
 
+    // deposit collateral into user account before being allowed to short
     function swapAndShortStandard(
             uint amount,
             address tokenToShort,
@@ -81,8 +85,8 @@ contract BeraRouter {
             uint collateralPercentageOfAccount,
             uint priceAtWrap)
             external returns(uint amountOut) { //solhint-disable function-max-lines
-                require(collateralPercentageOfAccount <= 100, "cannot use more than 100% of account to short");
-                require(amount <= userCollateralBalance[msg.sender], "not enough collateral");
+                require(amount <= userCollateralBalance[msg.sender], "SWAP: not enough collateral");
+                require(collateralPercentageOfAccount <= 100, "SWAP: cannot use more than 100% of account to short");
 
                 uint amountOfCollateral = amount * collateralPercentageOfAccount / 100;
                 uint leftover = amount - amountOfCollateral;
@@ -162,7 +166,7 @@ contract BeraRouter {
 
         //sell tokens back for DAI
         beraPoolStandardRisk.closeShortForUser(
-            address(this),
+            msg.sender,
             tokenToClose,
             amountOut, //how much tokenOut is being sent to swap back into dai (in this case weth)
             priceAtClose,
@@ -178,28 +182,41 @@ contract BeraRouter {
         inShort[msg.sender] = false; //solhint-disable reentrancy
     }
 
+    function distributeProfits(uint amountToDistribute) internal {
+        for (uint i = 0; i < poolList.length; i++) {
+            //update user collateral instead?
+            uint userPercent = (userCollateralBalance[poolList[i]] / IERC20(DAI_ADDRESS).balanceOf(address(this)));
+            //percentage will be out of 100 i.e 0.3% = 30 or < 30/100 >
+            uint percentToSendToUsers = userPercent * amountToDistribute;
+            userCollateralBalance[poolList[i]] += percentToSendToUsers;
+        }
+    }
+
     function calculatePNL(address user, uint priceAtClose) internal {
-        int remaining = int(entryPrice[user]) - int(priceAtClose);
-        if (remaining > 0) {
-            uint profits = entryPrice[user] - priceAtClose;
-            IERC20(DAI_ADDRESS).transfer(user, profits); //case where user makes money
+        int difference = int(entryPrice[user]) - int(priceAtClose);
+        if (difference > 0) {
+            //IERC20(DAI_ADDRESS).transfer(user, uint(difference)); //case where user makes money
+            userCollateralBalance[user] += (uint(difference) * 1e18);
         } else {
             int loss = int(entryPrice[user]) - int(priceAtClose); //case where user loses money
             //make negative num postive
             int userLoss = (loss * (-1));
             require(uint(userLoss) <= userCollateralBalance[user],
                 "PNL: loss exceeds user balance, liquidation function will be called");
-            uint profits = uint(userLoss) - userCollateralBalance[user];
+            uint amountToDistribute = uint(userLoss) - userCollateralBalance[user];
 
             //distribute remaining amongst pool holders
-            beraPool.distributeProfits(profits);
+            distributeProfits(amountToDistribute);
 
             //update user collateral balance to reflect loss
+            //in this case it would be whoever is closing their short position
             userCollateralBalance[user] -= uint(userLoss);
         }
-
-
-
     }
+
+
+
+
+
 
 }

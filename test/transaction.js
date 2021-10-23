@@ -22,16 +22,16 @@ const wethAddress = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
 const routerAddress = "0xE592427A0AEce92De3Edee1F18E0157C05861564";
 
 //locals
-const beraWrapperAddress = '0x5a8489277D7721456f3FcB68B5Ef84d75f28292a';
-const beraPoolStandardRiskAddress = '0xe82FAE1B06B063c2562240b098A00D48660c905F';
-const gttAddress = '0xB8a1B45d2d7ad262aEeF0216c0A1E6cFE2c44DAB';
-const beraPoolAddress = '0xb115C25412896CA1750411f072454247B40Dd01f';
-const beraRouterAddress = '0x25b8B2b2c9dCd4f31283712f8503f15F0C1eeBef';
+const beraWrapperAddress = '0xe93093f4EceF521283721bEbAAf09724F87128cf';
+const beraPoolStandardRiskAddress = '0xa7770660d4709968d4EfdCf5034A9b9a415938EA';
+const gttAddress = '0x9c18C71c407cDD5539bF927947D48050FeF0c521';
+const beraPoolAddress = '0xec8Fa1F8Ca320324ca271c6351dbbe11fe2B76E7';
+const beraRouterAddress = '0xd93239571557593c2229Ea27c98200e8431602f2';
 
 //load accounts
 const unlockedAccount = '0x2feb1512183545f48f6b9c5b4ebfcaf49cfca6f3';
-const recipient = '0x2FFb9E843252D7231Feb2648E78f24D98b87bFB3';
-const privateKey = '0x1270acbe9d82d9e944b7c881206ed8173335fe0ecfcd909069c2972b22aecf42';
+const recipient = '0xf03c3D9EE2cAb7cDf1Db432B247Ca32DBF5A2F98';
+const privateKey = '0xe2000a79f37670304024c8c2dc3940302041a07fe4482cdf62dab69d4e1863d5';
 
 
 //Contract Instances
@@ -171,8 +171,6 @@ await beraRouter.methods.depositCollateral('1000000000000000000000', daiAddress)
   to: beraRouterAddress,
   gas: 600000
 });
-let depositCollateral = await beraRouter.methods.checkDeposit().call();
-console.log(`Deposit Amount: ${depositCollateral / 1e18} DAI`);
 console.log('Deposit Completed Succesfully!');
 let daiBalanaceAfterDeposit = await dai.methods.balanceOf(recipient).call();
 console.log(`Recipient Balance after deposit: ${daiBalanaceAfterDeposit / 1e18}`);
@@ -200,7 +198,7 @@ await beraRouter.methods.swapAndShortStandard(
 ).send({
   from: recipient,
   to: beraRouterAddress,
-  gas: 1000000
+  gas: 2000000
 });
 console.log('Swap and short complete!');
 
@@ -239,6 +237,7 @@ await beraRouter.methods.swapAndCloseShort(
   recipient,
   wethAddress,
   poolDaiBalance,
+  3100,
   3000,
   0,
   (id - 1)).send({
@@ -249,11 +248,15 @@ await beraRouter.methods.swapAndCloseShort(
 let userBal = await dai.methods.balanceOf(recipient).call();
 console.log(`User Balance after trade: ${userBal / 1e18}`);
 
+let poolBalanceAfterClose = await dai.methods.balanceOf(beraRouterAddress).call();
+console.log(`Pool balance after close: ${poolBalanceAfterClose / 1e18}`);
+
+//have to redeploy ABI first***********************
+let checkProfits = await beraRouter.methods.userCollateralBalance(recipient).call();
+console.log(`Total User collateral: ${checkProfits / 1e18}`);
+
 //it works!!!!
 console.log('Success!');
-
-//TODO WHEN GET BACK
-//import new ABIs from remix
 
 
 //TODO:
