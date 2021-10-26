@@ -30,4 +30,5 @@ contract GoblinTownToken is ERC20 {
 
         owner = newOwner;
     }
+
 }
