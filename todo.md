@@ -33,10 +33,12 @@
 #BACK END
 - High Risk Pool contract
 - contract testing (make sure swaps and NFT issuance work as intended) //Completed
-- test position closing  
+- test position closing //Completed
 - refactor code to prevent reentrancy
-- create erc20 token
-- create erc20 pool with features for holding
+- create erc20 token //Completed
+- create erc20 pool with features for holding //Completed
 - POOL CONTRACT:
     - incentives for depositors is being on opposite end of losing shorts
     - GTT depositors earn extra GTT which collect fees  
+    - GTT holders earn GVR, which allows holders to vote in protocol proposals  
+    - Bonus GVR is distributed to the top 25% of holders every 2nd week 

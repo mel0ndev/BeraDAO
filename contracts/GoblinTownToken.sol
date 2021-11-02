@@ -7,7 +7,8 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 contract GoblinTownToken is ERC20 {
 
     uint public circulatingSupply;
-    uint public constant MAX_SUPPLY = 100000000;
+    uint public constant MAX_SUPPLY = 100000000000000000000000;
+    uint public constant DECIMALS = 18;
     address private owner;
     mapping(address => uint) public balances;
 
@@ -26,8 +27,7 @@ contract GoblinTownToken is ERC20 {
     }
 
     function changeOwners(address newOwner) external {
-        require(msg.sender == owner, "GTT: only the owner can mint tokens");
-
+        require(msg.sender == owner, "GTT: only the owner can assign a new owner");
         owner = newOwner;
     }
 

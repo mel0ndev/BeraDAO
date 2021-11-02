@@ -7,16 +7,17 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract BeraPool {
 
-    IERC20 public goblinTownToken;
+    GoblinTownToken public goblinTownToken;
 
     mapping(address => uint) public userPercentOfGTTPool;
     mapping(address => bool) internal hasDeposited;
+
 
     address[] public gttPoolList;
 
     address private constant DAI_ADDRESS = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
 
-    constructor(IERC20 _goblinTownToken) { //solhint-disable func-visibility
+    constructor(GoblinTownToken _goblinTownToken) { //solhint-disable func-visibility
         goblinTownToken = _goblinTownToken;
     }
 
@@ -44,6 +45,7 @@ contract BeraPool {
     }
 
     function getUserPercentage(address user) external view returns(uint) {
+        //get the individual percentage of the pool owned by a holder
         return userPercentOfGTTPool[user] / IERC20(goblinTownToken).balanceOf(address(this));
     }
 
