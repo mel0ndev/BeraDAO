@@ -3,7 +3,7 @@
     <v-navigation-drawer
       v-model="drawer"
       app
-      color="grey darken-4"
+      color="#2a2a2a"
       dark
     >
     <div>
@@ -35,13 +35,20 @@
 
     <v-app-bar
     app
-    color="grey darken-4"
+    color="#191919"
     dark
     rounded
     >
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
-      <v-toolbar-title>Bera.Market</v-toolbar-title>
+      <v-toolbar-title class="logoWrapper">
+        <v-img src="./assets/beraDAO.png"
+        height="100"
+        width="150"
+        >
+
+        </v-img>
+      </v-toolbar-title>
 
     </v-app-bar>
 
@@ -69,7 +76,7 @@ import { mapGetters } from 'vuex';
         isDrizzleInitalized: true,
         routerLinks: [
           {name: "Home", link: "/", icon: "mdi-home"},
-          {name: "About", link: "/about", icon: "mdi-information"}
+          {name: "Swap and Short", link: "/Short", icon: "mdi-information"}
         ],
       }
     }
@@ -94,6 +101,10 @@ import { mapGetters } from 'vuex';
   padding-right: 10px;
 }
 
+.logoWrapper {
+  padding-top: 20px;
+  padding-bottom: 5px;
+}
 
 .title {
   align-items: center;

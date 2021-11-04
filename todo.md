@@ -26,6 +26,9 @@
 - hook up contracts to front end
 - art!
 - landing page
+- logo //Completed
+- paginated api response from the graph for all tokens
+- bring up price of token on selection 
 
 
 
@@ -41,4 +44,4 @@
     - incentives for depositors is being on opposite end of losing shorts
     - GTT depositors earn extra GTT which collect fees  
     - GTT holders earn GVR, which allows holders to vote in protocol proposals  
-    - Bonus GVR is distributed to the top 25% of holders every 2nd week 
+    - Bonus GVR is distributed to the top 25% of holders every 2nd week

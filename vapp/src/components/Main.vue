@@ -1,280 +1,170 @@
 <template>
-<v-container class="center">
-  <v-card dark
-    align="center"
-    justify="center"
-    width="50%">
-    <v-card color="grey darken-4">
-      <div class="titleWrapper">
-          <h2> Swap and Short </h2>
-      </div>
+  <v-container>
+    <v-row>
+    <v-col>
+        <v-card dark>
+          <v-card-title>
+            Your Positions
+          </v-card-title>
+            <h3 class="subheading">
+              -----
+            </h3>
+      </v-card>
+</v-col>
+  <v-col>
 
-          <template>
-  <v-card
-    color="grey darken-3"
-    align="center"
-    justify="center"
-    dark
+      <v-card dark>
+        <v-card-title>
+          Your Available Liquidity
+        </v-card-title>
+        <h3 class="subheading">
+          -----
+        </h3>
+    </v-card>
+
+</v-col>
+<v-col>
+
+    <v-card dark>
+      <v-card-title>
+        Your APY
+      </v-card-title>
+      <h3 class="subheading">
+        -----
+      </h3>
+  </v-card>
+
+  </v-col>
+</v-row>
+
+<v-row>
+  <v-col
+  align="center"
+  justify="center"
   >
-
+    <v-card dark
+    width="85%"
+    class="wrapperCard"
+    >
+      <h1 class="centerTitle">
+        Asset Control Center
+      </h1>
       <v-row>
-        <v-col
-          class="text-left"
-        >
+        <v-col>
 
-          <div class="switchWrapper">
-            <v-switch flat
-            @click="changePools"
-            :label="`${whatPool}`"
-            v-model="boolPool"
-            color="red"
-            >
-            </v-switch>
-          </div>
+          <v-card
+            color="#2a2a2a">
+            <h2 class="otherTitle">
+              Deposit
+            </h2>
+            <div class="buttonWrapper">
+              <v-btn
+                class="defaultButton"
+                @click.prevent="onSubmit"
+                >
+                Deposit
+              </v-btn>
+            </div>
+            <span class="subheading">
+                Available to deposit:
+            </span>
+            <span class="subheading">
+              APY:
+            </span>
+          </v-card>
         </v-col>
 
-          <v-col
-            class="text-right"
-            >
-          <div class="menuWrapper">
-          <v-menu
-            bottom
-            left
-            transition="slide-y-transition"
 
-          >
-
-            <template v-slot:activator="{ on, attrs }">
+        <v-col>
+          <v-card
+            color="#2a2a2a">
+            <h2 class="otherTitle">
+              Withdraw
+            </h2>
+            <div class="buttonWrapper">
               <v-btn
-                icon
-                v-bind="attrs"
-                v-on="on"
-              >
-                <v-icon>mdi-dots-vertical</v-icon>
+                class="defaultButton"
+                @click.prevent="onSubmit"
+                >
+                Withdaw
               </v-btn>
-            </template>
-
-            <v-list dark>
-              <v-list-item>
-                <v-list-item-action>
-                  <v-icon>mdi-fuel</v-icon>
-                </v-list-item-action>
-                <v-list-item-content>
-                  <v-list-item-title> <b>Gas</b> </v-list-item-title>
-                  <v-list-item-content> {{gas}} / ${{usd}} </v-list-item-content>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </div>
-
+            </div>
+            <span class="subheading">
+                Available for withdrawl:
+            </span>
+            <span class="subheading">
+              PnL:
+            </span>
+          </v-card>
         </v-col>
       </v-row>
-        <v-row
-          class="pa-4"
-        >
-          <v-col class="text-center">
-            <h3 class="text-h5">
 
-            </h3>
-            <span class="grey--text text--lighten-1"> </span>
-          </v-col>
-        </v-row>
-    <v-form>
-      <v-container>
-        <v-row>
-          <v-col
-            cols="6"
-            md="3"
-            jusify="center"
-            align="center"
-          >
-          </v-col>
-          <v-col
-            cols="6"
-            dark
-            >
 
-            <v-autocomplete
-              v-model="value"
-              :items="tokens"
-              rounded
-              solo
-              chips
-              dark
-              flat
-              color="red"
-              label="Select a token"
-              :item-text="tokens"
-              :item-value="pools"
-            >
-            </v-autocomplete>
-
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-form>
-
-    <v-divider></v-divider>
-
-    <div class="denomWrapper">
-      <div class="imgWrapper">
-        <v-img src="../assets/usd-coin-usdc-logo.png"
-          width="50px"
-          height="50px">
-          </v-img>
-      </div>
-        <h3> Base is always USDC for now </h3>
-    </div>
-
-    <div class="buttonWrapper">
-      <v-btn
-        class="shortThePonzi"
-        @click.prevent="onSubmit"
-        >
-        Short The Ponzi
-      </v-btn>
-    </div>
-
-  </v-card>
-</template>
 
     </v-card>
-    <div class="bottomPadding"> </div>
-  </v-card>
-</v-container>
+  </v-col>
+</v-row>
+
+
+
+
+
+  </v-container>
+
 </template>
 
+
 <script>
-import axios from 'axios';
-import { mapGetters } from 'vuex';
 
 export default {
-
-
-name: 'Main',
-
-data() {
-  return {
-    gas: '',
-    usd: '',
-    tokens: [],
-    pools: [],
-    value: null,
-    whatPool: 'Standard Risk',
-    boolPool: false,
-  }
-},
-
-computed: {
-  ...mapGetters('drizzle', ['drizzleInstance']),
-  ...mapGetters('accounts', ['activeAcount']),
-},
-
-mounted() {
-  axios.get('http://ethgas.watch/api/gas')
-    .then(res => {
-      this.gas = res.data.normal.gwei;
-      this.usd = res.data.normal.usd;
-    });
-
-    axios.post('https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3',
-  {
-    query: `
-          {
-            pools(where: {token1: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"}) {
-              id
-
-              token0 {
-                name
-                id
-              }
-
-              token1 {
-                name
-                id
-              }
-            }
-          }
-        `
-  }).then((resp) => {
-
-    var token = resp.data.data.pools;
-    for (var i = 0; i < token.length; i++) {
-        this.tokens.push(token[i].token0.name);
-        this.pools.push(token[i].id);
-
-    }
-
-  });
-},
-
-methods: {
-
-    changePools() {
-
-      if (this.boolPool == false) {
-        this.whatPool = 'Standard Risk';
-      } else {
-        (this.boolPool == true)
-        this.whatPool = 'High Risk';
-      }
-    },
-
-    onSubmit() {
-      this.drizzleInstance.contracts['BeraRouter'].methods['depositCollateral'].cacheSend(1000, 0xe6cF3B60AFA84f999F9F5c3B551172EFFdE3B321, 0x3dfcc7f20d200dc5b6Dd885b11E77a848dB9f6d6);
-    }
-
-  }
+  name: 'Main'
 
 }
+
 
 </script>
 
+
 <style scoped>
 
-.center {
+.subheading {
   display: flex;
   justify-content: center;
+  color: #939393;
+  padding-bottom: 10px; 
 }
 
-.switchWrapper {
-  display: inline-block;
-  padding-left: 15px;
+.centerTitle {
+  display: flex;
+  justify-content: center;
+  padding: 25px;
 }
 
-.menuWrapper {
-  display: inline-block;
-  padding-right: 15px;
-}
+.otherTitle {
+  display: flex;
+  justify-content: center;
+  padding: 15px;
+  padding-bottom: 75px;
 
-.titleWrapper {
-  padding-top: 25px;
-  padding-bottom: 50px;
-}
-
-.imgWrapper {
-  padding: 10px;
 }
 
 .buttonWrapper {
+  display: flex;
+  justify-content: center;
   padding-bottom: 25px;
+
 }
 
-.shortThePonzi {
+.defaultButton {
   color: white;
   background-color: #CC2828 !important;
   text-transform: none !important;
 }
 
-.denomWrapper {
-  padding: 50px;
+.wrapperCard {
+  padding: 15px;
+  padding-bottom: 100px;
 }
-
-.bottomPadding {
-  padding: 50px;
-}
-
 
 
 </style>
