@@ -41,16 +41,21 @@
     >
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
-      <v-toolbar-title class="logoWrapper">
-        <v-img src="./assets/beraDAO.png"
-        height="100"
-        width="150"
-        >
 
-        </v-img>
-      </v-toolbar-title>
+              <v-toolbar-title class="logoWrapper">
+                <v-img src="./assets/beraDAO.png"
+                height="100"
+                width="150"
+                >
 
-    </v-app-bar>
+                </v-img>
+              </v-toolbar-title>
+
+              <div class="account">
+                <Account />
+            </div>
+
+          </v-app-bar>
 
     <v-main>
 
@@ -66,9 +71,15 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import Account from "./components/Account.vue";
 
   export default {
-      computed:
+
+    components: {
+      Account
+    },
+
+    computed:
          mapGetters('drizzle', ['isDrizzleInitialized']),
     data() {
       return {
@@ -110,6 +121,12 @@ import { mapGetters } from 'vuex';
   align-items: center;
   justify-content: center;
   padding-bottom: 10px;
+}
+
+.account {
+  position: absolute;
+  right: 2%;
+  color: #939393;
 }
 
 

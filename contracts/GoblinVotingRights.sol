@@ -26,12 +26,12 @@ contract GoblinVotingRights is ERC20 {
 
     constructor(GoblinTownToken _goblinTownToken,
         BeraPool _beraPool)
-    ERC20("Goblin Voting Rights Token", "GVR") {  //solhint-disable func-visibility
-        goblinTownToken = _goblinTownToken;
-        beraPool = _beraPool; 
-        owner = msg.sender;
-        minimumVotingBalance = 1000;
-    }
+        ERC20("Goblin Voting Rights Token", "GVR") {  //solhint-disable func-visibility
+            goblinTownToken = _goblinTownToken;
+            beraPool = _beraPool;
+            owner = msg.sender;
+            minimumVotingBalance = 1000;
+        }
 
     function changeMinimumVotingBalance(uint newBalanceNeeded) external {
         require(msg.sender == owner, "not owner");

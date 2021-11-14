@@ -15,8 +15,12 @@
 - wETH whale address
 ----> 0x1e3d6eab4bcf24bcd04721caa11c478a2e59852d  <----
 
-#TODO today
-- hook up local contracts to testing scripts
+#TODO
+- Launch basic swapping and shorting feature, more features to come later
+- Swap and short standard works, but how can it be improved and how can it not cost a billion gas?
+- add ability to use L2s?
+- hook up SCs to front end
+- test a shitcoin swap and short, something harder to borrow 
 
 
 
@@ -25,23 +29,21 @@
 - UI/UX design
 - hook up contracts to front end
 - art!
-- landing page
-- logo //Completed
-- paginated api response from the graph for all tokens
-- bring up price of token on selection 
+- paginated api response from the graph for all tokens //not possible due to limited actual pools with dai    base pair
+- bring up price of token on selection // lot of work, fuck it bro, not doing it rn //
 
 
 
 
 #BACK END
 - High Risk Pool contract
-- contract testing (make sure swaps and NFT issuance work as intended) //Completed
-- test position closing //Completed
-- refactor code to prevent reentrancy
-- create erc20 token //Completed
-- create erc20 pool with features for holding //Completed
+- look into Optimism compatibility
+- Uniswap TWAP oracle  
 - POOL CONTRACT:
     - incentives for depositors is being on opposite end of losing shorts
     - GTT depositors earn extra GTT which collect fees  
     - GTT holders earn GVR, which allows holders to vote in protocol proposals  
     - Bonus GVR is distributed to the top 25% of holders every 2nd week
+
+- Voting System TBD
+- Test voting and token contracts (TO DO LATER)

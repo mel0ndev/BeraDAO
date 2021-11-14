@@ -37,6 +37,7 @@
   </v-col>
 </v-row>
 
+
 <v-row>
   <v-col
   align="center"
@@ -60,7 +61,7 @@
             <div class="buttonWrapper">
               <v-btn
                 class="defaultButton"
-                @click.prevent="onSubmit"
+                @click.prevent="depositDialog = true"
                 >
                 Deposit
               </v-btn>
@@ -84,7 +85,7 @@
             <div class="buttonWrapper">
               <v-btn
                 class="defaultButton"
-                @click.prevent="onSubmit"
+                @click.prevent="withdrawDialog = true"
                 >
                 Withdaw
               </v-btn>
@@ -106,22 +107,37 @@
 </v-row>
 
 
+<v-dialog class="dialogBox" v-model="depositDialog" width="60%">
+  <DepositDialog />
+</v-dialog>
 
+<v-dialog class="dialogBox" v-model="withdrawDialog" width="60%">
+  <WithdrawDialog />
+</v-dialog>
 
 
   </v-container>
-
 </template>
 
 
 <script>
+import DepositDialog from "./DepositDialog.vue";
+import WithdrawDialog from "./WithdrawDialog.vue";
 
 export default {
-  name: 'Main'
+  name: 'Main',
+  components: {
+        DepositDialog,
+        WithdrawDialog
+    },
+    data() {
+      return {
+        depositDialog: false,
+        withdrawDialog: false,
+      }
+    }
 
-}
-
-
+  }
 </script>
 
 
@@ -131,7 +147,7 @@ export default {
   display: flex;
   justify-content: center;
   color: #939393;
-  padding-bottom: 10px; 
+  padding-bottom: 10px;
 }
 
 .centerTitle {
@@ -165,6 +181,5 @@ export default {
   padding: 15px;
   padding-bottom: 100px;
 }
-
 
 </style>

@@ -175,6 +175,7 @@ computed: {
 },
 
 mounted() {
+
   axios.get('http://ethgas.watch/api/gas')
     .then(res => {
       this.gas = res.data.normal.gwei;
@@ -184,32 +185,33 @@ mounted() {
     axios.post('https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3',
   {
     query: `
-          {
-            pools(where: {token1: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"}) {
-              id
-
-              token0 {
-                name
-                id
-              }
-
-              token1 {
-                name
-                id
+              {
+                  pools(where: {token1: "0x6b175474e89094c44da98b954eedeac495271d0f"}) {
+                    id
+                    poolDayData(first: 1, orderBy: date, orderDirection: desc) {
+                      token0Price
+                    }
+                    token0 {
+                      name
+                      id
+                    }
+                    token1 {
+                      name
+                      id
               }
             }
           }
+
         `
   }).then((resp) => {
 
-    var token = resp.data.data.pools;
+    var token = resp.data.data.pools
     for (var i = 0; i < token.length; i++) {
         this.tokens.push(token[i].token0.name);
         this.pools.push(token[i].id);
-
     }
 
-  });
+    });
 },
 
 methods: {

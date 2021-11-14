@@ -10,7 +10,6 @@ contract GoblinTownToken is ERC20 {
     uint public constant MAX_SUPPLY = 100000000000000000000000;
     uint public constant DECIMALS = 18;
     address private owner;
-    mapping(address => uint) public balances;
 
     constructor(uint initialSupply) ERC20("Goblin Town Token", "GTT") { //solhint-disable func-visibility
         owner = msg.sender;
