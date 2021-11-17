@@ -20,7 +20,9 @@
 - Swap and short standard works, but how can it be improved and how can it not cost a billion gas?
 - add ability to use L2s?
 - hook up SCs to front end
-- test a shitcoin swap and short, something harder to borrow 
+- test a shitcoin swap and short, something harder to borrow
+
+- !IMPORTANT -----> separate pools for standard and high risk deposits?  
 
 
 

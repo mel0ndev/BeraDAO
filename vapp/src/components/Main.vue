@@ -67,10 +67,7 @@
               </v-btn>
             </div>
             <span class="subheading">
-                Available to deposit:
-            </span>
-            <span class="subheading">
-              APY:
+                Available to deposit: {{daiBalance}} DAI
             </span>
           </v-card>
         </v-col>
@@ -92,9 +89,6 @@
             </div>
             <span class="subheading">
                 Available for withdrawl:
-            </span>
-            <span class="subheading">
-              PnL:
             </span>
           </v-card>
         </v-col>
@@ -123,6 +117,18 @@
 <script>
 import DepositDialog from "./DepositDialog.vue";
 import WithdrawDialog from "./WithdrawDialog.vue";
+import { mapGetters } from "vuex";
+
+import Web3 from 'web3';
+const web3 = new Web3('ws://localhost:8545');
+
+import daiABI from "../../../test/daiABI.json";
+
+const daiAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
+let dai = new web3.eth.Contract(
+  daiABI,
+  daiAddress
+);
 
 export default {
   name: 'Main',
@@ -130,12 +136,23 @@ export default {
         DepositDialog,
         WithdrawDialog
     },
-    data() {
+  data() {
       return {
         depositDialog: false,
         withdrawDialog: false,
+        daiBalance: '',
       }
-    }
+    },
+  computed: {
+    ...mapGetters('accounts', ['activeAccount']),
+  },
+  async created() {
+    let account = '0xbE63412Cde45CF5cc79cB0fCbb002D326d5F1380';
+    this.daiBalance = await dai.methods.balanceOf(account).call();
+    //ASYNC NOT WORKING
+    //Todo: figure out how to get async functions loading for live blockchain data
+  }
+
 
   }
 </script>
@@ -147,7 +164,7 @@ export default {
   display: flex;
   justify-content: center;
   color: #939393;
-  padding-bottom: 10px;
+  padding-bottom: 25px;
 }
 
 .centerTitle {

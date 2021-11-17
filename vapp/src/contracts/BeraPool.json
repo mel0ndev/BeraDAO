@@ -23,7 +23,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -42,7 +43,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -61,7 +63,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -106,7 +109,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     }
   ],
   "metadata": "{\"compiler\":{\"version\":\"0.8.10+commit.fc410830\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"contract GoblinTownToken\",\"name\":\"_goblinTownToken\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"depositGTT\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"getUserPercentage\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"goblinTownToken\",\"outputs\":[{\"internalType\":\"contract GoblinTownToken\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"gttPoolList\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"userPercentOfGTTPool\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"withdawGTT\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/BeraPool.sol\":\"BeraPool\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"@openzeppelin/contracts/token/ERC20/ERC20.sol\":{\"keccak256\":\"0x3511f3ef8dbef8acfe9f5c40a90099e14a4790b479012c5fd67b7f3c1963844c\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://c1256a90d5790fc6b6dc82c34a8f496ad9cf16c0fd009bd96a30a9405bec7634\",\"dweb:/ipfs/QmXtjHU7e6VL3ouJgiow1pvJ5e7C238pTmM7axk2kYB132\"]},\"@openzeppelin/contracts/token/ERC20/IERC20.sol\":{\"keccak256\":\"0x027b891937d20ccf213fdb9c31531574256de774bda99d3a70ecef6e1913ed2a\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://087318b21c528119f649899f5b5580566dd8d7b0303d4904bd0e8580c3545f14\",\"dweb:/ipfs/Qmbn5Mj7aUn8hJuQ8VrQjjEXRsXyJKykgnjR9p4C3nfLtL\"]},\"@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol\":{\"keccak256\":\"0x83fe24f5c04a56091e50f4a345ff504c8bff658a76d4c43b16878c8f940c53b2\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://d4c3df1a7ca104b633a7d81c6c6f5192367d150cd5a32cba81f7f27012729013\",\"dweb:/ipfs/QmSim72e3ZVsfgZt8UceCvbiSuMRHR6WDsiamqNzZahGSY\"]},\"@openzeppelin/contracts/utils/Context.sol\":{\"keccak256\":\"0x90565a39ae45c80f0468dc96c7b20d0afc3055f344c8203a0c9258239f350b9f\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://26e8b38a7ac8e7b4463af00cf7fff1bf48ae9875765bf4f7751e100124d0bc8c\",\"dweb:/ipfs/QmWcsmkVr24xmmjfnBQZoemFniXjj3vwT78Cz6uqZW1Hux\"]},\"project:/contracts/BeraPool.sol\":{\"keccak256\":\"0x37b255cb100835f4bfc225faeb3230fa77858b8cc3ecd68f5742420129298fb5\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://cf33fb8586ca6b260fd1127126f193aba15263246bdc68f51ed2f206e286edfd\",\"dweb:/ipfs/QmS3YzZXTHtba5z3H61LxNs8CrqV2MNeVjHEWUPajuX7dw\"]},\"project:/contracts/GoblinTownToken.sol\":{\"keccak256\":\"0x08d34eab8284aa2b3c1f6e9e8f721c4a8165f890d6e95bcb1c8e47ef92f65ae6\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://71cfdc3ab7d9d38b403c3026ba7f925f1c2f9d235e2ebbdcebb387a0a28d49f7\",\"dweb:/ipfs/Qmam41tNBEqs5ETUVLngZ5kiq1KoV422wuzsRPoLhmfHLU\"]}},\"version\":1}",
@@ -8539,12 +8543,13 @@
     "1": {
       "events": {},
       "links": {},
-      "address": "0xbCFB21b4907DC924F14D156b7b200d9e6F5FB224",
-      "transactionHash": "0x7495869486b79f7ffe502dd5465a16897dc5763cefeb6136e566c60e6d817510"
+      "address": "0x4F41B28Bc5f1226D8192703e9C5CaBcf7aD6A7a2",
+      "transactionHash": "0xa889c3a80d3d43f3139488463a14a690551c7602c26504eeb67662bfcd171d81"
     }
   },
   "schemaVersion": "3.4.3",
-  "updatedAt": "2021-11-12T23:06:41.674Z",
+  "updatedAt": "2021-11-16T00:00:49.748Z",
+  "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
     "methods": {},

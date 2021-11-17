@@ -13,7 +13,7 @@
       align="center"
       >
         <h3 class="subheading"> Standard Risk Pool Liquidity </h3>
-        <h4> ass </h4>
+        <h4>  </h4>
       </v-col>
 
       <v-col
@@ -21,7 +21,7 @@
       align="center"
       >
         <h3 class="subheading"> High Risk Pool Liquidity </h3>
-        <h4> ass too </h4>
+
       </v-col>
     </v-row>
 
@@ -55,6 +55,7 @@ name: 'WithdrawDialog'
     padding-bottom: 10px;
     padding-top: 20px;
 }
+
 
 
 

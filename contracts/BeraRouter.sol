@@ -22,10 +22,6 @@ contract BeraRouter {
 
     address private constant DAI_ADDRESS = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
 
-    //fees idk about yet we gonna see
-    uint public constant OPEN_FEE = 5;
-    uint public constant CLOSING_FEE = 5;
-
     //uniswapV3 address router
     //might have to change if implement 1inch api
     ISwapRouter public  swapRouter;
@@ -46,7 +42,7 @@ contract BeraRouter {
         beraPool = _beraPool;
     }
 
-    function depositCollateral(uint amount, address collateral) external {
+    function depositCollateralStandard(uint amount, address collateral, address pool) external {
         require(IERC20(collateral) == IERC20(DAI_ADDRESS), "POOL: Not DAI");
 
         //used for withdrawl later
@@ -57,7 +53,8 @@ contract BeraRouter {
             hasCollateral[msg.sender] = true;
         }
 
-        IERC20(collateral).transferFrom(msg.sender, address(this), amount);
+        //TODO come back to this, transfer to pool directly? or keep track of funds in this contract? 
+        IERC20(collateral).transferFrom(msg.sender, pool, amount);
     }
 
     function withdrawCollateral(uint amount, address collateral) external {

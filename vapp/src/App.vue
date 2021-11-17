@@ -3,7 +3,7 @@
     <v-navigation-drawer
       v-model="drawer"
       app
-      color="#2a2a2a"
+      color="#191919"
       dark
     >
     <div>

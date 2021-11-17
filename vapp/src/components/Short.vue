@@ -135,7 +135,7 @@
         class="shortThePonzi"
         @click.prevent="onSubmit"
         >
-        Short The Ponzi
+        Short This Scam
       </v-btn>
     </div>
 
@@ -281,8 +281,8 @@ methods: {
 }
 
 .boxContainer {
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-left: 25px;
+  padding-right: 25px;
 }
 
 
