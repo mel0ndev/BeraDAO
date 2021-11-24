@@ -2,13 +2,12 @@
 pragma solidity ^0.8.0; //solhint-disable compiler-fixed
 pragma abicoder v2;
 
-//who would have guessed these github imports don't actually compile
+
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
 import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
 import "./BeraPoolStandardRisk.sol";
 import "./BeraWrapper.sol";
-import "./BeraPool.sol";
 
 
 //the public interface for the protocol
@@ -27,22 +26,19 @@ contract BeraRouter {
     ISwapRouter public  swapRouter;
     BeraPoolStandardRisk public beraPoolStandardRisk;
     BeraWrapper public beraWrapper;
-    BeraPool public beraPool;
 
     address public owner;
 
     constructor(ISwapRouter _swapRouter,
         BeraPoolStandardRisk _beraPoolStandardRisk,
-        BeraWrapper _beraWrapper,
-        BeraPool _beraPool) { //solhint-disable func-visibility
+        BeraWrapper _beraWrapper) { //solhint-disable func-visibility
         owner = msg.sender;
         swapRouter = _swapRouter;
         beraPoolStandardRisk = _beraPoolStandardRisk;
         beraWrapper = _beraWrapper;
-        beraPool = _beraPool;
     }
 
-    function depositCollateralStandard(uint amount, address collateral, address pool) external {
+    function depositCollateral(uint amount, address collateral, address pool) external {
         require(IERC20(collateral) == IERC20(DAI_ADDRESS), "POOL: Not DAI");
 
         //used for withdrawl later
@@ -53,15 +49,16 @@ contract BeraRouter {
             hasCollateral[msg.sender] = true;
         }
 
-        //TODO come back to this, transfer to pool directly? or keep track of funds in this contract? 
+        //transfer to seperate pools based on user defined risk
+        //high risk pool will keep 5% of the native token to try and maximize returns
         IERC20(collateral).transferFrom(msg.sender, pool, amount);
     }
 
-    function withdrawCollateral(uint amount, address collateral) external {
+    function withdrawCollateral(uint amount) external {
         require(amount <= userCollateralBalance[msg.sender],
             "COLLATERAL: trying to withdraw more collateral than deposited");
         require(inShort[msg.sender] == false,
-            "COLLATEAL: close your current position before trying to withdraw");
+            "COLLATERAL: close your current position before trying to withdraw");
 
         //reset balance of user on withdraw
         userCollateralBalance[msg.sender] -= amount;
@@ -70,14 +67,16 @@ contract BeraRouter {
             hasCollateral[msg.sender] = false;
         }
 
-        IERC20(collateral).transfer(msg.sender, amount);
+
+        beraPoolStandardRisk.withdrawFromPool(msg.sender, amount);
+
     }
 
     // deposit collateral into user account before being allowed to short
     function swapAndShortStandard(
             uint amount,
             address tokenToShort,
-            uint24 poolFee,
+            uint24 poolFee, //needed for uniswap pool
             uint amountOutMin,
             uint collateralPercentageOfAccount,
             uint priceAtWrap)
@@ -85,6 +84,8 @@ contract BeraRouter {
                 require(amount <= userCollateralBalance[msg.sender], "SWAP: not enough collateral");
                 require(collateralPercentageOfAccount <= 100, "SWAP: cannot use more than 100% of account to short");
 
+                //TODO for refactor
+                //could reuse this code to get rid of collat percentage idea and instead use it to keep 5% of dai
                 uint amountOfCollateral = amount * collateralPercentageOfAccount / 100;
                 uint leftover = amount - amountOfCollateral;
 
@@ -103,11 +104,12 @@ contract BeraRouter {
                     sqrtPriceLimitX96: 0
                 });
 
-                // execute the frist swap & sends to beraPool based on params
+                // execute the frist swap & sends to beraPoolSR based on params
                 amountOut = swapRouter.exactInputSingle(params);
 
                 //execute the second swap and transfer funds to pool for holding
                 //have to update priceAtWrap, users can set this amount manually and drain funds lmfao
+                //will likely use TWAPOracle feature of uniV3 pools
                 beraPoolStandardRisk.shortForUser(
                     msg.sender,
                     tokenToShort,
@@ -124,7 +126,9 @@ contract BeraRouter {
                 inShort[msg.sender] = true;
 
                 //send remaining funds back to user
-                IERC20(DAI_ADDRESS).transfer(msg.sender, leftover);
+                if (leftover > 0) {
+                    IERC20(DAI_ADDRESS).transfer(msg.sender, leftover);
+                }
             }
 
     function swapAndCloseShort(

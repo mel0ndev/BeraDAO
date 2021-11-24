@@ -67,7 +67,7 @@
               </v-btn>
             </div>
             <span class="subheading">
-                Available to deposit: {{daiBalance}} DAI
+                Available to deposit: {{getDai}} DAI
             </span>
           </v-card>
         </v-col>
@@ -145,10 +145,14 @@ export default {
     },
   computed: {
     ...mapGetters('accounts', ['activeAccount']),
+    getDai() {
+      return this.daiBalance;
+    }
   },
   async created() {
-    let account = '0xbE63412Cde45CF5cc79cB0fCbb002D326d5F1380';
-    this.daiBalance = await dai.methods.balanceOf(account).call();
+    let account = '0x7D8bF1d5aD61873Cd05FbCf4f9D3C3A1F2ec55d3';
+    let initial = await dai.methods.balanceOf(account).call();
+    this.daiBalance = (initial / 1e18).toFixed(2);
     //ASYNC NOT WORKING
     //Todo: figure out how to get async functions loading for live blockchain data
   }

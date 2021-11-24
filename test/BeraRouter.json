@@ -27,32 +27,6 @@
 	},
 	{
 		"inputs": [],
-		"name": "CLOSING_FEE",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "OPEN_FEE",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
 		"name": "beraPool",
 		"outputs": [
 			{
@@ -100,6 +74,11 @@
 			{
 				"internalType": "address",
 				"name": "collateral",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "pool",
 				"type": "address"
 			}
 		],
@@ -312,7 +291,7 @@
 			},
 			{
 				"internalType": "address",
-				"name": "collateral",
+				"name": "pool",
 				"type": "address"
 			}
 		],

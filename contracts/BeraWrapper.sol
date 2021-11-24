@@ -43,7 +43,7 @@ contract BeraWrapper is ERC1155 {
                         priceAtWrap: priceAtWrap //imported from 1inchAPI via web3 later
                     });
 
-                    //increase position count
+                    //increase global position counter
                     positionID++;
 
                 }
@@ -56,7 +56,7 @@ contract BeraWrapper is ERC1155 {
         _burn(positionOwner, _positionID, 1);
     }
 
-    //SHOULD BE USED TO SEND TRANSFER POSITIONS
+    //SHOULD BE USED TO TRANSFER POSITIONS
     function transferPosition(address to, address from, uint _positionID, uint amount) external {
         require(msg.sender == positionData[_positionID].positionOwner,
             "Wrapper: only the owner can transfer a position");

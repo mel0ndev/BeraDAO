@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0; //solhint-disable compiler-fixed
 pragma abicoder v2;
 
+
 import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
 import "@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol";
 import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
@@ -56,7 +57,7 @@ contract BeraPoolStandardRisk is ERC1155Holder {
             tokenIn: tokenToShort,
             tokenOut: DAI_ADDRESS,
             fee: poolFee,
-            recipient: address(this),
+            recipient: address(this), //the pool contract will store both DAI from users and
             deadline: block.timestamp, //solhint-disable not-rely-on-time
             amountIn: amountToShort,
             amountOutMinimum: amountOutMin,
@@ -71,7 +72,7 @@ contract BeraPoolStandardRisk is ERC1155Holder {
         userRemainingBalance[msg.sender] = remaining;
 
         //wrap position in ERC1155
-        //use amountToShort to reference how much is being shorted in this position
+        //use amountToShort to reference position size being wrapped
         beraWrapper.wrapPosition(user, address(this), amountToShort, tokenToShort, priceAtWrap);
 
     }
@@ -105,6 +106,10 @@ contract BeraPoolStandardRisk is ERC1155Holder {
             amountOut = swapRouter.exactInputSingle(tokenParams);
 
         }
+
+    function withdrawFromPool(address user, uint amount) external {
+        IERC20(DAI_ADDRESS).transfer(user, amount);
+    }
 }
 
 //needs:

@@ -15,14 +15,35 @@
 - wETH whale address
 ----> 0x1e3d6eab4bcf24bcd04721caa11c478a2e59852d  <----
 
-#TODO
-- Launch basic swapping and shorting feature, more features to come later
-- Swap and short standard works, but how can it be improved and how can it not cost a billion gas?
-- add ability to use L2s?
-- hook up SCs to front end
-- test a shitcoin swap and short, something harder to borrow
+#DOING
+- hook up SCs to front end //ON HOLD UNTIL REFACTOR IS FINISHED
 
-- !IMPORTANT -----> separate pools for standard and high risk deposits?  
+
+#CURRENT ISSUES
+- Swaps require several approvals and several actual swaps when they are probably not necessary
+
+    - the easiest thing to do would be to have the pool itself swap the 5% of the trade kept into eth to pay
+      for gas fees. The issue is how expensive this would be, and would it actually function in production?
+
+    - Alternatively, we could launch with the current system of having users approve and pay for gas fees
+      for the pool which could potentially disincentivize using the platform. Paying $100 for a swap? nah.
+
+- Do best to avoid high gas, but it shouldn't be a priority.
+    - Priority 1 is shipping the product and have it work as intended. This is software at the end of the day.
+      v2 will have many improvements to the code, along with more eyes (hopefully) to look at the project.
+      I think that I am focusing too much on minor things that are not important to the overall project and it is
+      detrimental to the actual work able to get done.
+
+    - What is important now is getting the project into the hands of users.
+
+
+
+#TODO ABSOLUTE MUST HAVE FEATURES FOR MVP
+
+- TWAP Oracle contract is 100% necessary
+- Pool rewards must be 100% functional
+-
+
 
 
 

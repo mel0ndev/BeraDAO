@@ -101,7 +101,7 @@ methods: {
   },
 
   async submitDeposit() {
-    await dai.methods.approve('0x85d68F55245aEF21973944a37E1D66a62BE56254', '100000000000000000000').send({from: this.activeAccount});
+    await dai.methods.approve('0xff069504de6cc2f0f2C9443Bbdc6d5Ff5b150ebA', '100000000000000000000').send({from: this.activeAccount});
     await this.drizzleInstance.contracts.BeraRouter.methods.depositCollateral('100000000000000000000', '0x6B175474E89094C44Da98b954EedeAC495271d0F').send();
   }
 
