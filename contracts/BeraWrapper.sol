@@ -63,7 +63,7 @@ contract BeraWrapper is ERC1155 {
         require(from == positionData[_positionID].positionOwner,
             "Wrapper: only the owner can transfer a position");
 
-            //send position
+        //send position
         safeTransferFrom(to, from, _positionID, amount, "");
 
         //update new owner

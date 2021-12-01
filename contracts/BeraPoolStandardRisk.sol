@@ -16,7 +16,13 @@ contract BeraPoolStandardRisk is ERC1155Holder {
     address public owner;
 
     mapping(address => uint) public userShortBalance;
-    mapping(address => uint) public userRemainingBalance;
+    mapping(address => uint) public userDepositBalance;
+    mapping(address => uint) internal userShortID;
+    //nested mapping so multiple positions can be opened by the same user
+    mapping(address => mapping(uint => uint)) public entryPrices;
+    //stores which position is in a short for withdraw purposes later
+    mapping(address => (mapping(uint => bool) internal inShort; //stores whether user is currently in a position
+    address[] public standardPoolList;
 
     address private constant DAI_ADDRESS = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
 
@@ -30,52 +36,96 @@ contract BeraPoolStandardRisk is ERC1155Holder {
         beraWrapper = _beraWrapper;
     }
 
-    function shortForUser(
-        address user,
-        address tokenToShort,
-        uint priceAtWrap,
-        uint24 poolFee,
-        uint amount,
-        uint amountOutMin) external returns(uint amountOut) {
-        //require(msg.sender == beraRouter, "not in ecosystem");
+    function depositCollateral(uint amount, address collateral) external {
+        require(IERC20(collateral) == IERC20(DAI_ADDRESS), "STANDARD POOL: Not DAI");
 
+        //used for withdrawl later
+        userDepositBalance[msg.sender] += amount;
 
-        TransferHelper.safeTransferFrom(tokenToShort, user, address(this), amount);
-        TransferHelper.safeApprove(tokenToShort, address(swapRouter), amount);
+        if (hasCollateral[msg.sender] == false) {
+            standardPoolList.push(msg.sender);
+            hasCollateral[msg.sender] = true;
+        }
 
-        //keep 5% of weth in pool contract for holders to profit/ reduce losses
-        //amountToShort is amount of weth to short
-        //TOKEN IN IN THIS CASE IS ALREADY TOKEN TO BE SHORTED, SO POOL IS KEEPING 5% OF TRADE
-        //KEEP IN FOR NOW TO TEST HIGH RISK POOL
-        //WILL HAVE TO CHANGE TO SWAP AND THEN KEEP 5% FOR STANDARD RISK POOL
-        uint amountToShort = (amount * 95) / 100;
-        uint remaining = amount - amountToShort;
-
-        //now that contract has the desired token to short, we sell @ market back for DAI
-        ISwapRouter.ExactInputSingleParams memory tokenParams =
-        ISwapRouter.ExactInputSingleParams({
-            tokenIn: tokenToShort,
-            tokenOut: DAI_ADDRESS,
-            fee: poolFee,
-            recipient: address(this), //the pool contract will store both DAI from users and
-            deadline: block.timestamp, //solhint-disable not-rely-on-time
-            amountIn: amountToShort,
-            amountOutMinimum: amountOutMin,
-            sqrtPriceLimitX96: 0
-        });
-
-        // execute the short, amountOut is DAI in this case
-        amountOut = swapRouter.exactInputSingle(tokenParams);
-
-        //update user balances
-        userShortBalance[msg.sender] = amountOut;
-        userRemainingBalance[msg.sender] = remaining;
-
-        //wrap position in ERC1155
-        //use amountToShort to reference position size being wrapped
-        beraWrapper.wrapPosition(user, address(this), amountToShort, tokenToShort, priceAtWrap);
+        //transfer to seperate pools based on user defined risk
+        //high risk pool will keep 5% of the native token to try and maximize returns
+        IERC20(collateral).transferFrom(msg.sender, address(this), amount);
 
     }
+
+    function withdrawFromPool(uint amount) external {
+        require(amount <= userDepositBalance[msg.sender],
+            "COLLATERAL: trying to withdraw more collateral than deposited");
+        require(inShort[msg.sender] == false,
+            "COLLATERAL: close your current position before trying to withdraw");
+
+        //reset balance of user on withdraw
+        userDepositBalance[msg.sender] -= amount;
+
+        if (userDepositBalance[msg.sender] <= 0) {
+            hasCollateral[msg.sender] = false;
+        }
+        IERC20(DAI_ADDRESS).transfer(msg.sender, amount);
+    }
+
+    // deposit collateral into user account before being allowed to short
+    function swapAndShortStandard(
+            uint amount,
+            address tokenToShort,
+            uint24 poolFee, //needed for uniswap pool
+            uint amountOutMin)
+            external returns(uint amountOut) { //solhint-disable function-max-lines
+                require(amount <= userDepositBalance[msg.sender], "SWAP: not enough collateral");
+
+                //by default uints are initialized as 0 so this should work???
+                userShortID[msg.sender] += 1;
+
+                //keeping 5% of dai in contract to be distributed to liq providers on loss of pool
+                uint amountToSend = amount * (95 / 100);
+
+                TransferHelper.safeTransferFrom(DAI_ADDRESS, msg.sender, address(this), amount);
+                TransferHelper.safeApprove(DAI_ADDRESS, address(swapRouter), amount);
+
+                ISwapRouter.ExactInputSingleParams memory params =
+                ISwapRouter.ExactInputSingleParams({
+                    tokenIn: DAI_ADDRESS,
+                    tokenOut: tokenToShort,
+                    fee: poolFee,
+                    recipient: address(this),
+                    deadline: block.timestamp, //solhint-disable not-rely-on-time
+                    amountIn: amountToSend,
+                    amountOutMinimum: amountOutMin,
+                    sqrtPriceLimitX96: 0
+                });
+
+                //execute the frist swap
+                amountOut = swapRouter.exactInputSingle(params);
+
+                //Call twapPriceOracle here or find a better way to capture price
+                //TODO: Price wrapping
+                //TEST ONLY
+                uint priceAtWrap = 3000;
+
+                //execute the second swap and transfer funds to pool for holding
+                //have to update priceAtWrap, users can set this amount manually and drain funds lmfao
+                //will likely use TWAPOracle feature of uniV3 pools
+                _shortForUser(
+                    msg.sender,
+                    tokenToShort,
+                    priceAtWrap,
+                    poolFee,
+                    amountOut,
+                    amountOutMin
+                );
+
+                //update entry price mapping
+                //this refers to the entry price of msg.sender for the current shortID of msg.sender
+                //nested mappings look cringe but are efficient
+                entryPrices[msg.sender][userShortID[msg.sender]] = priceAtWrap;
+
+                //update whether address is in a position or not
+                inShort[msg.sender][userShortID[msg.sender]] = true;
+            }
 
     function closeShortForUser(
         address user,
@@ -107,10 +157,41 @@ contract BeraPoolStandardRisk is ERC1155Holder {
 
         }
 
-    function withdrawFromPool(address user, uint amount) external {
-        IERC20(DAI_ADDRESS).transfer(user, amount);
+    //TODO
+    function _shortForUser(
+        address user,
+        address tokenToShort,
+        uint priceAtWrap,
+        uint24 poolFee,
+        uint amount,
+        uint amountOutMin) internal returns(uint amountOut) {
+
+        //now that this contract has the desired token to short, we sell @ market back for DAI
+        ISwapRouter.ExactInputSingleParams memory tokenParams =
+        ISwapRouter.ExactInputSingleParams({
+            tokenIn: tokenToShort,
+            tokenOut: DAI_ADDRESS,
+            fee: poolFee,
+            recipient: address(this), //the pool contract will store both DAI from users and
+            deadline: block.timestamp, //solhint-disable not-rely-on-time
+            amountIn: amountToShort,
+            amountOutMinimum: amountOutMin,
+            sqrtPriceLimitX96: 0
+        });
+
+        // execute the short, amountOut is DAI in this case
+        amountOut = swapRouter.exactInputSingle(tokenParams);
+
+        //update user balances
+        userShortBalance[msg.sender] = amountOut;
+
+        //wrap position in ERC1155
+        //use amountToShort to reference position size being wrapped
+        beraWrapper.wrapPosition(user, address(this), amountToShort, tokenToShort, priceAtWrap);
     }
+
 }
+
 
 //needs:
 //

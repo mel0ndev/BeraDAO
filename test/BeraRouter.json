@@ -15,28 +15,10 @@
 				"internalType": "contract BeraWrapper",
 				"name": "_beraWrapper",
 				"type": "address"
-			},
-			{
-				"internalType": "contract BeraPool",
-				"name": "_beraPool",
-				"type": "address"
 			}
 		],
 		"stateMutability": "nonpayable",
 		"type": "constructor"
-	},
-	{
-		"inputs": [],
-		"name": "beraPool",
-		"outputs": [
-			{
-				"internalType": "contract BeraPool",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
 	},
 	{
 		"inputs": [],
@@ -288,11 +270,6 @@
 				"internalType": "uint256",
 				"name": "amount",
 				"type": "uint256"
-			},
-			{
-				"internalType": "address",
-				"name": "pool",
-				"type": "address"
 			}
 		],
 		"name": "withdrawCollateral",

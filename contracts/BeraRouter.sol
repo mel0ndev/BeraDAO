@@ -3,6 +3,9 @@ pragma solidity ^0.8.0; //solhint-disable compiler-fixed
 pragma abicoder v2;
 
 
+//THIS CONTRACT IS GOING TO GET NUKED. MOVE LOGIC TO POOL CONTRACTS
+//USING INTERNAL FUNCTIONS FOR CHECKS 
+
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
 import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
@@ -14,9 +17,9 @@ import "./BeraWrapper.sol";
 contract BeraRouter {
 
     mapping(address => uint) public userCollateralBalance;
+    mapping(address => bool) internal hasCollateral;
     mapping(address => uint) public entryPrice;
     mapping(address => bool) public inShort;
-    mapping(address => bool) internal hasCollateral;
     address[] public poolList;
 
     address private constant DAI_ADDRESS = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
@@ -38,22 +41,6 @@ contract BeraRouter {
         beraWrapper = _beraWrapper;
     }
 
-    function depositCollateral(uint amount, address collateral, address pool) external {
-        require(IERC20(collateral) == IERC20(DAI_ADDRESS), "POOL: Not DAI");
-
-        //used for withdrawl later
-        userCollateralBalance[msg.sender] += amount;
-
-        if (hasCollateral[msg.sender] == false) {
-            poolList.push(msg.sender);
-            hasCollateral[msg.sender] = true;
-        }
-
-        //transfer to seperate pools based on user defined risk
-        //high risk pool will keep 5% of the native token to try and maximize returns
-        IERC20(collateral).transferFrom(msg.sender, pool, amount);
-    }
-
     function withdrawCollateral(uint amount) external {
         require(amount <= userCollateralBalance[msg.sender],
             "COLLATERAL: trying to withdraw more collateral than deposited");
@@ -66,9 +53,6 @@ contract BeraRouter {
         if (userCollateralBalance[msg.sender] <= 0) {
             hasCollateral[msg.sender] = false;
         }
-
-
-        beraPoolStandardRisk.withdrawFromPool(msg.sender, amount);
 
     }
 
