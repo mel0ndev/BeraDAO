@@ -16,25 +16,28 @@
 ----> 0x1e3d6eab4bcf24bcd04721caa11c478a2e59852d  <----
 
 #DOING
-- hook up SCs to front end //ON HOLD UNTIL REFACTOR IS FINISHED
+ - Moving all router logic to pool contracts, makes things much easier
+    - Currently migrating swap and short functions
 
 
-#CURRENT ISSUES
-- Swaps require several approvals and several actual swaps when they are probably not necessary
+#TESTING
+  - Standard Pool Testing:
+      - Swapping not allowed in pool unless collateral has been deposited //WORKS
 
-    - the easiest thing to do would be to have the pool itself swap the 5% of the trade kept into eth to pay
-      for gas fees. The issue is how expensive this would be, and would it actually function in production?
+      - Deposits: //FULLY FUNCTIONAL ##(with minor bug)
+          - basic deposit works
+          - addresses are being pushed into array as intended
+              - public dynamic arrays require a uint to be passed into them as a parameter?
+              - this could possibly be the size of the array? maybe keep track of it somewhere to pass to
+                web3 function
+          - depositCollateralBalance is being updated as intended
+          - pool address is receiving the funds as intended
 
-    - Alternatively, we could launch with the current system of having users approve and pay for gas fees
-      for the pool which could potentially disincentivize using the platform. Paying $100 for a swap? nah.
+      - Swap and Short : //FULLY FUNCTIONAL
+          - swapandshort is storing each short separately as intended
+          - is working as one function call
+          - is sending an erc1155
 
-- Do best to avoid high gas, but it shouldn't be a priority.
-    - Priority 1 is shipping the product and have it work as intended. This is software at the end of the day.
-      v2 will have many improvements to the code, along with more eyes (hopefully) to look at the project.
-      I think that I am focusing too much on minor things that are not important to the overall project and it is
-      detrimental to the actual work able to get done.
-
-    - What is important now is getting the project into the hands of users.
 
 
 
@@ -62,11 +65,6 @@
 - High Risk Pool contract
 - look into Optimism compatibility
 - Uniswap TWAP oracle  
-- POOL CONTRACT:
-    - incentives for depositors is being on opposite end of losing shorts
-    - GTT depositors earn extra GTT which collect fees  
-    - GTT holders earn GVR, which allows holders to vote in protocol proposals  
-    - Bonus GVR is distributed to the top 25% of holders every 2nd week
 
 - Voting System TBD
 - Test voting and token contracts (TO DO LATER)

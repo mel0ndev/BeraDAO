@@ -15,13 +15,14 @@ contract BeraPoolStandardRisk is ERC1155Holder {
 
     address public owner;
 
-    mapping(address => uint) public userShortBalance;
     mapping(address => uint) public userDepositBalance;
+    mapping(address => mapping(uint => uint)) public userShortBalance;
     mapping(address => uint) internal userShortID;
+    mapping(address => bool) internal hasCollateral;
     //nested mapping so multiple positions can be opened by the same user
     mapping(address => mapping(uint => uint)) public entryPrices;
     //stores which position is in a short for withdraw purposes later
-    mapping(address => (mapping(uint => bool) internal inShort; //stores whether user is currently in a position
+    mapping(address => mapping(uint => bool)) internal inShort; //stores whether user is currently in a position
     address[] public standardPoolList;
 
     address private constant DAI_ADDRESS = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
@@ -39,32 +40,36 @@ contract BeraPoolStandardRisk is ERC1155Holder {
     function depositCollateral(uint amount, address collateral) external {
         require(IERC20(collateral) == IERC20(DAI_ADDRESS), "STANDARD POOL: Not DAI");
 
-        //used for withdrawl later
-        userDepositBalance[msg.sender] += amount;
-
-        if (hasCollateral[msg.sender] == false) {
+        //we use the hasCollateral mapping to avoid having to loop through the array when removing
+        //the user from the users who receive the distribution of funds for yield
+        if (userDepositBalance[msg.sender] > 0) {
             standardPoolList.push(msg.sender);
             hasCollateral[msg.sender] = true;
         }
 
+        //used for withdrawl later
+        userDepositBalance[msg.sender] += amount;
+
         //transfer to seperate pools based on user defined risk
         //high risk pool will keep 5% of the native token to try and maximize returns
         IERC20(collateral).transferFrom(msg.sender, address(this), amount);
-
     }
 
-    function withdrawFromPool(uint amount) external {
+    function withdrawFromPool(uint amount, uint userPositionNumber) external {
         require(amount <= userDepositBalance[msg.sender],
             "COLLATERAL: trying to withdraw more collateral than deposited");
-        require(inShort[msg.sender] == false,
+
+        //checking if the funds locked in the position have been released before allowing them to be withdrawn
+        require(inShort[msg.sender][userPositionNumber] == false,
             "COLLATERAL: close your current position before trying to withdraw");
 
         //reset balance of user on withdraw
         userDepositBalance[msg.sender] -= amount;
 
-        if (userDepositBalance[msg.sender] <= 0) {
+        if (userDepositBalance[msg.sender] == 0) {
             hasCollateral[msg.sender] = false;
         }
+
         IERC20(DAI_ADDRESS).transfer(msg.sender, amount);
     }
 
@@ -77,11 +82,11 @@ contract BeraPoolStandardRisk is ERC1155Holder {
             external returns(uint amountOut) { //solhint-disable function-max-lines
                 require(amount <= userDepositBalance[msg.sender], "SWAP: not enough collateral");
 
-                //by default uints are initialized as 0 so this should work???
+                //by default uints are initialized at 0 so this should work???
                 userShortID[msg.sender] += 1;
 
                 //keeping 5% of dai in contract to be distributed to liq providers on loss of pool
-                uint amountToSend = amount * (95 / 100);
+                uint amountToSend = amount * 95 / 100;
 
                 TransferHelper.safeTransferFrom(DAI_ADDRESS, msg.sender, address(this), amount);
                 TransferHelper.safeApprove(DAI_ADDRESS, address(swapRouter), amount);
@@ -123,7 +128,7 @@ contract BeraPoolStandardRisk is ERC1155Holder {
                 //nested mappings look cringe but are efficient
                 entryPrices[msg.sender][userShortID[msg.sender]] = priceAtWrap;
 
-                //update whether address is in a position or not
+                //update userPositionNumber current short status
                 inShort[msg.sender][userShortID[msg.sender]] = true;
             }
 
@@ -155,6 +160,9 @@ contract BeraPoolStandardRisk is ERC1155Holder {
             //execute the sell order
             amountOut = swapRouter.exactInputSingle(tokenParams);
 
+            //TODO
+            //must update current userPositionNumber
+
         }
 
     //TODO
@@ -165,6 +173,10 @@ contract BeraPoolStandardRisk is ERC1155Holder {
         uint24 poolFee,
         uint amount,
         uint amountOutMin) internal returns(uint amountOut) {
+        //funds are currently in the contract, so no need to swap back and forth anymore
+        //should just be able to call the second swap
+
+        TransferHelper.safeApprove(tokenToShort, address(swapRouter), amount);
 
         //now that this contract has the desired token to short, we sell @ market back for DAI
         ISwapRouter.ExactInputSingleParams memory tokenParams =
@@ -172,9 +184,9 @@ contract BeraPoolStandardRisk is ERC1155Holder {
             tokenIn: tokenToShort,
             tokenOut: DAI_ADDRESS,
             fee: poolFee,
-            recipient: address(this), //the pool contract will store both DAI from users and
+            recipient: address(this), //the pool contract will store both DAI from deposits and tokenOut
             deadline: block.timestamp, //solhint-disable not-rely-on-time
-            amountIn: amountToShort,
+            amountIn: amount,
             amountOutMinimum: amountOutMin,
             sqrtPriceLimitX96: 0
         });
@@ -182,13 +194,21 @@ contract BeraPoolStandardRisk is ERC1155Holder {
         // execute the short, amountOut is DAI in this case
         amountOut = swapRouter.exactInputSingle(tokenParams);
 
-        //update user balances
-        userShortBalance[msg.sender] = amountOut;
+        //update user balance of the user current positionID
+        userShortBalance[msg.sender][userShortID[msg.sender]] = amountOut;
 
         //wrap position in ERC1155
         //use amountToShort to reference position size being wrapped
-        beraWrapper.wrapPosition(user, address(this), amountToShort, tokenToShort, priceAtWrap);
+        beraWrapper.wrapPosition(user, address(this), amount, tokenToShort, priceAtWrap);
     }
+
+    receive() external payable { //solhint-disable state-visibility
+
+}
+
+    fallback() external payable { //solhint-disable
+
+}
 
 }
 

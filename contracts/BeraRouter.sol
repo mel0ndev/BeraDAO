@@ -4,7 +4,7 @@ pragma abicoder v2;
 
 
 //THIS CONTRACT IS GOING TO GET NUKED. MOVE LOGIC TO POOL CONTRACTS
-//USING INTERNAL FUNCTIONS FOR CHECKS 
+//USING INTERNAL FUNCTIONS FOR CHECKS
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
@@ -94,14 +94,14 @@ contract BeraRouter {
                 //execute the second swap and transfer funds to pool for holding
                 //have to update priceAtWrap, users can set this amount manually and drain funds lmfao
                 //will likely use TWAPOracle feature of uniV3 pools
-                beraPoolStandardRisk.shortForUser(
-                    msg.sender,
-                    tokenToShort,
-                    priceAtWrap,
-                    poolFee,
-                    amountOut,
-                    amountOutMin
-                );
+                // beraPoolStandardRisk.shortForUser(
+                //     msg.sender,
+                //     tokenToShort,
+                //     priceAtWrap,
+                //     poolFee,
+                //     amountOut,
+                //     amountOutMin
+                // );
 
                 //update entry price mapping
                 entryPrice[msg.sender] = priceAtWrap;
@@ -150,14 +150,14 @@ contract BeraRouter {
         amountOut = swapRouter.exactInputSingle(params);
 
         //sell tokens back for DAI
-        beraPoolStandardRisk.closeShortForUser(
-            msg.sender,
-            tokenToClose,
-            amountOut, //how much tokenOut is being sent to swap back into dai (in this case weth)
-            priceAtClose,
-            poolFee,
-            amountOutMin
-        );
+        // beraPoolStandardRisk.closeShortForUser(
+        //     msg.sender,
+        //     tokenToClose,
+        //     amountOut, //how much tokenOut is being sent to swap back into dai (in this case weth)
+        //     priceAtClose,
+        //     poolFee,
+        //     amountOutMin
+        // );
 
         //calculate if the user made or lost money on the position
         //also tranfers the profits to the user and distributes user losses amongst the pool
