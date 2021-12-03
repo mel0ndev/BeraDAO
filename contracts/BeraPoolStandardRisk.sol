@@ -216,12 +216,13 @@ contract BeraPoolStandardRisk is ERC1155Holder {
         for (uint i = 0; i < standardPoolList.length; i++) {
             //get each user's percentage of the pool they own
             //dai related to current positions are not counted*******
-            uint userPercent = (userDepositBalance[poolList[i]] / IERC20(DAI_ADDRESS).balanceOf(address(this))) * 1e18;
+            uint userPercent =
+                (userDepositBalance[standardPoolList[i]] / IERC20(DAI_ADDRESS).balanceOf(address(this))) * 1e18;
             uint percentToSendToUsers = userPercent * properDecimalsX18;
             //update each users deposit balance to increase the amount they can withdraw
             //(rather than sending funds directly which would be quite expensive)
             //balances are stored
-            userDepositBalance[poolList[i]] += percentToSendToUsers;
+            userDepositBalance[standardPoolList[i]] += percentToSendToUsers;
         }
     }
 
