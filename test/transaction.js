@@ -22,14 +22,14 @@ const wethAddress = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
 const routerAddress = "0xE592427A0AEce92De3Edee1F18E0157C05861564";
 
 //locals
-const beraWrapperAddress = '0x9a76F449935ae4e0D39C4038E5fEff6Dd12c1f94';
-const beraPoolStandardRiskAddress = '0xde804f567A1d62fB537B5F82FcC9D651f0d47A04';
-const beraRouterAddress = '0xd7cbe0Cc8d4b0Ad6b47044b51186d9F0016d11f0';
+const beraWrapperAddress = '0x1093927aD8eDe37de0baD670C82042faB169ecbd';
+const beraPoolStandardRiskAddress = '0x858b7Ddb5e4C3774FD60A72B0860a0167ce43b5C';
+const beraRouterAddress = '0x2eA081acAcE19e1958f08a563346f7BDC4c4845A';
 
 //load accounts
 const unlockedAccount = '0x2feb1512183545f48f6b9c5b4ebfcaf49cfca6f3';
-const recipient = '0xc6A42B4131f360ab9951C7Be569f7dee763f6426';
-const privateKey = '0x19848314198643b793bb0ca02720d43f447750b7df4860edb1ceb889f5ad62c6';
+const recipient = '0xDF3E29b62911dCd6F1aEf408a2dd6d72a286c0de';
+const privateKey = '0xbb07a314ed4b25c112d183240a17d3d03864695132b58ef451a41c1707c686d3';
 
 
 //Contract Instances
@@ -178,42 +178,28 @@ await beraPoolStandardRisk.methods.swapAndShortStandard(
 });
 
 //check balances to see if short worked as intended
-let userShortBal = await beraPoolStandardRisk.methods.userShortBalance(recipient, 3).call();
+let userShortBal = await beraPoolStandardRisk.methods.userShortBalance(recipient, 1).call();
 console.log(userShortBal / 1e18);
 
+let poolBalance = await dai.methods.balanceOf(beraPoolStandardRiskAddress).call();
+console.log(poolBalance / 1e18); 
+
+
+await beraPoolStandardRisk.methods.closeShortStandardPool(
+  recipient,
+  wethAddress,
+  '1000000000000000000',
+  1,
+  4000,
+  3000,
+  0
+).send({
+  from: recipient,
+  gas: 900000
+});
+console.log("Successful Close");
+
 
 }
-
-
-
-
-//TODO:
-  //check numbers to ensure proper amounts are getting deposited/withdrawn
-  //check profit/loss functions
-  //adjust how position owner is stored if ERC115 is sent
-  //write a loss test
-//}
-//
-async function poolDepositTest() {
-
-  await dai.methods.approve(beraPoolStandardRiskAddress, '1000000000000000000000').send({from: recipient});
-  await beraPoolStandardRisk.methods.depositCollateral('1000000000000000000000', daiAddress).send(
-    {
-      from: recipient,
-      gas: 4000000
-    });
-
-  let standardRiskPoolBalance = await dai.methods.balanceOf(beraPoolStandardRiskAddress).call();
-  console.log(standardRiskPoolBalance);
-
-  let userCollatBal = await beraPoolStandardRisk.methods.userDepositBalance(recipient).call();
-  console.log(userCollatBal);
-
-  await beraPoolStandardRisk.methods.withdrawFromPool('1000000000000000000000').send({from: recipient});
-  console.log("it worked");
-}
-
-
-
 
 main();

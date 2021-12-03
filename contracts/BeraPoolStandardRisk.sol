@@ -9,6 +9,7 @@ import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
 import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./BeraWrapper.sol";
+import "./ancillary/PnLCalculator.sol";
 
 
 contract BeraPoolStandardRisk is ERC1155Holder {
@@ -55,12 +56,12 @@ contract BeraPoolStandardRisk is ERC1155Holder {
         IERC20(collateral).transferFrom(msg.sender, address(this), amount);
     }
 
-    function withdrawFromPool(uint amount, uint userPositionNumber) external {
+    function withdrawFromPool(uint amount, uint _userShortID) external {
         require(amount <= userDepositBalance[msg.sender],
             "COLLATERAL: trying to withdraw more collateral than deposited");
 
         //checking if the funds locked in the position have been released before allowing them to be withdrawn
-        require(inShort[msg.sender][userPositionNumber] == false,
+        require(inShort[msg.sender][_userShortID] == false,
             "COLLATERAL: close your current position before trying to withdraw");
 
         //reset balance of user on withdraw
@@ -81,6 +82,9 @@ contract BeraPoolStandardRisk is ERC1155Holder {
             uint amountOutMin)
             external returns(uint amountOut) { //solhint-disable function-max-lines
                 require(amount <= userDepositBalance[msg.sender], "SWAP: not enough collateral");
+
+                //TODO
+                //update userDepositBalance -= amount;
 
                 //by default uints are initialized at 0 so this should work???
                 userShortID[msg.sender] += 1;
@@ -132,40 +136,45 @@ contract BeraPoolStandardRisk is ERC1155Holder {
                 inShort[msg.sender][userShortID[msg.sender]] = true;
             }
 
-    function closeShortForUser(
+    //TODO
+    //contract already has the DAI needed to close the trade, can just check the price and
+    //calculate the difference between the opening and closing prices, no need for expensive swaps
+    //in the standardPool contract anyways
+    function closeShortStandardPool(
         address user,
-        address tokenToClose,
-        uint amount,
-        uint priceAtClose,
-        uint24 poolFee,
-        uint amountOutMin)
-        external returns(uint amountOut) {
-
-            //transfer weth to contract to sell back to dai and send profits to user
-            TransferHelper.safeTransferFrom(tokenToClose, user, address(this), amount);
-            TransferHelper.safeApprove(tokenToClose, address(swapRouter), amount);
-
-            ISwapRouter.ExactInputSingleParams memory tokenParams =
-            ISwapRouter.ExactInputSingleParams({
-                tokenIn: tokenToClose,
-                tokenOut: DAI_ADDRESS,
-                fee: poolFee,
-                recipient: msg.sender, //refers to router in this case
-                deadline: block.timestamp, //solhint-disable not-rely-on-time
-                amountIn: amount,
-                amountOutMinimum: amountOutMin,
-                sqrtPriceLimitX96: 0
-            });
-
-            //execute the sell order
-            amountOut = swapRouter.exactInputSingle(tokenParams);
+        uint _userShortID,
+        uint priceAtClose)
+        external {
+            require(user == msg.sender, "CLOSE: Not your position");
 
             //TODO
-            //must update current userPositionNumber
+            //require priceAtClose == twapPriceOracle();
+
+            //calculate position balance using entryPrices vs current price
+            //returnValue of 0 indicates a winning trade, while 1 indicates a loss
+            (uint amountToSend, uint returnValue) =
+            PnLCalculator.calculatePNL(msg.sender, entryPrices[msg.sender][_userShortID], priceAtClose);
+
+            //check if user has enough collateral and does not carry a negative balance
+            if (amountToSend <= userDepositBalance[msg.sender] && returnValue == 1) {
+                //TODO
+                //liquidateUser();
+                //include distribution of funds
+            }
+
+            //update current userPositionNumber to free withdraws
+            inShort[msg.sender][_userShortID] = false;
+
+            if (returnValue == 0) {
+                IERC20(DAI_ADDRESS).transfer(msg.sender, amountToSend);
+            } else {
+                //distribute user loss amongst pool if losing short
+                distributeProfits(amountToSend);
+            }
+
 
         }
 
-    //TODO
     function _shortForUser(
         address user,
         address tokenToShort,
@@ -191,7 +200,7 @@ contract BeraPoolStandardRisk is ERC1155Holder {
             sqrtPriceLimitX96: 0
         });
 
-        // execute the short, amountOut is DAI in this case
+        // execute the short, amountOut is wETH in this test case
         amountOut = swapRouter.exactInputSingle(tokenParams);
 
         //update user balance of the user current positionID
@@ -200,6 +209,20 @@ contract BeraPoolStandardRisk is ERC1155Holder {
         //wrap position in ERC1155
         //use amountToShort to reference position size being wrapped
         beraWrapper.wrapPosition(user, address(this), amount, tokenToShort, priceAtWrap);
+    }
+
+    function distributeProfits(uint amountToDistribute) internal {
+        uint properDecimalsX18 = amountToDistribute * 1e18;
+        for (uint i = 0; i < standardPoolList.length; i++) {
+            //get each user's percentage of the pool they own
+            //dai related to current positions are not counted*******
+            uint userPercent = (userDepositBalance[poolList[i]] / IERC20(DAI_ADDRESS).balanceOf(address(this))) * 1e18;
+            uint percentToSendToUsers = userPercent * properDecimalsX18;
+            //update each users deposit balance to increase the amount they can withdraw
+            //(rather than sending funds directly which would be quite expensive)
+            //balances are stored
+            userDepositBalance[poolList[i]] += percentToSendToUsers;
+        }
     }
 
     receive() external payable { //solhint-disable state-visibility

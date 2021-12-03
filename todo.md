@@ -25,7 +25,14 @@
       - Swapping not allowed in pool unless collateral has been deposited //WORKS
 
       - Deposits: //FULLY FUNCTIONAL ##(with minor bug)
-          - basic deposit works
+
+        - ISSUES:
+          - Need to keep track of depositBalance in conjunction with shortAmount
+              - currently users can deposit once and then use those funds to open more positions with those
+                funds. ie, deposit 1000 dai once and use it numerous times to open 1000 dai positions
+          - Deposits are not stored as 1e18 and will fuck up distribution
+        - WHAT WORKS
+          - basic deposit
           - addresses are being pushed into array as intended
               - public dynamic arrays require a uint to be passed into them as a parameter?
               - this could possibly be the size of the array? maybe keep track of it somewhere to pass to
@@ -33,11 +40,20 @@
           - depositCollateralBalance is being updated as intended
           - pool address is receiving the funds as intended
 
+
       - Swap and Short : //FULLY FUNCTIONAL
           - swapandshort is storing each short separately as intended
           - is working as one function call
-          - is sending an erc1155
+          - is sending an erc1155 //double check
 
+
+      - Closing Position:
+          -
+
+          
+      - Withdraws:
+          - withdraw is not possible unless userPositionNumber is closed
+          -
 
 
 
