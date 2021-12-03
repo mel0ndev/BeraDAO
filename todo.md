@@ -1,8 +1,7 @@
-///////////////////////////
-#TO DO
-///////////////////////////
 
-#QUICK LINKS
+#TO DO
+
+## QUICK LINKS
 - mainnet infura
 ----> https://mainnet.infura.io/v3/1cad81887e224784a4d2ad2db5c0587a <----
 
@@ -15,12 +14,12 @@
 - wETH whale address
 ----> 0x1e3d6eab4bcf24bcd04721caa11c478a2e59852d  <----
 
-#DOING
+### DOING
  - Moving all router logic to pool contracts, makes things much easier
     - Currently migrating swap and short functions
 
 
-#TESTING
+### TESTING
   - Standard Pool Testing:
       - Swapping not allowed in pool unless collateral has been deposited //WORKS
 
@@ -50,14 +49,14 @@
       - Closing Position:
           -
 
-          
+
       - Withdraws:
           - withdraw is not possible unless userPositionNumber is closed
           -
 
 
 
-#TODO ABSOLUTE MUST HAVE FEATURES FOR MVP
+# TODO ABSOLUTE MUST HAVE FEATURES FOR MVP
 
 - TWAP Oracle contract is 100% necessary
 - Pool rewards must be 100% functional
@@ -66,7 +65,7 @@
 
 
 
-#FRONT END
+## FRONT END
 - make sure all coins are being pulled in by name or are accessible by address
 - UI/UX design
 - hook up contracts to front end
@@ -77,7 +76,7 @@
 
 
 
-#BACK END
+## BACK END
 - High Risk Pool contract
 - look into Optimism compatibility
 - Uniswap TWAP oracle  
