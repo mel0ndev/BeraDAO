@@ -22,14 +22,14 @@ const wethAddress = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
 const routerAddress = "0xE592427A0AEce92De3Edee1F18E0157C05861564";
 
 //locals
-const beraWrapperAddress = '0xe90F13095a59C7824f6586F03c4133fdd44d0E86';
-const beraPoolStandardRiskAddress = '0xb7eC2f792C6bc242e03dAc3F8c0C9cECb01a914a';
-const beraRouterAddress = '0xc7eA80c02E689d092076c21FB6E4471a3638E0ac';
+const beraWrapperAddress = '0x6CB7b33664b79ce5E385f2C8DCA2bdDA68344F99';
+const beraPoolStandardRiskAddress = '0x4C0CD07b9b0b04983a6679fCD1fAB955fb60f014';
+const beraRouterAddress = '0xf4eC8C4d029C0A91472469fB94D2cB4D2bfFaa94';
 
-//load accounts
+//load accountsnt
 const unlockedAccount = '0x2feb1512183545f48f6b9c5b4ebfcaf49cfca6f3';
-const recipient = '0x17541D8a41E29667075DfFC52999f5298fD862e7';
-const privateKey = '0xf7e3353111bc3f850e0aef0741ad29feb48bd2e08401923e94d35cb683af3fd0';
+const recipient = '0x8893f98264965ac4005A0253490eCbF4F8d18059';
+const privateKey = '0xe20d3b5bc701a78c19ba0570e8f565fd2949f2f36fce71729c51490d9a3b50ec';
 
 
 //Contract Instances
@@ -142,7 +142,7 @@ daiBalance = await dai.methods.balanceOf(recipient).call();
 console.log(`New Balance: ${daiBalance / 1e18} DAI`);
 
 //call local contracts here in main function
-//await shortInstance();
+await shortInstance();
 //await poolDepositTest();
 
 }
@@ -153,52 +153,68 @@ async function shortInstance() {
 
 //approve standardPool to spend DAI
 await dai.methods.approve(beraPoolStandardRiskAddress, '1000000000000000000000').send({from: recipient});
-await beraPoolStandardRisk.methods.depositCollateral('1000000000000000000000', daiAddress).send({from: recipient, gas: 6721975});
+await beraPoolStandardRisk.methods.depositCollateral(1000, daiAddress).send({from: recipient, gas: 6721975});
 let initialDeposit = await beraPoolStandardRisk.methods.userDepositBalance(recipient).call();
-console.log(initialDeposit);
+console.log(`Deposit Balance: ${initialDeposit}`);
 console.log('Deposit Successful');
 
-// //CURRENTLY TESTING: do internal functions require the contract to have gas?
-// //the answer is no, the user has to send enough gas to cover both function calls
-// // await web3.eth.sendTransaction({
-// //   from: recipient,
-// //   to: beraPoolStandardRiskAddress,
-// //   value: '10000000000000'
-// // });
-//
-// await dai.methods.approve(beraPoolStandardRiskAddress, '1000000000000000000000').send({from: recipient, gas: 238989});
-// //first test that users cannot short unless they have deposited funds
-// await beraPoolStandardRisk.methods.swapAndShortStandard(
-//   '1000000000000000000000',
-//   wethAddress,
-//   3000,
-//   0
-// ).send({
+//CURRENTLY TESTING: do internal functions require the contract to have gas?
+//the answer is no, the user has to send enough gas to cover both function calls
+// await web3.eth.sendTransaction({
 //   from: recipient,
 //   to: beraPoolStandardRiskAddress,
-//   gas: 900000
+//   value: '10000000000000'
 // });
-//
-// //check balances to see if short worked as intended
-// let userShortBal = await beraPoolStandardRisk.methods.userShortBalance(recipient, 1).call();
-// console.log(userShortBal / 1e18);
-//
-// let poolBalance = await dai.methods.balanceOf(beraPoolStandardRiskAddress).call();
-// console.log(poolBalance / 1e18);
-//
-//
-// await beraPoolStandardRisk.methods.closeShortStandardPool(
-//   recipient,
-//   3,
-//   3000
-// ).send({
-//   from: recipient,
-//   gas: 900000
-// });
-// console.log("Successful Close");
-//
-// let profits = await beraPoolStandardRisk.methods.userDepositBalance(recipient).call();
-// console.log(profits);
+
+await dai.methods.approve(beraPoolStandardRiskAddress, '1000000000000000000000').send({from: recipient, gas: 238989});
+//first test that users cannot short unless they have deposited funds
+await beraPoolStandardRisk.methods.swapAndShortStandard(
+  '1000000000000000000000',
+  wethAddress,
+  3000, //pool fee
+  0
+).send({
+  from: recipient,
+  to: beraPoolStandardRiskAddress,
+  gas: 900000
+});
+
+//check balances to see if short worked as intended
+let userShortBal = await beraPoolStandardRisk.methods.userShortBalance(recipient, 1).call();
+console.log(`Short Balance for position: ${userShortBal / 1e18}`);
+
+let poolBalance = await dai.methods.balanceOf(beraPoolStandardRiskAddress).call();
+console.log(`Total Pool Balance: ${poolBalance / 1e18}`);
+
+let entryPrice = await beraPoolStandardRisk.methods.entryPrices(recipient, 1).call();
+console.log(`Entry Price at Position 1: ${entryPrice}`);
+
+
+await beraPoolStandardRisk.methods.closeShortStandardPool(
+  recipient,
+  1,
+  2000,
+).send({
+  from: recipient,
+  gas: 900000
+});
+console.log("Successful Close");
+
+let testNum = await beraPoolStandardRisk.methods.testNumber().call();
+console.log(testNum);
+
+let testPNL = await beraPoolStandardRisk.methods.testPNL().call();
+console.log(`Position PNL: ${testPNL}`);
+
+//recheck balance of deposit balance of msg.sender
+let profits = await beraPoolStandardRisk.methods.userDepositBalance(recipient).call();
+console.log(`Deposit Amount with profits: ${profits / 1e18}`);
+
+//CURRENT ISSUES:
+// deposit amounts in web3 and solidity do not match, missing decimals in one or the other
+// and is causing problems with the result on the pnlCalc function
+
+
 
 }
 

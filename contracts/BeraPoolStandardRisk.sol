@@ -16,6 +16,9 @@ contract BeraPoolStandardRisk is ERC1155Holder {
 
     address public owner;
 
+    uint public testNumber;
+    uint public testPNL;
+
     mapping(address => uint) public userDepositBalance;
     mapping(address => mapping(uint => uint)) public userShortBalance;
     mapping(address => uint) internal userShortID;
@@ -38,9 +41,8 @@ contract BeraPoolStandardRisk is ERC1155Holder {
         beraWrapper = _beraWrapper;
     }
 
-    function depositCollateral(uint _amount, address collateral) external {
+    function depositCollateral(uint amount, address collateral) external {
         require(IERC20(collateral) == IERC20(DAI_ADDRESS), "STANDARD POOL: Not DAI");
-        uint amount = _amount * 1e18;
 
         //we use the hasCollateral mapping to avoid having to loop through the array when removing
         //the user from the users who receive the distribution of funds for yield
@@ -54,7 +56,7 @@ contract BeraPoolStandardRisk is ERC1155Holder {
 
         //transfer to seperate pools based on user defined risk
         //high risk pool will keep 5% of the native token to try and maximize returns
-        IERC20(collateral).transferFrom(msg.sender, address(this), _amount);
+        IERC20(collateral).transferFrom(msg.sender, address(this), amount);
     }
 
     function withdrawFromPool(uint amount, uint _userShortID) external {
@@ -117,8 +119,6 @@ contract BeraPoolStandardRisk is ERC1155Holder {
                 uint priceAtWrap = 3000;
 
                 //execute the second swap and transfer funds to pool for holding
-                //have to update priceAtWrap, users can set this amount manually and drain funds lmfao
-                //will likely use TWAPOracle feature of uniV3 pools
                 _shortForUser(
                     msg.sender,
                     tokenToShort,
@@ -153,27 +153,27 @@ contract BeraPoolStandardRisk is ERC1155Holder {
 
             //calculate position balance using entryPrices vs current price
             //returnValue of 0 indicates a winning trade, while 1 indicates a loss
-            (uint amountToSend, uint returnValue) =
+            (uint amountPNL, uint returnValue) =
             PnLCalculator.calculatePNL(entryPrices[msg.sender][_userShortID], priceAtClose);
 
-            //check if user has enough collateral and does not carry a negative balance
-            if (amountToSend <= userDepositBalance[msg.sender] && returnValue == 1) {
-                //TODO
-                //liquidateUser();
-                //include distribution of funds
+            // //check if user has enough collateral and does not carry a negative balance
+            // if (amountToSend <= userDepositBalance[msg.sender] && returnValue == 1) {
+            //     //TODO
+            //     //liquidateUser();
+            //     //include distribution of funds
+            // }
+
+            //if user has made money, we update their balance directly
+            if (returnValue == 0) {
+                userDepositBalance[msg.sender] += amountPNL;
+            } else if (returnValue == 1) {
+                //distribute user loss amongst pool if losing short
+                userDepositBalance[msg.sender] -= amountPNL;
+                //distributeProfits(amountPNL);
             }
 
             //update current userPositionNumber to free withdraws
             inShort[msg.sender][_userShortID] = false;
-
-            //if user has made money, we transfer the money directly
-            if (returnValue == 0) {
-                userDepositBalance[msg.sender] += amountToSend;
-            } else {
-                //distribute user loss amongst pool if losing short
-                distributeProfits(amountToSend);
-            }
-
 
         }
 

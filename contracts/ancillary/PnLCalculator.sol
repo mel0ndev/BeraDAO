@@ -12,7 +12,7 @@ library PnLCalculator {
     function calculatePNL(uint entryPrice, uint priceAtClose)
         external pure returns(uint amountPNL, uint8 returnValue) {
             int difference = int(entryPrice) - int(priceAtClose);
-            if (difference > 0) { //case where user makes money
+            if (entryPrice > priceAtClose) { //case where user makes money
                 amountPNL = uint(difference);
                 returnValue = 0;
                 return (amountPNL, returnValue);
@@ -21,6 +21,7 @@ library PnLCalculator {
                 int userLoss = (difference * (-1));
                 amountPNL = uint(userLoss);
                 returnValue = 1;
+                return (amountPNL, returnValue);
             }
         }
 
