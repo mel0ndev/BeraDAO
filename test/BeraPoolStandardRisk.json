@@ -40,16 +40,6 @@
 				"type": "address"
 			},
 			{
-				"internalType": "address",
-				"name": "tokenToClose",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
-			},
-			{
 				"internalType": "uint256",
 				"name": "_userShortID",
 				"type": "uint256"
@@ -58,26 +48,10 @@
 				"internalType": "uint256",
 				"name": "priceAtClose",
 				"type": "uint256"
-			},
-			{
-				"internalType": "uint24",
-				"name": "poolFee",
-				"type": "uint24"
-			},
-			{
-				"internalType": "uint256",
-				"name": "amountOutMin",
-				"type": "uint256"
 			}
 		],
 		"name": "closeShortStandardPool",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "amountOut",
-				"type": "uint256"
-			}
-		],
+		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
@@ -85,7 +59,7 @@
 		"inputs": [
 			{
 				"internalType": "uint256",
-				"name": "amount",
+				"name": "_amount",
 				"type": "uint256"
 			},
 			{

@@ -38,8 +38,9 @@ contract BeraPoolStandardRisk is ERC1155Holder {
         beraWrapper = _beraWrapper;
     }
 
-    function depositCollateral(uint amount, address collateral) external {
+    function depositCollateral(uint _amount, address collateral) external {
         require(IERC20(collateral) == IERC20(DAI_ADDRESS), "STANDARD POOL: Not DAI");
+        uint amount = _amount * 1e18;
 
         //we use the hasCollateral mapping to avoid having to loop through the array when removing
         //the user from the users who receive the distribution of funds for yield
@@ -53,7 +54,7 @@ contract BeraPoolStandardRisk is ERC1155Holder {
 
         //transfer to seperate pools based on user defined risk
         //high risk pool will keep 5% of the native token to try and maximize returns
-        IERC20(collateral).transferFrom(msg.sender, address(this), amount);
+        IERC20(collateral).transferFrom(msg.sender, address(this), _amount);
     }
 
     function withdrawFromPool(uint amount, uint _userShortID) external {
@@ -153,7 +154,7 @@ contract BeraPoolStandardRisk is ERC1155Holder {
             //calculate position balance using entryPrices vs current price
             //returnValue of 0 indicates a winning trade, while 1 indicates a loss
             (uint amountToSend, uint returnValue) =
-            PnLCalculator.calculatePNL(msg.sender, entryPrices[msg.sender][_userShortID], priceAtClose);
+            PnLCalculator.calculatePNL(entryPrices[msg.sender][_userShortID], priceAtClose);
 
             //check if user has enough collateral and does not carry a negative balance
             if (amountToSend <= userDepositBalance[msg.sender] && returnValue == 1) {
@@ -165,8 +166,9 @@ contract BeraPoolStandardRisk is ERC1155Holder {
             //update current userPositionNumber to free withdraws
             inShort[msg.sender][_userShortID] = false;
 
+            //if user has made money, we transfer the money directly
             if (returnValue == 0) {
-                IERC20(DAI_ADDRESS).transfer(msg.sender, amountToSend);
+                userDepositBalance[msg.sender] += amountToSend;
             } else {
                 //distribute user loss amongst pool if losing short
                 distributeProfits(amountToSend);

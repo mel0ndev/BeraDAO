@@ -9,7 +9,7 @@ library PnLCalculator {
     //liquidation is checked for prior to calling
     //returnValue is used to check if the position was a win or loss in the contract that
     //actually handles the user funds
-    function calculatePNL(address user, uint entryPrice, uint priceAtClose)
+    function calculatePNL(uint entryPrice, uint priceAtClose)
         external pure returns(uint amountPNL, uint8 returnValue) {
             int difference = int(entryPrice) - int(priceAtClose);
             if (difference > 0) { //case where user makes money

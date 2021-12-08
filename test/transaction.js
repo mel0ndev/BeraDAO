@@ -22,14 +22,14 @@ const wethAddress = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
 const routerAddress = "0xE592427A0AEce92De3Edee1F18E0157C05861564";
 
 //locals
-const beraWrapperAddress = '0x1093927aD8eDe37de0baD670C82042faB169ecbd';
-const beraPoolStandardRiskAddress = '0x858b7Ddb5e4C3774FD60A72B0860a0167ce43b5C';
-const beraRouterAddress = '0x2eA081acAcE19e1958f08a563346f7BDC4c4845A';
+const beraWrapperAddress = '0xe90F13095a59C7824f6586F03c4133fdd44d0E86';
+const beraPoolStandardRiskAddress = '0xb7eC2f792C6bc242e03dAc3F8c0C9cECb01a914a';
+const beraRouterAddress = '0xc7eA80c02E689d092076c21FB6E4471a3638E0ac';
 
 //load accounts
 const unlockedAccount = '0x2feb1512183545f48f6b9c5b4ebfcaf49cfca6f3';
-const recipient = '0xDF3E29b62911dCd6F1aEf408a2dd6d72a286c0de';
-const privateKey = '0xbb07a314ed4b25c112d183240a17d3d03864695132b58ef451a41c1707c686d3';
+const recipient = '0x17541D8a41E29667075DfFC52999f5298fD862e7';
+const privateKey = '0xf7e3353111bc3f850e0aef0741ad29feb48bd2e08401923e94d35cb683af3fd0';
 
 
 //Contract Instances
@@ -142,7 +142,7 @@ daiBalance = await dai.methods.balanceOf(recipient).call();
 console.log(`New Balance: ${daiBalance / 1e18} DAI`);
 
 //call local contracts here in main function
-await shortInstance();
+//await shortInstance();
 //await poolDepositTest();
 
 }
@@ -153,52 +153,52 @@ async function shortInstance() {
 
 //approve standardPool to spend DAI
 await dai.methods.approve(beraPoolStandardRiskAddress, '1000000000000000000000').send({from: recipient});
-await beraPoolStandardRisk.methods.depositCollateral('1000000000000000000000', daiAddress).send({from: recipient, gas: 238989});
+await beraPoolStandardRisk.methods.depositCollateral('1000000000000000000000', daiAddress).send({from: recipient, gas: 6721975});
+let initialDeposit = await beraPoolStandardRisk.methods.userDepositBalance(recipient).call();
+console.log(initialDeposit);
 console.log('Deposit Successful');
 
-//CURRENTLY TESTING: do internal functions require the contract to have gas?
-//the answer is no, the user has to send enough gas to cover both function calls
-// await web3.eth.sendTransaction({
+// //CURRENTLY TESTING: do internal functions require the contract to have gas?
+// //the answer is no, the user has to send enough gas to cover both function calls
+// // await web3.eth.sendTransaction({
+// //   from: recipient,
+// //   to: beraPoolStandardRiskAddress,
+// //   value: '10000000000000'
+// // });
+//
+// await dai.methods.approve(beraPoolStandardRiskAddress, '1000000000000000000000').send({from: recipient, gas: 238989});
+// //first test that users cannot short unless they have deposited funds
+// await beraPoolStandardRisk.methods.swapAndShortStandard(
+//   '1000000000000000000000',
+//   wethAddress,
+//   3000,
+//   0
+// ).send({
 //   from: recipient,
 //   to: beraPoolStandardRiskAddress,
-//   value: '10000000000000'
+//   gas: 900000
 // });
-
-await dai.methods.approve(beraPoolStandardRiskAddress, '1000000000000000000000').send({from: recipient, gas: 238989});
-//first test that users cannot short unless they have deposited funds
-await beraPoolStandardRisk.methods.swapAndShortStandard(
-  '1000000000000000000000',
-  wethAddress,
-  3000,
-  0
-).send({
-  from: recipient,
-  to: beraPoolStandardRiskAddress,
-  gas: 900000
-});
-
-//check balances to see if short worked as intended
-let userShortBal = await beraPoolStandardRisk.methods.userShortBalance(recipient, 1).call();
-console.log(userShortBal / 1e18);
-
-let poolBalance = await dai.methods.balanceOf(beraPoolStandardRiskAddress).call();
-console.log(poolBalance / 1e18); 
-
-
-await beraPoolStandardRisk.methods.closeShortStandardPool(
-  recipient,
-  wethAddress,
-  '1000000000000000000',
-  1,
-  4000,
-  3000,
-  0
-).send({
-  from: recipient,
-  gas: 900000
-});
-console.log("Successful Close");
-
+//
+// //check balances to see if short worked as intended
+// let userShortBal = await beraPoolStandardRisk.methods.userShortBalance(recipient, 1).call();
+// console.log(userShortBal / 1e18);
+//
+// let poolBalance = await dai.methods.balanceOf(beraPoolStandardRiskAddress).call();
+// console.log(poolBalance / 1e18);
+//
+//
+// await beraPoolStandardRisk.methods.closeShortStandardPool(
+//   recipient,
+//   3,
+//   3000
+// ).send({
+//   from: recipient,
+//   gas: 900000
+// });
+// console.log("Successful Close");
+//
+// let profits = await beraPoolStandardRisk.methods.userDepositBalance(recipient).call();
+// console.log(profits);
 
 }
 
