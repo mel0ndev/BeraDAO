@@ -11,7 +11,7 @@ library PnLCalculator {
     //actually handles the user funds
     function calculatePNL(uint entryPrice, uint priceAtClose)
         external pure returns(uint amountPNL, uint8 returnValue) {
-            int difference = int(entryPrice) - int(priceAtClose);
+            int difference = (int(entryPrice) * 1e18) - (int(priceAtClose) * 1e18);
             if (entryPrice > priceAtClose) { //case where user makes money
                 amountPNL = uint(difference);
                 returnValue = 0;

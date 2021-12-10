@@ -22,14 +22,20 @@ const wethAddress = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
 const routerAddress = "0xE592427A0AEce92De3Edee1F18E0157C05861564";
 
 //locals
-const beraWrapperAddress = '0x6CB7b33664b79ce5E385f2C8DCA2bdDA68344F99';
-const beraPoolStandardRiskAddress = '0x4C0CD07b9b0b04983a6679fCD1fAB955fb60f014';
+const beraWrapperAddress = '0x68969724641e2763A6bF66e2a302DDbb892C2509';
+const beraPoolStandardRiskAddress = '0x0938900943982b6b2118691801d0ba8dECC9FB3b';
 const beraRouterAddress = '0xf4eC8C4d029C0A91472469fB94D2cB4D2bfFaa94';
 
-//load accountsnt
+//load accounts
 const unlockedAccount = '0x2feb1512183545f48f6b9c5b4ebfcaf49cfca6f3';
-const recipient = '0x8893f98264965ac4005A0253490eCbF4F8d18059';
-const privateKey = '0xe20d3b5bc701a78c19ba0570e8f565fd2949f2f36fce71729c51490d9a3b50ec';
+const recipient = '0x4a81F2af22bD4da8a70636E234ea810E99F4eD5f';
+const privateKey = '0x91987fe52038dfc19894d26e4d0797e744527e7e7be3b93bacfc3365ec96f38e';
+
+const account1 = '0x682f4bAB635b6D46E13051c8c9fcF003749f486F';
+const account2 = '0x02beFEBc7bE9fe2BE33106F662A2C9399c225bCa';
+const account3 = '0x7277fBba1d7091f3B4BCdaD114716fA149C6B7E8'
+let userArray = [];
+userArray.push(account1, account2, account3);
 
 
 //Contract Instances
@@ -74,6 +80,7 @@ async function main() {
   let unlockedBalance, recipientBalance;
   let deadline = Math.floor(Date.now() / 1000) + 900;
 
+
   ([unlockedBalance, recipientBalance] = await Promise.all([
     wethToken.methods.balanceOf(unlockedAccount).call(),
     wethToken.methods.balanceOf(recipient).call()
@@ -87,6 +94,30 @@ async function main() {
 
   await wethToken.methods.transfer(recipient, '1000000000000000000').send({from: unlockedAccount});
 
+  for (i = 0; i < userArray.length; i++) {
+    await wethToken.methods.transfer(userArray[i], '1000000000000000000').send({from: unlockedAccount});
+    await wethToken.methods.approve(routerAddress, '1000000000000000000').send({from: userArray[i]});
+
+    const tokenParams = {
+      tokenIn: wethAddress,
+      tokenOut: daiAddress,
+      fee: 3000,
+      recipient: userArray[i],
+      deadline: deadline,
+      amountIn: '1000000000000000000',
+      amountOutMinimum: 0,
+      sqrtPriceLimitX96: 0,
+  };
+
+    await routerContract.methods.exactInputSingle(tokenParams).send
+    ({
+      from: userArray[i],
+      to: routerAddress,
+      gas: 238989
+    });
+  }
+
+  console.log('Accounts loaded with dai');
 
   //check that transfer worked
   ([unlockedBalance, recipientBalance] = await Promise.all([
@@ -112,8 +143,6 @@ async function main() {
 
 //approve weth spending on uniswap from recipient address
 await wethToken.methods.approve(routerAddress, '1000000000000000000').send({from: recipient});
-const allowance = await wethToken.methods.allowance(recipient, routerAddress).call();
-console.log(`Router can spend: ${allowance / 1e18} WETH`);
 
 //build transaction so it can be signed and sent over eth netowrk
 let tx_builder = await routerContract.methods.exactInputSingle(params);
@@ -142,6 +171,7 @@ daiBalance = await dai.methods.balanceOf(recipient).call();
 console.log(`New Balance: ${daiBalance / 1e18} DAI`);
 
 //call local contracts here in main function
+await addUsers();
 await shortInstance();
 //await poolDepositTest();
 
@@ -153,18 +183,10 @@ async function shortInstance() {
 
 //approve standardPool to spend DAI
 await dai.methods.approve(beraPoolStandardRiskAddress, '1000000000000000000000').send({from: recipient});
-await beraPoolStandardRisk.methods.depositCollateral(1000, daiAddress).send({from: recipient, gas: 6721975});
+await beraPoolStandardRisk.methods.depositCollateral('1000000000000000000000', daiAddress).send({from: recipient, gas: 6721975});
 let initialDeposit = await beraPoolStandardRisk.methods.userDepositBalance(recipient).call();
-console.log(`Deposit Balance: ${initialDeposit}`);
+console.log(`Deposit Balance: ${initialDeposit / 1e18}`);
 console.log('Deposit Successful');
-
-//CURRENTLY TESTING: do internal functions require the contract to have gas?
-//the answer is no, the user has to send enough gas to cover both function calls
-// await web3.eth.sendTransaction({
-//   from: recipient,
-//   to: beraPoolStandardRiskAddress,
-//   value: '10000000000000'
-// });
 
 await dai.methods.approve(beraPoolStandardRiskAddress, '1000000000000000000000').send({from: recipient, gas: 238989});
 //first test that users cannot short unless they have deposited funds
@@ -178,6 +200,8 @@ await beraPoolStandardRisk.methods.swapAndShortStandard(
   to: beraPoolStandardRiskAddress,
   gas: 900000
 });
+
+//priceAtWrap is passed in at $3000 hard coded into contract for testing right now
 
 //check balances to see if short worked as intended
 let userShortBal = await beraPoolStandardRisk.methods.userShortBalance(recipient, 1).call();
@@ -193,29 +217,40 @@ console.log(`Entry Price at Position 1: ${entryPrice}`);
 await beraPoolStandardRisk.methods.closeShortStandardPool(
   recipient,
   1,
-  2000,
+  4000, //the price at close
 ).send({
   from: recipient,
   gas: 900000
 });
 console.log("Successful Close");
 
-let testNum = await beraPoolStandardRisk.methods.testNumber().call();
-console.log(testNum);
-
-let testPNL = await beraPoolStandardRisk.methods.testPNL().call();
-console.log(`Position PNL: ${testPNL}`);
-
 //recheck balance of deposit balance of msg.sender
 let profits = await beraPoolStandardRisk.methods.userDepositBalance(recipient).call();
-console.log(`Deposit Amount with profits: ${profits / 1e18}`);
+console.log(`Deposit Amount after loss: ${profits / 1e18}`);
+console.log('Profits have been added to the account!');
 
 //CURRENT ISSUES:
 // deposit amounts in web3 and solidity do not match, missing decimals in one or the other
 // and is causing problems with the result on the pnlCalc function
 
+for (j = 0; j < userArray.length; j++) {
+  let checkBal = await beraPoolStandardRisk.methods.userDepositBalance(userArray[j]).call();
+  console.log(checkBal / 1e18);
+}
 
 
+}
+
+async function addUsers() {
+  for (i = 0; i < userArray.length; i++) {
+    await dai.methods.approve(beraPoolStandardRiskAddress, '1000000000000000000000').send({from: userArray[i]});
+    await beraPoolStandardRisk.methods.depositCollateral('1000000000000000000000', daiAddress).send
+    ({
+      from: userArray[i],
+      gas: 6721975
+    });
+  }
+  console.log('Account array done depositing');
 }
 
 main();

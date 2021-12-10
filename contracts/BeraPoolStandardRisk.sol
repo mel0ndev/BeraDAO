@@ -54,8 +54,7 @@ contract BeraPoolStandardRisk is ERC1155Holder {
         //used for withdrawl later
         userDepositBalance[msg.sender] += amount;
 
-        //transfer to seperate pools based on user defined risk
-        //high risk pool will keep 5% of the native token to try and maximize returns
+        //transfer DAI to this contract
         IERC20(collateral).transferFrom(msg.sender, address(this), amount);
     }
 
@@ -169,7 +168,7 @@ contract BeraPoolStandardRisk is ERC1155Holder {
             } else if (returnValue == 1) {
                 //distribute user loss amongst pool if losing short
                 userDepositBalance[msg.sender] -= amountPNL;
-                //distributeProfits(amountPNL);
+                distributeProfits(amountPNL);
             }
 
             //update current userPositionNumber to free withdraws
@@ -214,13 +213,12 @@ contract BeraPoolStandardRisk is ERC1155Holder {
     }
 
     function distributeProfits(uint amountToDistribute) internal {
-        uint properDecimalsX18 = amountToDistribute * 1e18;
         for (uint i = 0; i < standardPoolList.length; i++) {
             //get each user's percentage of the pool they own
             //dai related to current positions are not counted*******
             uint userPercent =
-                (userDepositBalance[standardPoolList[i]] / IERC20(DAI_ADDRESS).balanceOf(address(this))) * 1e18;
-            uint percentToSendToUsers = userPercent * properDecimalsX18;
+                userDepositBalance[standardPoolList[i]] * 1e18 / IERC20(DAI_ADDRESS).balanceOf(address(this));
+            uint percentToSendToUsers = userPercent * amountToDistribute;
             //update each users deposit balance to increase the amount they can withdraw
             //(rather than sending funds directly which would be quite expensive)
             //balances are stored
@@ -237,17 +235,3 @@ contract BeraPoolStandardRisk is ERC1155Holder {
 }
 
 }
-
-
-//needs:
-//
-//total borrowed from pool/ token0
-//total supplied to pool as collateral/ token1(USDC)
-//total available to borrow for shorting
-//how much it will cost to borrow/ how much to be paid to supplier
-//when does the borrower threaten to be liquited?
-    //(when losses are equal to 90% of supplied collateral)
-    //thus, we need a way to measure the current borrowers PnL or loan health (maybe look at AAVE or COMP)
-//need interface when done with all functions
-
-//ON HOLD

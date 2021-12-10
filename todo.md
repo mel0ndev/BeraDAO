@@ -33,9 +33,9 @@
         - WHAT WORKS
           - basic deposit
           - addresses are being pushed into array as intended
-              - public dynamic arrays require a uint to be passed into them as a parameter?
+              - public dynamic arrays require a uint to be passed into them as a parameter in web3?
               - this could possibly be the size of the array? maybe keep track of it somewhere to pass to
-                web3 function
+                frontend function
           - depositCollateralBalance is being updated as intended
           - pool address is receiving the funds as intended
 
@@ -46,12 +46,17 @@
           - is sending an erc1155
 
 
-      - Closing Position:
-          -
+      - Closing Position: //NOT WORKING
+        - THIS HAS BEEN FIXED (I THINK) BY MULTIPLYING THE PARAMS BY 1e18
+          ***I AM LEAVING THIS HERE FOR LATER BECAUSE I AM NOT SURE HOW ORACLES PASS IN NUMBERS YET
+          AND I AM SURE I WILL HAVE TO REWORK THIS AGAIN***
+          - PnLCalculator is now functioning but has potential remaining issues
+          - now testing distribution of funds for trading losses //not functioning rn, this is due to
+            my shitty math percentages, have to come back to this later, no brain power today 
 
 
       - Withdraws:
-          - withdraw is not possible unless userPositionNumber is closed
+          - withdraw is not possible unless userPositionNumber is closed as intended
           -
 
 
