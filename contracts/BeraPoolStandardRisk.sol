@@ -27,15 +27,7 @@ contract BeraPoolStandardRisk is ERC1155Holder {
     }
 
     mapping(address => Account) public users;
-    // mapping(address => uint) public userDepositBalance;
-    // mapping(address => mapping(uint => uint)) public userShortBalance;
-    // mapping(address => uint) internal userShortID;
-    // mapping(address => bool) internal hasCollateral;
-    // //nested mapping so multiple positions can be opened by the same user
-    // mapping(address => mapping(uint => uint)) public entryPrices;
-    // //stores which position is in a short for withdraw purposes later
-    // mapping(address => mapping(uint => bool)) internal inShort; //stores whether user is currently in a position
-
+    
     uint public globalRewards;
 
     address private constant DAI_ADDRESS = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
@@ -83,7 +75,7 @@ contract BeraPoolStandardRisk is ERC1155Holder {
 
     //used to claim the profit rewards from being in the pool
     function claimRewards() external {
-        checkOwedProfits(msg.sender);
+        sendOwedProfits(msg.sender);
     }
 
     // deposit collateral into user account before being allowed to short
@@ -189,6 +181,10 @@ contract BeraPoolStandardRisk is ERC1155Holder {
 
         }
 
+    function checkRewards() external view returns (uint profits) {
+        return profits = checkOwedProfits(msg.sender);
+    }
+
     function _shortForUser(
         address user,
         address tokenToShort,
@@ -229,13 +225,13 @@ contract BeraPoolStandardRisk is ERC1155Holder {
     //the percentage reward is based on the last time they claimed vs the total reward calculated
     //this will allow us to avoid using a loop for reward distribution
     //and allow users to pull their own rewards when they want
-    function getUserProfits(address user) internal view returns (uint) {
+    function checkOwedProfits(address user) internal view returns (uint) {
         uint percentageReward = globalRewards - users[user].lastClaimedRewards;
         return users[user].userDepositBalance * percentageReward / IERC20(DAI_ADDRESS).balanceOf(address(this));
     }
 
-    function checkOwedProfits(address user) internal {
-        uint owed = getUserProfits(user);
+    function sendOwedProfits(address user) internal {
+        uint owed = checkOwedProfits(user);
         if (owed > 0) {
             users[user].userDepositBalance += owed;
             users[user].lastClaimedRewards = globalRewards;
