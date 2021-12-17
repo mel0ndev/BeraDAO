@@ -16,18 +16,27 @@ contract BeraPoolStandardRisk is ERC1155Holder {
 
     address public owner;
 
-    uint public testNumber;
-    uint public testPNL;
+    struct Account {
+        uint userDepositBalance;
+        uint lastClaimedRewards;
+        bool hasCollateral;
+        uint userShortID;
+        mapping(uint => uint) userShortBalanceByID;
+        mapping(uint => uint) entryPrices;
+        mapping(uint => bool) isPositionInShort;
+    }
 
-    mapping(address => uint) public userDepositBalance;
-    mapping(address => mapping(uint => uint)) public userShortBalance;
-    mapping(address => uint) internal userShortID;
-    mapping(address => bool) internal hasCollateral;
-    //nested mapping so multiple positions can be opened by the same user
-    mapping(address => mapping(uint => uint)) public entryPrices;
-    //stores which position is in a short for withdraw purposes later
-    mapping(address => mapping(uint => bool)) internal inShort; //stores whether user is currently in a position
-    address[] public standardPoolList;
+    mapping(address => Account) public users;
+    // mapping(address => uint) public userDepositBalance;
+    // mapping(address => mapping(uint => uint)) public userShortBalance;
+    // mapping(address => uint) internal userShortID;
+    // mapping(address => bool) internal hasCollateral;
+    // //nested mapping so multiple positions can be opened by the same user
+    // mapping(address => mapping(uint => uint)) public entryPrices;
+    // //stores which position is in a short for withdraw purposes later
+    // mapping(address => mapping(uint => bool)) internal inShort; //stores whether user is currently in a position
+
+    uint public globalRewards;
 
     address private constant DAI_ADDRESS = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
 
@@ -46,34 +55,35 @@ contract BeraPoolStandardRisk is ERC1155Holder {
 
         //we use the hasCollateral mapping to avoid having to loop through the array when removing
         //the user from the users who receive the distribution of funds for yield
-        if (userDepositBalance[msg.sender] > 0) {
-            standardPoolList.push(msg.sender);
-            hasCollateral[msg.sender] = true;
-        }
 
         //used for withdrawl later
-        userDepositBalance[msg.sender] += amount;
+        users[msg.sender].userDepositBalance += amount;
 
         //transfer DAI to this contract
         IERC20(collateral).transferFrom(msg.sender, address(this), amount);
     }
 
     function withdrawFromPool(uint amount, uint _userShortID) external {
-        require(amount <= userDepositBalance[msg.sender],
+        require(amount <= users[msg.sender].userDepositBalance,
             "COLLATERAL: trying to withdraw more collateral than deposited");
 
         //checking if the funds locked in the position have been released before allowing them to be withdrawn
-        require(inShort[msg.sender][_userShortID] == false,
+        require(users[msg.sender].isPositionInShort[_userShortID] == false,
             "COLLATERAL: close your current position before trying to withdraw");
 
         //reset balance of user on withdraw
-        userDepositBalance[msg.sender] -= amount;
-
-        if (userDepositBalance[msg.sender] == 0) {
-            hasCollateral[msg.sender] = false;
-        }
+        users[msg.sender].userDepositBalance -= amount;
+        //
+        // if (userDepositBalance[msg.sender] == 0) {
+        //     hasCollateral[msg.sender] = false;
+        // }
 
         IERC20(DAI_ADDRESS).transfer(msg.sender, amount);
+    }
+
+    //used to claim the profit rewards from being in the pool
+    function claimRewards() external {
+        checkOwedProfits(msg.sender);
     }
 
     // deposit collateral into user account before being allowed to short
@@ -83,13 +93,13 @@ contract BeraPoolStandardRisk is ERC1155Holder {
             uint24 poolFee, //needed for uniswap pool
             uint amountOutMin)
             external returns(uint amountOut) { //solhint-disable function-max-lines
-                require(amount <= userDepositBalance[msg.sender], "SWAP: not enough collateral");
+                require(amount <= users[msg.sender].userDepositBalance, "SWAP: not enough collateral");
 
                 //TODO
                 //update userDepositBalance -= amount;
 
                 //by default uints are initialized at 0 so this should work???
-                userShortID[msg.sender] += 1;
+                users[msg.sender].userShortID += 1;
 
                 //keeping 5% of dai in contract to be distributed to liq providers on loss of pool
                 uint amountToSend = amount * 95 / 100;
@@ -128,18 +138,20 @@ contract BeraPoolStandardRisk is ERC1155Holder {
                 );
 
                 //update entry price mapping
-                //this refers to the entry price of msg.sender for the current shortID of msg.sender
+                //this stores the entry price of msg.sender for this specific shortID of msg.sender
                 //nested mappings look cringe but are efficient
-                entryPrices[msg.sender][userShortID[msg.sender]] = priceAtWrap;
+                users[msg.sender].entryPrices[users[msg.sender].userShortID] = priceAtWrap;
 
                 //update userPositionNumber current short status
-                inShort[msg.sender][userShortID[msg.sender]] = true;
+                // inShort[msg.sender][userShortID[msg.sender]] = true;
+                users[msg.sender].isPositionInShort[users[msg.sender].userShortID] = true;
+
             }
 
     //TODO
     //contract already has the DAI needed to close the trade, can just check the price and
     //calculate the difference between the opening and closing prices, no need for expensive swaps
-    //in the standardPool contract anyways
+    //in the standardPool contract
     function closeShortStandardPool(
         address user,
         uint _userShortID,
@@ -153,7 +165,7 @@ contract BeraPoolStandardRisk is ERC1155Holder {
             //calculate position balance using entryPrices vs current price
             //returnValue of 0 indicates a winning trade, while 1 indicates a loss
             (uint amountPNL, uint returnValue) =
-            PnLCalculator.calculatePNL(entryPrices[msg.sender][_userShortID], priceAtClose);
+            PnLCalculator.calculatePNL(users[msg.sender].entryPrices[_userShortID], priceAtClose);
 
             // //check if user has enough collateral and does not carry a negative balance
             // if (amountToSend <= userDepositBalance[msg.sender] && returnValue == 1) {
@@ -164,15 +176,16 @@ contract BeraPoolStandardRisk is ERC1155Holder {
 
             //if user has made money, we update their balance directly
             if (returnValue == 0) {
-                userDepositBalance[msg.sender] += amountPNL;
+                users[msg.sender].userDepositBalance += amountPNL;
             } else if (returnValue == 1) {
                 //distribute user loss amongst pool if losing short
-                userDepositBalance[msg.sender] -= amountPNL;
-                distributeProfits(amountPNL);
+                users[msg.sender].userDepositBalance -= amountPNL;
+                globalRewards += amountPNL;
             }
 
-            //update current userPositionNumber to free withdraws
-            inShort[msg.sender][_userShortID] = false;
+            //update current userPositionNumber to free withdraws of these specific funds
+            // inShort[msg.sender][_userShortID] = false;
+            users[msg.sender].isPositionInShort[_userShortID] = false;
 
         }
 
@@ -205,24 +218,27 @@ contract BeraPoolStandardRisk is ERC1155Holder {
         amountOut = swapRouter.exactInputSingle(tokenParams);
 
         //update user balance of the user current positionID
-        userShortBalance[msg.sender][userShortID[msg.sender]] = amountOut;
+        //this is used to keep track of how much of the users deposit is currently being used
+        //userShortBalance[msg.sender][userShortID[msg.sender]] = amountOut;
+        users[msg.sender].userShortBalanceByID[users[msg.sender].userShortID] = amountOut;
 
         //wrap position in ERC1155
-        //use amountToShort to reference position size being wrapped
         beraWrapper.wrapPosition(user, address(this), amount, tokenToShort, priceAtWrap);
     }
 
-    function distributeProfits(uint amountToDistribute) internal {
-        for (uint i = 0; i < standardPoolList.length; i++) {
-            //get each user's percentage of the pool they own
-            //dai related to current positions are not counted*******
-            uint userPercent =
-                userDepositBalance[standardPoolList[i]] * 1e18 / IERC20(DAI_ADDRESS).balanceOf(address(this));
-            uint percentToSendToUsers = userPercent * amountToDistribute;
-            //update each users deposit balance to increase the amount they can withdraw
-            //(rather than sending funds directly which would be quite expensive)
-            //balances are stored
-            userDepositBalance[standardPoolList[i]] += percentToSendToUsers;
+    //the percentage reward is based on the last time they claimed vs the total reward calculated
+    //this will allow us to avoid using a loop for reward distribution
+    //and allow users to pull their own rewards when they want
+    function getUserProfits(address user) internal view returns (uint) {
+        uint percentageReward = globalRewards - users[user].lastClaimedRewards;
+        return users[user].userDepositBalance * percentageReward / IERC20(DAI_ADDRESS).balanceOf(address(this));
+    }
+
+    function checkOwedProfits(address user) internal {
+        uint owed = getUserProfits(user);
+        if (owed > 0) {
+            users[user].userDepositBalance += owed;
+            users[user].lastClaimedRewards = globalRewards;
         }
     }
 

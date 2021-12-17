@@ -51,8 +51,8 @@
           ***I AM LEAVING THIS HERE FOR LATER BECAUSE I AM NOT SURE HOW ORACLES PASS IN NUMBERS YET
           AND I AM SURE I WILL HAVE TO REWORK THIS AGAIN***
           - PnLCalculator is now functioning but has potential remaining issues
-          - now testing distribution of funds for trading losses //not functioning rn, this is due to
-            my shitty math percentages, have to come back to this later, no brain power today 
+          - now testing distribution of funds for trading losses
+          - Funds are going to be collected and have to be pulled out by users, based on the globalRewards variable stored in the contract 
 
 
       - Withdraws:
@@ -61,7 +61,7 @@
 
 
 
-# TODO ABSOLUTE MUST HAVE FEATURES FOR MVP
+# TODO ABSOLUTE MUST HAVE FEATURES FOR MVP THAT ARE STILL NEEDED
 
 - TWAP Oracle contract is 100% necessary
 - Pool rewards must be 100% functional
