@@ -38,6 +38,32 @@
 				"internalType": "address",
 				"name": "user",
 				"type": "address"
+			}
+		],
+		"name": "checkRewards",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "profits",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "claimRewards",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
 			},
 			{
 				"internalType": "uint256",
@@ -74,19 +100,93 @@
 		"type": "function"
 	},
 	{
+		"inputs": [],
+		"name": "getGlobalRewards",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "globals",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "",
+				"name": "user",
 				"type": "address"
 			},
 			{
 				"internalType": "uint256",
-				"name": "",
+				"name": "shortID",
 				"type": "uint256"
 			}
 		],
-		"name": "entryPrices",
+		"name": "getUserEntryPrice",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "entry",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "shortID",
+				"type": "uint256"
+			}
+		],
+		"name": "getUserShortBalance",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "bal",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "shortID",
+				"type": "uint256"
+			}
+		],
+		"name": "getUserShortBool",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "isShort",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "globalRewards",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -191,25 +291,6 @@
 	{
 		"inputs": [
 			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "standardPoolList",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
 				"internalType": "bytes4",
 				"name": "interfaceId",
 				"type": "bytes4"
@@ -274,32 +355,6 @@
 		"type": "function"
 	},
 	{
-		"inputs": [],
-		"name": "testNumber",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "testPNL",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
 		"inputs": [
 			{
 				"internalType": "address",
@@ -307,35 +362,21 @@
 				"type": "address"
 			}
 		],
-		"name": "userDepositBalance",
+		"name": "users",
 		"outputs": [
 			{
 				"internalType": "uint256",
-				"name": "",
+				"name": "userDepositBalance",
 				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
 			},
 			{
 				"internalType": "uint256",
-				"name": "",
+				"name": "lastClaimedRewards",
 				"type": "uint256"
-			}
-		],
-		"name": "userShortBalance",
-		"outputs": [
+			},
 			{
 				"internalType": "uint256",
-				"name": "",
+				"name": "userShortID",
 				"type": "uint256"
 			}
 		],

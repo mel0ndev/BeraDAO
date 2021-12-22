@@ -46,13 +46,13 @@
           - is sending an erc1155
 
 
-      - Closing Position: //NOT WORKING
+      - Closing Position: //SOMEWHAT WORKING BUT DEPENDENT ON ORACLE  
         - THIS HAS BEEN FIXED (I THINK) BY MULTIPLYING THE PARAMS BY 1e18
           ***I AM LEAVING THIS HERE FOR LATER BECAUSE I AM NOT SURE HOW ORACLES PASS IN NUMBERS YET
           AND I AM SURE I WILL HAVE TO REWORK THIS AGAIN***
           - PnLCalculator is now functioning but has potential remaining issues
           - now testing distribution of funds for trading losses
-          - Funds are going to be collected and have to be pulled out by users, based on the globalRewards variable stored in the contract 
+          - Funds are going to be collected and have to be pulled out by users, based on the globalRewards variable stored in the contract
 
 
       - Withdraws:

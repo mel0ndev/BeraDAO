@@ -19,15 +19,15 @@ contract BeraPoolStandardRisk is ERC1155Holder {
     struct Account {
         uint userDepositBalance;
         uint lastClaimedRewards;
-        bool hasCollateral;
         uint userShortID;
         mapping(uint => uint) userShortBalanceByID;
         mapping(uint => uint) entryPrices;
         mapping(uint => bool) isPositionInShort;
+        mapping(uint => bool) wasPositionLiquidated;
     }
 
     mapping(address => Account) public users;
-    
+
     uint public globalRewards;
 
     address private constant DAI_ADDRESS = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
@@ -44,9 +44,6 @@ contract BeraPoolStandardRisk is ERC1155Holder {
 
     function depositCollateral(uint amount, address collateral) external {
         require(IERC20(collateral) == IERC20(DAI_ADDRESS), "STANDARD POOL: Not DAI");
-
-        //we use the hasCollateral mapping to avoid having to loop through the array when removing
-        //the user from the users who receive the distribution of funds for yield
 
         //used for withdrawl later
         users[msg.sender].userDepositBalance += amount;
@@ -65,15 +62,11 @@ contract BeraPoolStandardRisk is ERC1155Holder {
 
         //reset balance of user on withdraw
         users[msg.sender].userDepositBalance -= amount;
-        //
-        // if (userDepositBalance[msg.sender] == 0) {
-        //     hasCollateral[msg.sender] = false;
-        // }
 
         IERC20(DAI_ADDRESS).transfer(msg.sender, amount);
     }
 
-    //used to claim the profit rewards from being in the pool
+    //used to claim the profit rewards from collecting trader losses
     function claimRewards() external {
         sendOwedProfits(msg.sender);
     }
@@ -87,13 +80,17 @@ contract BeraPoolStandardRisk is ERC1155Holder {
             external returns(uint amountOut) { //solhint-disable function-max-lines
                 require(amount <= users[msg.sender].userDepositBalance, "SWAP: not enough collateral");
 
-                //TODO
-                //update userDepositBalance -= amount;
+                //get total amount of collateral in shorts
+                uint totalAvailable;
+                for (i = 0; i < users[msg.sender].userShortID) {
+                    totalAvailable += users[msg.sender].userShortBalanceByID[i]
+                }
+                reuire(totalCollateral >= users[msg.sender].userDepositBalance, "SWAP: not enough collateral");
 
                 //by default uints are initialized at 0 so this should work???
                 users[msg.sender].userShortID += 1;
 
-                //keeping 5% of dai in contract to be distributed to liq providers on loss of pool
+                //keeping 5% of dai liquidatorin contract to be distributed to liq providers on loss of pool
                 uint amountToSend = amount * 95 / 100;
 
                 TransferHelper.safeTransferFrom(DAI_ADDRESS, msg.sender, address(this), amount);
@@ -130,7 +127,7 @@ contract BeraPoolStandardRisk is ERC1155Holder {
                 );
 
                 //update entry price mapping
-                //this stores the entry price of msg.sender for this specific shortID of msg.sender
+                //this stores the entry price of msg.sender for this specific shortID of the sender
                 //nested mappings look cringe but are efficient
                 users[msg.sender].entryPrices[users[msg.sender].userShortID] = priceAtWrap;
 
@@ -146,11 +143,13 @@ contract BeraPoolStandardRisk is ERC1155Holder {
     //in the standardPool contract
     function closeShortStandardPool(
         address user,
+        address liquidator,
         uint _userShortID,
         uint priceAtClose)
         external {
             require(user == msg.sender, "CLOSE: Not your position");
 
+            beraWrapper.unwrapPosition(user, _userShortID);
             //TODO
             //require priceAtClose == twapPriceOracle();
 
@@ -159,30 +158,63 @@ contract BeraPoolStandardRisk is ERC1155Holder {
             (uint amountPNL, uint returnValue) =
             PnLCalculator.calculatePNL(users[msg.sender].entryPrices[_userShortID], priceAtClose);
 
-            // //check if user has enough collateral and does not carry a negative balance
-            // if (amountToSend <= userDepositBalance[msg.sender] && returnValue == 1) {
-            //     //TODO
-            //     //liquidateUser();
-            //     //include distribution of funds
-            // }
-
             //if user has made money, we update their balance directly
+            //keeping in mind that dai is always stored in this contract and will only be transfered
+            //out on withdrawing
             if (returnValue == 0) {
                 users[msg.sender].userDepositBalance += amountPNL;
             } else if (returnValue == 1) {
                 //distribute user loss amongst pool if losing short
                 users[msg.sender].userDepositBalance -= amountPNL;
-                globalRewards += amountPNL;
+
+                //experimental liquidation logic
+                //kinda dogshit ngl
+                if (users[user].wasPositionLiquidated[_userShortID] == true) {
+                    uint newPNL = amountPNL * 50 / 100;
+                    uint toLiquidator = amountPNL - newPNL;
+                    users[liquidator].userDepositBalance += toLiquidator;
+                    globalRewards += newPNL;
+                } else {
+                    globalRewards += amountPNL;
+                }
             }
 
             //update current userPositionNumber to free withdraws of these specific funds
-            // inShort[msg.sender][_userShortID] = false;
             users[msg.sender].isPositionInShort[_userShortID] = false;
+            users[msg.sender].userShortBalanceByID[_userShortID] = 0;
 
         }
 
-    function checkRewards() external view returns (uint profits) {
-        return profits = checkOwedProfits(msg.sender);
+    // if you are reading this comment this is a way for you to make some money
+    // and keep the protocol alive and kicking
+    // keep in mind that you need to have deposited collateral to receive rewards
+    function liquidateUser(address user, address to, uint position) external returns(uint profits) {
+        uint drawdown = getUserEntryPrice(user, position) - twapPriceOracle(coin);
+        require(drawdown > users[user].userDepositBalance, "LIQ: Account not in drawdown");
+        require(users[user].isPositionInShort[position] == true, "LIQ: Position not active");
+
+        users[user].wasPositionLiquidated[position] = true;
+        closeShortStandardPool(user, to, position, twapPriceOracle());
+    }
+
+    function checkRewards(address user) external view returns (uint profits) {
+        return profits = checkOwedProfits(user);
+    }
+
+    function getGlobalRewards() external view returns(uint globals) {
+        return globals = globalRewards;
+    }
+
+    function getUserShortBalance(address user, uint shortID) external view returns(uint bal) {
+        return bal = users[user].userShortBalanceByID[shortID];
+    }
+
+    function getUserEntryPrice(address user, uint shortID) external view returns(uint entry) {
+        return entry = users[user].entryPrices[shortID];
+    }
+
+    function getUserShortBool(address user, uint shortID) external view returns(bool isShort) {
+        return isShort = users[user].isPositionInShort[shortID];
     }
 
     function _shortForUser(
@@ -192,8 +224,6 @@ contract BeraPoolStandardRisk is ERC1155Holder {
         uint24 poolFee,
         uint amount,
         uint amountOutMin) internal returns(uint amountOut) {
-        //funds are currently in the contract, so no need to swap back and forth anymore
-        //should just be able to call the second swap
 
         TransferHelper.safeApprove(tokenToShort, address(swapRouter), amount);
 
