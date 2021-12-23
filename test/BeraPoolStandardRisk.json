@@ -66,6 +66,11 @@
 				"type": "address"
 			},
 			{
+				"internalType": "address",
+				"name": "liquidator",
+				"type": "address"
+			},
+			{
 				"internalType": "uint256",
 				"name": "_userShortID",
 				"type": "uint256"
@@ -106,6 +111,25 @@
 			{
 				"internalType": "uint256",
 				"name": "globals",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			}
+		],
+		"name": "getTotalCollateral",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "totalCollateral",
 				"type": "uint256"
 			}
 		],
@@ -195,6 +219,29 @@
 			}
 		],
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "position",
+				"type": "uint256"
+			}
+		],
+		"name": "liquidateUser",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{

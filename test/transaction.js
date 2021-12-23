@@ -22,18 +22,18 @@ const wethAddress = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
 const routerAddress = "0xE592427A0AEce92De3Edee1F18E0157C05861564";
 
 //locals
-const beraWrapperAddress = '0x97e25eB4f229cB32A85e7490661B4E11b2919838';
-const beraPoolStandardRiskAddress = '0xCFaB74517AF68c2a0ca773AceE118299BF947B95';
-const beraRouterAddress = '0xf4eC8C4d029C0A91472469fB94D2cB4D2bfFaa94';
+const beraWrapperAddress = '0x30217C8B679aE89F7Ca6E9d36a2e2e6605e5528F';
+const beraPoolStandardRiskAddress = '0x9e0aDDDA97Ca54919C85E3756462F82a6fb37362';
+const beraRouterAddress = '0x9e0aDDDA97Ca54919C85E3756462F82a6fb37362';
 
 //load accounts
 const unlockedAccount = '0x2feb1512183545f48f6b9c5b4ebfcaf49cfca6f3';
-const recipient = '0xA843de46AE210cB6e2466895429A0f69627dC270';
-const privateKey = '0xbf76cf69b62fd394a92daf4c9c8fecca0d4bf599eaad705a1308f623cfec33cb';
+const recipient = '0xb2FF46186eaC4CAbac411e274d6393fAf88BB6C8';
+const privateKey = '0x337b7375165528c5e197dbb81d485c14170bea1291daa7db9bc2f2f40267fcd3';
 
-const account1 = '0xf1fB8bfB3a8Ca4A5A8bdF047520D425DE15B7A77';
-const account2 = '0x2aba04F74FFe9dA6D6350C6cff67EF1E6Cfe9bCa';
-const account3 = '0xd1A1a0Db2d7261656dCc31c01dE93fC2d4F3B5da'
+const account1 = '0x8F70163BA02B7b6C137126b42fED9eE2Ef3Cb250';
+const account2 = '0xaAa54A9A28DDa2ECB1999633569d09FDF1470C1D';
+const account3 = '0x749E539A8A1F3A70bEdd4C4FfCBA09b613A54764';
 let userArray = [];
 userArray.push(account1, account2, account3);
 

@@ -23,7 +23,12 @@ contract BeraPoolStandardRisk is ERC1155Holder {
         mapping(uint => uint) userShortBalanceByID;
         mapping(uint => uint) entryPrices;
         mapping(uint => bool) isPositionInShort;
-        mapping(uint => bool) wasPositionLiquidated;
+        mapping(uint => Liquidation) liqData;
+    }
+
+    struct Liquidation {
+        bool wasLiquidated;
+        address liquidator;
     }
 
     mapping(address => Account) public users;
@@ -80,17 +85,16 @@ contract BeraPoolStandardRisk is ERC1155Holder {
             external returns(uint amountOut) { //solhint-disable function-max-lines
                 require(amount <= users[msg.sender].userDepositBalance, "SWAP: not enough collateral");
 
-                //get total amount of collateral in shorts
-                uint totalAvailable;
-                for (i = 0; i < users[msg.sender].userShortID) {
-                    totalAvailable += users[msg.sender].userShortBalanceByID[i]
-                }
-                reuire(totalCollateral >= users[msg.sender].userDepositBalance, "SWAP: not enough collateral");
-
                 //by default uints are initialized at 0 so this should work???
                 users[msg.sender].userShortID += 1;
 
-                //keeping 5% of dai liquidatorin contract to be distributed to liq providers on loss of pool
+                //get total amount of collateral in shorts if user has opened a position before
+                if (getTotalCollateral(msg.sender) > 0) {
+                    require(getTotalCollateral(msg.sender) >= users[msg.sender].userDepositBalance,
+                        "SWAP: not enough collateral");
+                }
+
+                //5% is kept as fee to protocol
                 uint amountToSend = amount * 95 / 100;
 
                 TransferHelper.safeTransferFrom(DAI_ADDRESS, msg.sender, address(this), amount);
@@ -137,23 +141,66 @@ contract BeraPoolStandardRisk is ERC1155Holder {
 
             }
 
+    // if you are reading this comment this is a way for you to make some money
+    // and keep the protocol alive and kicking
+    // keep in mind that you need to have deposited collateral to receive rewards
+    function liquidateUser(address user, address to, uint shortID) external {
+        uint drawdown = getUserEntryPrice(user, shortID) - 3000;
+        require(drawdown > users[user].userDepositBalance, "LIQ: Account not in drawdown");
+        require(users[user].isPositionInShort[shortID] == true, "LIQ: Position not active");
+
+        users[user].liqData[shortID].wasLiquidated = true;
+        users[user].liqData[shortID].liquidator = to;
+        closeShortStandardPool(user, shortID, 3000);
+    }
+
+    function getLiquidator(address user, uint shortID) public view returns(address liquidator) {
+        return users[user].liqData[shortID].liquidator;
+    }
+
+    function getTotalCollateral(address user) public view returns(uint totalCollateral) {
+        for (uint i = 0; i <= users[user].userShortID; i++) {
+            totalCollateral += users[user].userShortBalanceByID[i];
+        }
+        return (totalCollateral);
+    }
+
+    function checkRewards(address user) public view returns(uint profits) {
+        return profits = checkOwedProfits(user);
+    }
+
+    function getGlobalRewards() public view returns(uint globals) {
+        return globals = globalRewards;
+    }
+
+    function getUserShortBalance(address user, uint shortID) public view returns(uint bal) {
+        return bal = users[user].userShortBalanceByID[shortID];
+    }
+
+    function getUserEntryPrice(address user, uint shortID) public view returns(uint entry) {
+        return entry = users[user].entryPrices[shortID];
+    }
+
+    function getUserShortBool(address user, uint shortID) public view returns(bool isShort) {
+        return isShort = users[user].isPositionInShort[shortID];
+    }
+
     //TODO
     //contract already has the DAI needed to close the trade, can just check the price and
     //calculate the difference between the opening and closing prices, no need for expensive swaps
     //in the standardPool contract
     function closeShortStandardPool(
         address user,
-        address liquidator,
         uint _userShortID,
         uint priceAtClose)
-        external {
+        public {
             require(user == msg.sender, "CLOSE: Not your position");
 
             beraWrapper.unwrapPosition(user, _userShortID);
             //TODO
             //require priceAtClose == twapPriceOracle();
 
-            //calculate position balance using entryPrices vs current price
+            //calculate position balance using entryPrices - current price
             //returnValue of 0 indicates a winning trade, while 1 indicates a loss
             (uint amountPNL, uint returnValue) =
             PnLCalculator.calculatePNL(users[msg.sender].entryPrices[_userShortID], priceAtClose);
@@ -169,9 +216,10 @@ contract BeraPoolStandardRisk is ERC1155Holder {
 
                 //experimental liquidation logic
                 //kinda dogshit ngl
-                if (users[user].wasPositionLiquidated[_userShortID] == true) {
+                if (users[user].liqData[_userShortID].wasLiquidated == true) {
                     uint newPNL = amountPNL * 50 / 100;
                     uint toLiquidator = amountPNL - newPNL;
+                    address liquidator = getLiquidator(user, _userShortID);
                     users[liquidator].userDepositBalance += toLiquidator;
                     globalRewards += newPNL;
                 } else {
@@ -184,38 +232,6 @@ contract BeraPoolStandardRisk is ERC1155Holder {
             users[msg.sender].userShortBalanceByID[_userShortID] = 0;
 
         }
-
-    // if you are reading this comment this is a way for you to make some money
-    // and keep the protocol alive and kicking
-    // keep in mind that you need to have deposited collateral to receive rewards
-    function liquidateUser(address user, address to, uint position) external returns(uint profits) {
-        uint drawdown = getUserEntryPrice(user, position) - twapPriceOracle(coin);
-        require(drawdown > users[user].userDepositBalance, "LIQ: Account not in drawdown");
-        require(users[user].isPositionInShort[position] == true, "LIQ: Position not active");
-
-        users[user].wasPositionLiquidated[position] = true;
-        closeShortStandardPool(user, to, position, twapPriceOracle());
-    }
-
-    function checkRewards(address user) external view returns (uint profits) {
-        return profits = checkOwedProfits(user);
-    }
-
-    function getGlobalRewards() external view returns(uint globals) {
-        return globals = globalRewards;
-    }
-
-    function getUserShortBalance(address user, uint shortID) external view returns(uint bal) {
-        return bal = users[user].userShortBalanceByID[shortID];
-    }
-
-    function getUserEntryPrice(address user, uint shortID) external view returns(uint entry) {
-        return entry = users[user].entryPrices[shortID];
-    }
-
-    function getUserShortBool(address user, uint shortID) external view returns(bool isShort) {
-        return isShort = users[user].isPositionInShort[shortID];
-    }
 
     function _shortForUser(
         address user,
