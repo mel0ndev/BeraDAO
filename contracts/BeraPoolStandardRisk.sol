@@ -16,6 +16,8 @@ contract BeraPoolStandardRisk is ERC1155Holder {
 
     address public owner;
 
+    mapping(address => Account) public users;
+
     struct Liquidation {
         bool wasLiquidated;
         address liquidator;
@@ -30,8 +32,6 @@ contract BeraPoolStandardRisk is ERC1155Holder {
         mapping(uint => bool) isPositionInShort;
         mapping(uint => Liquidation) liqData;
     }
-
-    mapping(address => Account) public users;
 
     uint public globalRewards;
 
@@ -90,11 +90,11 @@ contract BeraPoolStandardRisk is ERC1155Holder {
 
                 //get total amount of collateral in shorts if user has opened a position before
                 if (getTotalCollateral(msg.sender) > 0) {
-                    require(getTotalCollateral(msg.sender) >= users[msg.sender].userDepositBalance,
+                    require(getTotalCollateral(msg.sender) <= users[msg.sender].userDepositBalance,
                         "SWAP: not enough collateral");
                 }
 
-                //5% is kept as fee to protocol
+                //5% is kept as fee to protocol to assist in paying out users
                 uint amountToSend = amount * 95 / 100;
 
                 TransferHelper.safeTransferFrom(DAI_ADDRESS, msg.sender, address(this), amount);
@@ -121,6 +121,7 @@ contract BeraPoolStandardRisk is ERC1155Holder {
                 uint priceAtWrap = 3000;
 
                 //execute the second swap and transfer funds to pool for holding
+                //this is the swap that creates the actual short position for the user on-chain
                 _shortForUser(
                     msg.sender,
                     tokenToShort,
@@ -141,7 +142,7 @@ contract BeraPoolStandardRisk is ERC1155Holder {
 
             }
 
-    // if you are reading this comment this is a way for you to make some money
+    // if you are reading this comment, this is a way for you to make some money
     // and keep the protocol alive and kicking
     // keep in mind that you need to have deposited collateral to receive rewards
     function liquidateUser(address user, address to, uint shortID) external {

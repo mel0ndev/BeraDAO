@@ -1,0 +1,263 @@
+{
+  "contractName": "IOracle",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "latestPrice",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "price",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.11+commit.d7f03943\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"latestPrice\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"latestPrice()\":{\"returns\":{\"price\":\"WAD-scaled - 18 dec places\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/ancillary/IOracle.sol\":\"IOracle\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/ancillary/IOracle.sol\":{\"keccak256\":\"0x5286c1fd99502cb07800ff92dda22fa03c96746225927d487e1ef792513fc363\",\"license\":\"GPL-3.0-or-later\",\"urls\":[\"bzz-raw://eb65d35f83a0755dc475ffb32ca5d684f86422cada6c76fa8df8c2af51b6fe29\",\"dweb:/ipfs/QmSprqxEJnLHs4PCvgVLFjkmgbQbRRsyc56dSmAFv9M7wh\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "// SPDX-License-Identifier: GPL-3.0-or-later\npragma solidity ^0.8.0;\n\ninterface IOracle {\n    /**\n     * @return price WAD-scaled - 18 dec places\n     */\n    function latestPrice() external view returns (uint price);\n}\n",
+  "sourcePath": "/home/kevin/Code/solidity_projects/beraMarket/contracts/ancillary/IOracle.sol",
+  "ast": {
+    "absolutePath": "project:/contracts/ancillary/IOracle.sol",
+    "exportedSymbols": {
+      "IOracle": [
+        3589
+      ]
+    },
+    "id": 3590,
+    "license": "GPL-3.0-or-later",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 3582,
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "45:23:17"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "IOracle",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "fullyImplemented": false,
+        "id": 3589,
+        "linearizedBaseContracts": [
+          3589
+        ],
+        "name": "IOracle",
+        "nameLocation": "80:7:17",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "documentation": {
+              "id": 3583,
+              "nodeType": "StructuredDocumentation",
+              "src": "94:59:17",
+              "text": " @return price WAD-scaled - 18 dec places"
+            },
+            "functionSelector": "a3e6ba94",
+            "id": 3588,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "latestPrice",
+            "nameLocation": "167:11:17",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 3584,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "178:2:17"
+            },
+            "returnParameters": {
+              "id": 3587,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3586,
+                  "mutability": "mutable",
+                  "name": "price",
+                  "nameLocation": "209:5:17",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3588,
+                  "src": "204:10:17",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 3585,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "204:4:17",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "203:12:17"
+            },
+            "scope": 3589,
+            "src": "158:58:17",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 3590,
+        "src": "70:148:17",
+        "usedErrors": []
+      }
+    ],
+    "src": "45:174:17"
+  },
+  "legacyAST": {
+    "absolutePath": "project:/contracts/ancillary/IOracle.sol",
+    "exportedSymbols": {
+      "IOracle": [
+        3589
+      ]
+    },
+    "id": 3590,
+    "license": "GPL-3.0-or-later",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 3582,
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "45:23:17"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "IOracle",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "fullyImplemented": false,
+        "id": 3589,
+        "linearizedBaseContracts": [
+          3589
+        ],
+        "name": "IOracle",
+        "nameLocation": "80:7:17",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "documentation": {
+              "id": 3583,
+              "nodeType": "StructuredDocumentation",
+              "src": "94:59:17",
+              "text": " @return price WAD-scaled - 18 dec places"
+            },
+            "functionSelector": "a3e6ba94",
+            "id": 3588,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "latestPrice",
+            "nameLocation": "167:11:17",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 3584,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "178:2:17"
+            },
+            "returnParameters": {
+              "id": 3587,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3586,
+                  "mutability": "mutable",
+                  "name": "price",
+                  "nameLocation": "209:5:17",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3588,
+                  "src": "204:10:17",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 3585,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "204:4:17",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "203:12:17"
+            },
+            "scope": 3589,
+            "src": "158:58:17",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 3590,
+        "src": "70:148:17",
+        "usedErrors": []
+      }
+    ],
+    "src": "45:174:17"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.11+commit.d7f03943.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.3",
+  "updatedAt": "2021-12-26T23:22:06.740Z",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {
+      "latestPrice()": {
+        "returns": {
+          "price": "WAD-scaled - 18 dec places"
+        }
+      }
+    },
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}

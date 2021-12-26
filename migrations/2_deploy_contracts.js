@@ -1,9 +1,10 @@
-const BeraRouter = artifacts.require("BeraRouter");
 const BeraPoolStandardRisk = artifacts.require("BeraPoolStandardRisk");
 const BeraWrapper = artifacts.require("BeraWrapper");
 const PnLCalculator = artifacts.require("PnLCalculator");
+const TWAPOracle = artifacts.require("TWAPOracle");
 
-var swapRouter = '0xE592427A0AEce92De3Edee1F18E0157C05861564';
+const swapRouter = '0xE592427A0AEce92De3Edee1F18E0157C05861564';
+const USDCETHPool = "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640";
 
 module.exports = async function(deployer) {
   await deployer.deploy(BeraWrapper);
@@ -17,5 +18,6 @@ module.exports = async function(deployer) {
   const initial = await BeraPoolStandardRisk.deployed();
   const poolAddress = await initial.address;
 
-  await deployer.deploy(BeraRouter, swapRouter, poolAddress, wrapperAddress);
+  await deployer.deploy(TWAPOracle, USDCETHPool, 1, -12);
+
 }
