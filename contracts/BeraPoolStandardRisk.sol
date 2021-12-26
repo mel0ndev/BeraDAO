@@ -16,6 +16,11 @@ contract BeraPoolStandardRisk is ERC1155Holder {
 
     address public owner;
 
+    struct Liquidation {
+        bool wasLiquidated;
+        address liquidator;
+    }
+
     struct Account {
         uint userDepositBalance;
         uint lastClaimedRewards;
@@ -24,11 +29,6 @@ contract BeraPoolStandardRisk is ERC1155Holder {
         mapping(uint => uint) entryPrices;
         mapping(uint => bool) isPositionInShort;
         mapping(uint => Liquidation) liqData;
-    }
-
-    struct Liquidation {
-        bool wasLiquidated;
-        address liquidator;
     }
 
     mapping(address => Account) public users;
@@ -211,9 +211,7 @@ contract BeraPoolStandardRisk is ERC1155Holder {
             if (returnValue == 0) {
                 users[msg.sender].userDepositBalance += amountPNL;
             } else if (returnValue == 1) {
-                //distribute user loss amongst pool if losing short
                 users[msg.sender].userDepositBalance -= amountPNL;
-
                 //experimental liquidation logic
                 //kinda dogshit ngl
                 if (users[user].liqData[_userShortID].wasLiquidated == true) {
@@ -223,6 +221,7 @@ contract BeraPoolStandardRisk is ERC1155Holder {
                     users[liquidator].userDepositBalance += toLiquidator;
                     globalRewards += newPNL;
                 } else {
+                    //distribute loss amongst users in pool
                     globalRewards += amountPNL;
                 }
             }

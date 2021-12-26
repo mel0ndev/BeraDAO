@@ -53,6 +53,7 @@
           - PnLCalculator is now functioning but has potential remaining issues
           - now testing distribution of funds for trading losses
           - Funds are going to be collected and have to be pulled out by users, based on the globalRewards variable stored in the contract
+          - liquidation logic implemented but not tested  
 
 
       - Withdraws:
