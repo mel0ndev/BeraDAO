@@ -66,11 +66,6 @@
 				"type": "address"
 			},
 			{
-				"internalType": "address",
-				"name": "liquidator",
-				"type": "address"
-			},
-			{
 				"internalType": "uint256",
 				"name": "_userShortID",
 				"type": "uint256"
@@ -112,6 +107,30 @@
 				"internalType": "uint256",
 				"name": "globals",
 				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "shortID",
+				"type": "uint256"
+			}
+		],
+		"name": "getLiquidator",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "liquidator",
+				"type": "address"
 			}
 		],
 		"stateMutability": "view",
@@ -235,7 +254,7 @@
 			},
 			{
 				"internalType": "uint256",
-				"name": "position",
+				"name": "shortID",
 				"type": "uint256"
 			}
 		],

@@ -9,11 +9,10 @@ const daiABI = require('./daiABI.json');
 const routerABI = require('./routerAbi.json'); //Uniswap Router
 
 //local contracts
-const beraRouterABI = require('./BeraRouter.json');
 const beraPoolStandardRiskABI = require('./BeraPoolStandardRisk.json');
 const beraWrapperABI = require('./BeraWrapper.json');
 const beraPoolABI = require('./BeraPool.json');
-const gttABI = require('./GTTAbi.json');
+const oracleABI = require('./oracleABI.json');
 
 //load contract addresses
 //mainnet
@@ -22,27 +21,21 @@ const wethAddress = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
 const routerAddress = "0xE592427A0AEce92De3Edee1F18E0157C05861564";
 
 //locals
-const beraWrapperAddress = '0x30217C8B679aE89F7Ca6E9d36a2e2e6605e5528F';
-const beraPoolStandardRiskAddress = '0x9e0aDDDA97Ca54919C85E3756462F82a6fb37362';
-const beraRouterAddress = '0x9e0aDDDA97Ca54919C85E3756462F82a6fb37362';
+const beraWrapperAddress = '0x0c3C3A247C4f653c6a923A92544506AdD1417A78';
+const beraPoolStandardRiskAddress = '0xfE8487e4E9725C4387199Bb5aC56baF7bc728107';
+const twapOracleAddress = '0x934e4d78cAB7a7C167BB114360E1D11ab58C8566';
 
 //load accounts
 const unlockedAccount = '0x2feb1512183545f48f6b9c5b4ebfcaf49cfca6f3';
-const recipient = '0xb2FF46186eaC4CAbac411e274d6393fAf88BB6C8';
-const privateKey = '0x337b7375165528c5e197dbb81d485c14170bea1291daa7db9bc2f2f40267fcd3';
+const recipient = '0x432461cbDcdF50C75d97B206dCd2CA3D191C26DB';
+const privateKey = '0xc2056ed2d42cc4dc5b5151fa1a174ebdf7a7c5fa60b6d5479560848f30f5b244';
 
-const account1 = '0x8F70163BA02B7b6C137126b42fED9eE2Ef3Cb250';
-const account2 = '0xaAa54A9A28DDa2ECB1999633569d09FDF1470C1D';
-const account3 = '0x749E539A8A1F3A70bEdd4C4FfCBA09b613A54764';
+const account1 = '0xd5A9F2f80A7682B3e7A91053f9A74730cC92Fb37';
+const account2 = '0x5385E478F81A6f86bFBfc762e0D1680527eed84f';
+const account3 = '0x515235E0681d095762024E19086fE6eC1c3f9178';
 let userArray = [];
 userArray.push(account1, account2, account3);
 
-
-//Contract Instances
-let beraRouter = new web3.eth.Contract(
-  beraRouterABI,
-  beraRouterAddress
-);
 
 let beraWrapper = new web3.eth.Contract(
   beraWrapperABI,
@@ -54,6 +47,10 @@ let beraPoolStandardRisk = new web3.eth.Contract(
   beraPoolStandardRiskAddress
 );
 
+let oracle = new web3.eth.Contract(
+  oracleABI,
+  twapOracleAddress
+);
 
 let routerContract = new web3.eth.Contract(
   routerABI,
@@ -246,6 +243,9 @@ for (j = 0; j < userArray.length; j++) {
     console.log(`User has: ${pullBasedRewards / 1e18} available to withdraw`);
 }
 
+
+let oraclePrice = await oracle.methods.latestPrice().call();
+console.log(oraclePrice);
 
 }
 
