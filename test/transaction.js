@@ -21,18 +21,18 @@ const wethAddress = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
 const routerAddress = "0xE592427A0AEce92De3Edee1F18E0157C05861564";
 
 //locals
-const beraWrapperAddress = '0x0c3C3A247C4f653c6a923A92544506AdD1417A78';
-const beraPoolStandardRiskAddress = '0xfE8487e4E9725C4387199Bb5aC56baF7bc728107';
-const twapOracleAddress = '0x934e4d78cAB7a7C167BB114360E1D11ab58C8566';
+const beraWrapperAddress = '0x1B00B497C2763abD0Dfd3796eFEaC84dA8F76d2c';
+const beraPoolStandardRiskAddress = '0x0BE4489ADd8aA46a9Ef8994e69899F76ECedE539';
+const twapOracleAddress = '0x343774E557DA71C6B9d27C76F33Bbf8392B39765';
 
 //load accounts
 const unlockedAccount = '0x2feb1512183545f48f6b9c5b4ebfcaf49cfca6f3';
-const recipient = '0x432461cbDcdF50C75d97B206dCd2CA3D191C26DB';
-const privateKey = '0xc2056ed2d42cc4dc5b5151fa1a174ebdf7a7c5fa60b6d5479560848f30f5b244';
+const recipient = '0x1Df54Cd6D0a4bCb429E8439B46bC9659E73ED05e';
+const privateKey = '0x796fac23cf92cf1f9b11aed2810d1924b0518be8d33c808e32e557917073dd71';
 
-const account1 = '0xd5A9F2f80A7682B3e7A91053f9A74730cC92Fb37';
-const account2 = '0x5385E478F81A6f86bFBfc762e0D1680527eed84f';
-const account3 = '0x515235E0681d095762024E19086fE6eC1c3f9178';
+const account1 = '0x469D377f0a4B61cDa3AA9e68eC6EE87b96DC591B';
+const account2 = '0xa5390eD77D7c489BA2f03816c6077e4EA7E0C603';
+const account3 = '0xd07ED35b66553d44fCf7fD5CD2975E3Eee5be33C';
 let userArray = [];
 userArray.push(account1, account2, account3);
 
@@ -182,11 +182,6 @@ async function shortInstance() {
 await dai.methods.approve(beraPoolStandardRiskAddress, '1000000000000000000000').send({from: recipient});
 await beraPoolStandardRisk.methods.depositCollateral('1000000000000000000000', daiAddress).send({from: recipient, gas: 6721975});
 
-let accountStruct = await beraPoolStandardRisk.methods.users(recipient).call();
-console.log(accountStruct);
-//console.log(`Deposit Balance: ${initialDeposit / 1e18}`);
-//console.log('Deposit Successful');
-
 await dai.methods.approve(beraPoolStandardRiskAddress, '1000000000000000000000').send({from: recipient, gas: 238989});
 //first test that users cannot short unless they have deposited funds
 await beraPoolStandardRisk.methods.swapAndShortStandard(
@@ -202,6 +197,9 @@ await beraPoolStandardRisk.methods.swapAndShortStandard(
 
 //priceAtWrap is passed in at $3000 hard coded into contract for testing right now
 
+let accountStruct = await beraPoolStandardRisk.methods.users(recipient).call();
+console.log(accountStruct);
+
 //check balances to see if short worked as intended
 let userShortBal = await beraPoolStandardRisk.methods.getUserShortBalance(recipient, 1).call();
 console.log(`Short Balance for position: ${userShortBal / 1e18}`);
@@ -211,6 +209,10 @@ console.log(`Total Pool Balance: ${poolBalance / 1e18}`);
 
 let entryPrice = await beraPoolStandardRisk.methods.getUserEntryPrice(recipient, 1).call();
 console.log(`Entry Price at Position 1: ${entryPrice}`);
+
+let positionID = await beraWrapper.methods.positionIDTotal().call();
+let positionData = await beraWrapper.methods.positionData(positionID).call();
+console.log(positionData);
 
 
 await beraPoolStandardRisk.methods.closeShortStandardPool(

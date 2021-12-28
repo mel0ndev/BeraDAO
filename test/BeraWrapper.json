@@ -248,7 +248,7 @@
 	},
 	{
 		"inputs": [],
-		"name": "positionID",
+		"name": "positionIDTotal",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -399,7 +399,7 @@
 			},
 			{
 				"internalType": "uint256",
-				"name": "_positionID",
+				"name": "positionID",
 				"type": "uint256"
 			}
 		],

@@ -15,8 +15,7 @@
 ----> 0x1e3d6eab4bcf24bcd04721caa11c478a2e59852d  <----
 
 ### DOING
- - Moving all router logic to pool contracts, makes things much easier
-    - Currently migrating swap and short functions
+ - Testing new oracle pricing logic
 
 
 ### TESTING
@@ -27,9 +26,9 @@
 
         - ISSUES:
           - Need to keep track of depositBalance in conjunction with shortAmount
-              - currently users can deposit once and then use those funds to open more positions with those
+              - currently users can deposit once and then use those funds to open more positions with those //FIXED
                 funds. ie, deposit 1000 dai once and use it numerous times to open 1000 dai positions
-          - Deposits are not stored as 1e18 for userDepositBalance and will fuck up distribution
+          - Deposits are not stored as 1e18 for userDepositBalance and will fuck up distribution //FIXED
         - WHAT WORKS
           - basic deposit
           - addresses are being pushed into array as intended
@@ -40,10 +39,11 @@
           - pool address is receiving the funds as intended
 
 
-      - Swap and Short : //FULLY FUNCTIONAL
+      - Swap and Short : //FUNCTIONAL
           - swapandshort is storing each short separately as intended
           - is working as one function call
           - is sending an erc1155
+              - BUG: on initial short, error is "unable to burn -- owner not msg.sender"
 
 
       - Closing Position: //SOMEWHAT WORKING BUT DEPENDENT ON ORACLE  
@@ -60,13 +60,17 @@
           - withdraw is not possible unless userPositionNumber is closed as intended
           -
 
+      - Oracle:
+          - Oracle is retrieving data, but not sure how decimals are going to work
+          - most erc20 have 18 but it can be arbitrary, so will have to make a call to token contract
+            and retrieve the decimals from the token itself? Just look into this later
 
 
-# TODO ABSOLUTE MUST HAVE FEATURES FOR MVP THAT ARE STILL NEEDED
 
-- TWAP Oracle contract is 100% necessary
-- Pool rewards must be 100% functional
--
+# MVP RELEASE
+    - The standard Pool will be the only pool released at initial launch, high risk pool will follow
+      shortly after, maybe 1-2 months after kinks are ironed out of standard pool
+    -
 
 
 

@@ -77,6 +77,10 @@ contract BeraPoolStandardRisk is ERC1155Holder {
     }
 
     // deposit collateral into user account before being allowed to short
+    // amount refers to how much dai to swap for amountOut of the token the user
+    // wants to short
+    //
+    // will likely have to split the logic for the function up, he's getting pretty chonky
     function swapAndShortStandard(
             uint amount,
             address tokenToShort,
@@ -131,10 +135,16 @@ contract BeraPoolStandardRisk is ERC1155Holder {
                     amountOutMin
                 );
 
+                //TODO REFACTOR: can update user data in one internal function
+
                 //update entry price mapping
                 //this stores the entry price of msg.sender for this specific shortID of the sender
                 //nested mappings look cringe but are efficient
                 users[msg.sender].entryPrices[users[msg.sender].userShortID] = priceAtWrap;
+
+                //update user balance of the user current positionID
+                //this is used to keep track of how much of the users deposit is currently being used
+                users[msg.sender].userShortBalanceByID[users[msg.sender].userShortID] = amountOut;
 
                 //update userPositionNumber current short status
                 // inShort[msg.sender][userShortID[msg.sender]] = true;
@@ -145,14 +155,16 @@ contract BeraPoolStandardRisk is ERC1155Holder {
     // if you are reading this comment, this is a way for you to make some money
     // and keep the protocol alive and kicking
     // keep in mind that you need to have deposited collateral to receive rewards
-    function liquidateUser(address user, address to, uint shortID) external {
-        uint drawdown = getUserEntryPrice(user, shortID) - 3000;
-        require(drawdown > users[user].userDepositBalance, "LIQ: Account not in drawdown");
-        require(users[user].isPositionInShort[shortID] == true, "LIQ: Position not active");
+    function liquidateUser(address userUnderwater, address liquidator, uint shortID) external {
+        uint drawdown = getUserEntryPrice(userUnderwater, shortID) - 3000;
+        //give the users a 5% buffer amount before they can be liquidated
+        uint buffer = drawdown * 5 / 100;
+        require(drawdown + buffer > users[userUnderwater].userDepositBalance, "LIQ: Account not in drawdown");
+        require(users[userUnderwater].isPositionInShort[shortID] == true, "LIQ: Position not active");
 
-        users[user].liqData[shortID].wasLiquidated = true;
-        users[user].liqData[shortID].liquidator = to;
-        closeShortStandardPool(user, shortID, 3000);
+        users[userUnderwater].liqData[shortID].wasLiquidated = true;
+        users[userUnderwater].liqData[shortID].liquidator = liquidator;
+        closeShortStandardPool(userUnderwater, shortID, 3000);
     }
 
     function getLiquidator(address user, uint shortID) public view returns(address liquidator) {
@@ -192,10 +204,10 @@ contract BeraPoolStandardRisk is ERC1155Holder {
     //in the standardPool contract
     function closeShortStandardPool(
         address user,
-        uint _userShortID,
-        uint priceAtClose)
+        uint _userShortID)
         public {
             require(user == msg.sender, "CLOSE: Not your position");
+            priceAtClose = TWAPOracle.latestPrice()
 
             beraWrapper.unwrapPosition(user, _userShortID);
             //TODO
@@ -233,6 +245,7 @@ contract BeraPoolStandardRisk is ERC1155Holder {
 
         }
 
+    // amount here refers to how much of the token shorted is passed back into the swapRouter
     function _shortForUser(
         address user,
         address tokenToShort,
@@ -256,13 +269,8 @@ contract BeraPoolStandardRisk is ERC1155Holder {
             sqrtPriceLimitX96: 0
         });
 
-        // execute the short, amountOut is wETH in this test case
+        // execute the short, amountOut is now back to dai
         amountOut = swapRouter.exactInputSingle(tokenParams);
-
-        //update user balance of the user current positionID
-        //this is used to keep track of how much of the users deposit is currently being used
-        //userShortBalance[msg.sender][userShortID[msg.sender]] = amountOut;
-        users[msg.sender].userShortBalanceByID[users[msg.sender].userShortID] = amountOut;
 
         //wrap position in ERC1155
         beraWrapper.wrapPosition(user, address(this), amount, tokenToShort, priceAtWrap);

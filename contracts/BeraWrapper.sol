@@ -8,21 +8,20 @@ contract BeraWrapper is ERC1155 {
 
     address public owner;
 
-    uint public positionID;
+    uint public positionIDTotal;
 
     mapping(uint => Position) public positionData;
 
     struct Position {
         address positionOwner; //address of user that shorted
-        address associatedPool; //standard or high risk pool?
+        address associatedPool; //standard or high risk pool
         uint shortAmount;
         address tokenShorted;
-        uint priceAtWrap; //what price was the asset at wrap time? //
+        uint priceAtWrap;
     }
 
     constructor() ERC1155("") { //solhint-disable func-visibility
         owner = msg.sender;
-        positionID = 0;
     }
 
     function wrapPosition(address positionOwner,
@@ -31,32 +30,30 @@ contract BeraWrapper is ERC1155 {
                 address tokenShorted,
                 uint priceAtWrap)
                 external {
+                    //increase global position counter
+                    positionIDTotal++;
 
-                    _mint(positionOwner, positionID, 1, "");
-
-
-                    positionData[positionID] = Position({
+                    positionData[positionIDTotal] = Position({
                         positionOwner: positionOwner,
                         associatedPool: associatedPool,
                         shortAmount: shortAmount,
                         tokenShorted: tokenShorted,
-                        priceAtWrap: priceAtWrap //imported from 1inchAPI via web3 later
+                        priceAtWrap: priceAtWrap
                     });
 
-                    //increase global position counter
-                    positionID++;
-
+                    _mint(positionOwner, positionIDTotal, 1, "");
                 }
 
-    function unwrapPosition(address positionOwner, uint _positionID) external {
-        require(positionOwner == positionData[_positionID].positionOwner,
+    function unwrapPosition(address positionOwner, uint positionID) external {
+        require(positionOwner == positionData[positionID].positionOwner,
             "Wrapper: only the owner can unwrap the position");
 
         //we burn the token to release the funds
-        _burn(positionOwner, _positionID, 1);
+        _burn(positionOwner, positionID, 1);
     }
 
     //SHOULD BE USED TO TRANSFER POSITIONS
+    //should be called from associated pool contract only (will have to add this later)
     function transferPosition(address to, address from, uint _positionID, uint amount) external {
         require(msg.sender == positionData[_positionID].positionOwner,
             "Wrapper: only the owner can transfer a position");
@@ -77,8 +74,6 @@ contract BeraWrapper is ERC1155 {
         if (ERC1155.balanceOf(newPositionOwner, _positionID) > 0) {
             //update new owner
             positionData[_positionID].positionOwner = newPositionOwner;
-        } else {
-            return;
         }
     }
 }
