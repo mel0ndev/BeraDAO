@@ -8,8 +8,10 @@ import "@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol";
 import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
 import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol";
 import "./BeraWrapper.sol";
 import "./ancillary/PnLCalculator.sol";
+import "./ancillary/TWAPoracle.sol";
 
 
 contract BeraPoolStandardRisk is ERC1155Holder {
@@ -204,19 +206,21 @@ contract BeraPoolStandardRisk is ERC1155Holder {
     //in the standardPool contract
     function closeShortStandardPool(
         address user,
-        uint _userShortID)
+        IUniswapV3Pool pool,
+        uint userShortID)
         public {
             require(user == msg.sender, "CLOSE: Not your position");
-            priceAtClose = TWAPOracle.latestPrice()
+            //get price at pool for shortBal of positionID
+            uint memory priceAtClose = TWAPOracle.latestPrice(pool, users[user].userShortBal[userShortID]);
 
-            beraWrapper.unwrapPosition(user, _userShortID);
+            beraWrapper.unwrapPosition(user, userShortID);
             //TODO
             //require priceAtClose == twapPriceOracle();
 
             //calculate position balance using entryPrices - current price
             //returnValue of 0 indicates a winning trade, while 1 indicates a loss
             (uint amountPNL, uint returnValue) =
-            PnLCalculator.calculatePNL(users[msg.sender].entryPrices[_userShortID], priceAtClose);
+            PnLCalculator.calculatePNL(users[msg.sender].entryPrices[userShortID], priceAtClose);
 
             //if user has made money, we update their balance directly
             //keeping in mind that dai is always stored in this contract and will only be transfered
@@ -227,10 +231,10 @@ contract BeraPoolStandardRisk is ERC1155Holder {
                 users[msg.sender].userDepositBalance -= amountPNL;
                 //experimental liquidation logic
                 //kinda dogshit ngl
-                if (users[user].liqData[_userShortID].wasLiquidated == true) {
+                if (users[user].liqData[userShortID].wasLiquidated == true) {
                     uint newPNL = amountPNL * 50 / 100;
                     uint toLiquidator = amountPNL - newPNL;
-                    address liquidator = getLiquidator(user, _userShortID);
+                    address liquidator = getLiquidator(user, userShortID);
                     users[liquidator].userDepositBalance += toLiquidator;
                     globalRewards += newPNL;
                 } else {
@@ -240,8 +244,8 @@ contract BeraPoolStandardRisk is ERC1155Holder {
             }
 
             //update current userPositionNumber to free withdraws of these specific funds
-            users[msg.sender].isPositionInShort[_userShortID] = false;
-            users[msg.sender].userShortBalanceByID[_userShortID] = 0;
+            users[msg.sender].isPositionInShort[userShortID] = false;
+            users[msg.sender].userShortBalanceByID[userShortID] = 0;
 
         }
 
