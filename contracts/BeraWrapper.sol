@@ -65,7 +65,7 @@ contract BeraWrapper is ERC1155 {
 
         //update new owner
         //might have some security issues with this, come back and recheck this later
-        positionData[_positionID].positionOwner = to;
+		positionData[_positionID].positionOwner = to; 
     }
 
     //if position happens to get sent without the transferPosition() func being called then

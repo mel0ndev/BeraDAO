@@ -29,8 +29,10 @@ contract BeraPoolStandardRisk is ERC1155Holder {
         uint userDepositBalance;
         uint lastClaimedRewards;
         uint userShortID;
+        mapping(uint => uint) entryPrice;
         mapping(uint => uint) userShortBalanceByID;
-        mapping(uint => uint) entryPrices;
+        mapping(uint => address) tokenShortedByPositionID;
+        mapping(uint => uint24) poolFeeByPositionID;
         mapping(uint => bool) isPositionInShort;
         mapping(uint => Liquidation) liqData;
     }
@@ -41,12 +43,15 @@ contract BeraPoolStandardRisk is ERC1155Holder {
 
     ISwapRouter public immutable swapRouter;
     BeraWrapper public beraWrapper;
+    TWAPOracle public twapOracle;
 
     constructor(ISwapRouter _swapRouter,
-        BeraWrapper _beraWrapper) { //solhint-disable func-visibility
+        BeraWrapper _beraWrapper,
+        TWAPOracle _twapOracle) { //solhint-disable func-visibility
         owner = msg.sender;
         swapRouter = _swapRouter;
         beraWrapper = _beraWrapper;
+        twapOracle = _twapOracle;
     }
 
     function depositCollateral(uint amount, address collateral) external {
@@ -59,12 +64,12 @@ contract BeraPoolStandardRisk is ERC1155Holder {
         IERC20(collateral).transferFrom(msg.sender, address(this), amount);
     }
 
-    function withdrawFromPool(uint amount, uint _userShortID) external {
+    function withdrawFromPool(uint amount, uint userShortID) external {
         require(amount <= users[msg.sender].userDepositBalance,
             "COLLATERAL: trying to withdraw more collateral than deposited");
 
         //checking if the funds locked in the position have been released before allowing them to be withdrawn
-        require(users[msg.sender].isPositionInShort[_userShortID] == false,
+        require(getUserShortBool(msg.sender, userShortID) == false,
             "COLLATERAL: close your current position before trying to withdraw");
 
         //reset balance of user on withdraw
@@ -124,10 +129,14 @@ contract BeraPoolStandardRisk is ERC1155Holder {
                 //Call twapPriceOracle here or find a better way to capture price
                 //TODO: Price wrapping
                 //TEST ONLY
-                uint priceAtWrap = 3000;
+                uint priceAtWrap =
+                    twapOracle.latestPrice(
+                        IUniswapV3Pool(twapOracle.getPoolForTWAP(tokenToShort, poolFee)),
+                        uint128(amount)
+                    );
 
                 //execute the second swap and transfer funds to pool for holding
-                //this is the swap that creates the actual short position for the user on-chain
+                //this is the swap that creates the actual 'short' position for the user on-chain
                 _shortForUser(
                     msg.sender,
                     tokenToShort,
@@ -137,12 +146,12 @@ contract BeraPoolStandardRisk is ERC1155Holder {
                     amountOutMin
                 );
 
-                //TODO REFACTOR: can update user data in one internal function
+                //TODO REFACTOR: can update user data in one internal function // maybe //
 
                 //update entry price mapping
                 //this stores the entry price of msg.sender for this specific shortID of the sender
                 //nested mappings look cringe but are efficient
-                users[msg.sender].entryPrices[users[msg.sender].userShortID] = priceAtWrap;
+                users[msg.sender].entryPrice[users[msg.sender].userShortID] = priceAtWrap;
 
                 //update user balance of the user current positionID
                 //this is used to keep track of how much of the users deposit is currently being used
@@ -152,21 +161,30 @@ contract BeraPoolStandardRisk is ERC1155Holder {
                 // inShort[msg.sender][userShortID[msg.sender]] = true;
                 users[msg.sender].isPositionInShort[users[msg.sender].userShortID] = true;
 
+                users[msg.sender].tokenShortedByPositionID[users[msg.sender].userShortID]
+                    = tokenToShort;
             }
 
     // if you are reading this comment, this is a way for you to make some money
     // and keep the protocol alive and kicking
     // keep in mind that you need to have deposited collateral to receive rewards
     function liquidateUser(address userUnderwater, address liquidator, uint shortID) external {
-        uint drawdown = getUserEntryPrice(userUnderwater, shortID) - 3000;
-        //give the users a 5% buffer amount before they can be liquidated
-        uint buffer = drawdown * 5 / 100;
+        //get entry price by shortID and subtract by current price
+        (address token, uint24 fee) = getTokenAndFeeShortedByUser(userUnderwater, shortID);
+        uint currentPrice = twapOracle.latestPrice(
+                IUniswapV3Pool(twapOracle.getPoolForTWAP(token, fee)),
+                uint128(getUserShortBalance(userUnderwater, shortID))
+            );
+        uint drawdown = getUserEntryPrice(userUnderwater, shortID) - currentPrice;
+        //give the users a 5% buffer on their deposit amount before they can be liquidated
+        uint buffer = users[userUnderwater].userDepositBalance * 5 / 100;
         require(drawdown + buffer > users[userUnderwater].userDepositBalance, "LIQ: Account not in drawdown");
-        require(users[userUnderwater].isPositionInShort[shortID] == true, "LIQ: Position not active");
+        require(getUserShortBool(userUnderwater, shortID) == true, "LIQ: Position not active");
 
         users[userUnderwater].liqData[shortID].wasLiquidated = true;
         users[userUnderwater].liqData[shortID].liquidator = liquidator;
-        closeShortStandardPool(userUnderwater, shortID, 3000);
+
+        closeShortStandardPool(userUnderwater, shortID);
     }
 
     function getLiquidator(address user, uint shortID) public view returns(address liquidator) {
@@ -193,11 +211,17 @@ contract BeraPoolStandardRisk is ERC1155Holder {
     }
 
     function getUserEntryPrice(address user, uint shortID) public view returns(uint entry) {
-        return entry = users[user].entryPrices[shortID];
+        return entry = users[user].entryPrice[shortID];
     }
 
     function getUserShortBool(address user, uint shortID) public view returns(bool isShort) {
         return isShort = users[user].isPositionInShort[shortID];
+    }
+
+    function getTokenAndFeeShortedByUser(address user, uint shortID) public view returns(address token, uint24 fee) {
+        token = users[user].tokenShortedByPositionID[shortID];
+        fee = uint24(users[user].poolFeeByPositionID[shortID]);
+        return (token, fee);
     }
 
     //TODO
@@ -206,31 +230,31 @@ contract BeraPoolStandardRisk is ERC1155Holder {
     //in the standardPool contract
     function closeShortStandardPool(
         address user,
-        IUniswapV3Pool pool,
         uint userShortID)
         public {
             require(user == msg.sender, "CLOSE: Not your position");
             //get price at pool for shortBal of positionID
-            uint memory priceAtClose = TWAPOracle.latestPrice(pool, users[user].userShortBal[userShortID]);
-
+            uint priceAtClose = twapOracle.latestPrice(
+                IUniswapV3Pool(twapOracle.getPoolForTWAP(
+                    users[user].tokenShortedByPositionID[userShortID],
+                    users[user].poolFeeByPositionID[userShortID])
+                ), uint128(users[user].userShortBalanceByID[userShortID])
+            );
             beraWrapper.unwrapPosition(user, userShortID);
-            //TODO
-            //require priceAtClose == twapPriceOracle();
 
-            //calculate position balance using entryPrices - current price
+            //calculate position balance using entryPrice - current price
             //returnValue of 0 indicates a winning trade, while 1 indicates a loss
             (uint amountPNL, uint returnValue) =
-            PnLCalculator.calculatePNL(users[msg.sender].entryPrices[userShortID], priceAtClose);
+            PnLCalculator.calculatePNL(users[msg.sender].entryPrice[userShortID], priceAtClose);
 
             //if user has made money, we update their balance directly
             //keeping in mind that dai is always stored in this contract and will only be transfered
-            //out on withdrawing
+            //out on withdrawl
             if (returnValue == 0) {
                 users[msg.sender].userDepositBalance += amountPNL;
             } else if (returnValue == 1) {
                 users[msg.sender].userDepositBalance -= amountPNL;
-                //experimental liquidation logic
-                //kinda dogshit ngl
+                //experimental liquidation logic //kinda dogshit ngl
                 if (users[user].liqData[userShortID].wasLiquidated == true) {
                     uint newPNL = amountPNL * 50 / 100;
                     uint toLiquidator = amountPNL - newPNL;
@@ -244,9 +268,9 @@ contract BeraPoolStandardRisk is ERC1155Holder {
             }
 
             //update current userPositionNumber to free withdraws of these specific funds
+            //v0.5 does not support anything other than full position closing
             users[msg.sender].isPositionInShort[userShortID] = false;
             users[msg.sender].userShortBalanceByID[userShortID] = 0;
-
         }
 
     // amount here refers to how much of the token shorted is passed back into the swapRouter

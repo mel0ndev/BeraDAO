@@ -2,7 +2,18 @@
   "contractName": "IOracle",
   "abi": [
     {
-      "inputs": [],
+      "inputs": [
+        {
+          "internalType": "contract IUniswapV3Pool",
+          "name": "pool",
+          "type": "address"
+        },
+        {
+          "internalType": "uint128",
+          "name": "amountInToken",
+          "type": "uint128"
+        }
+      ],
       "name": "latestPrice",
       "outputs": [
         {
@@ -15,7 +26,7 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.8.11+commit.d7f03943\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"latestPrice\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"latestPrice()\":{\"returns\":{\"price\":\"WAD-scaled - 18 dec places\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/ancillary/IOracle.sol\":\"IOracle\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/ancillary/IOracle.sol\":{\"keccak256\":\"0x5286c1fd99502cb07800ff92dda22fa03c96746225927d487e1ef792513fc363\",\"license\":\"GPL-3.0-or-later\",\"urls\":[\"bzz-raw://eb65d35f83a0755dc475ffb32ca5d684f86422cada6c76fa8df8c2af51b6fe29\",\"dweb:/ipfs/QmSprqxEJnLHs4PCvgVLFjkmgbQbRRsyc56dSmAFv9M7wh\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.11+commit.d7f03943\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"contract IUniswapV3Pool\",\"name\":\"pool\",\"type\":\"address\"},{\"internalType\":\"uint128\",\"name\":\"amountInToken\",\"type\":\"uint128\"}],\"name\":\"latestPrice\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"latestPrice(address,uint128)\":{\"returns\":{\"price\":\"WAD-scaled - 18 dec places\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/ancillary/IOracle.sol\":\"IOracle\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol\":{\"keccak256\":\"0xfe6113d518466cd6652c85b111e01f33eb62157f49ae5ed7d5a3947a2044adb1\",\"license\":\"GPL-2.0-or-later\",\"urls\":[\"bzz-raw://1c42b9e6f5902ac38dd43e25750939baa7e0c1425dc75afd717c4412731065d5\",\"dweb:/ipfs/QmWaoacnzsucTvBME2o7YgZBZMhaHv7fkj83htHMVWJKWh\"]},\"@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolActions.sol\":{\"keccak256\":\"0x9453dd0e7442188667d01d9b65de3f1e14e9511ff3e303179a15f6fc267f7634\",\"license\":\"GPL-2.0-or-later\",\"urls\":[\"bzz-raw://982f4328f956c3e60e67501e759eb292ac487f76460c774c50e9ae4fcc92aae5\",\"dweb:/ipfs/QmRnzEDsaqtd9PJEVcgQi7p5aV5pMSvRUoGZJAdwFUJxgZ\"]},\"@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolDerivedState.sol\":{\"keccak256\":\"0xe603ac5b17ecdee73ba2b27efdf386c257a19c14206e87eee77e2017b742d9e5\",\"license\":\"GPL-2.0-or-later\",\"urls\":[\"bzz-raw://8febc9bdb399a4d94bb89f5377732652e2400e4a8dee808201ade6848f9004e7\",\"dweb:/ipfs/QmaKDqYYFU4d2W2iN77aDHptfbFmYZRrMYXHeGpJmM8C1c\"]},\"@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolEvents.sol\":{\"keccak256\":\"0x8071514d0fe5d17d6fbd31c191cdfb703031c24e0ece3621d88ab10e871375cd\",\"license\":\"GPL-2.0-or-later\",\"urls\":[\"bzz-raw://d0b571930cc7488b1d546a7e9cea7c52d8b3c4e207da657ed0e0db7343b8cd03\",\"dweb:/ipfs/QmaGK6vVwB95QSTR1XMYvrh7ivYAYZxi3fD7v6VMA4jZ39\"]},\"@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolImmutables.sol\":{\"keccak256\":\"0xf6e5d2cd1139c4c276bdbc8e1d2b256e456c866a91f1b868da265c6d2685c3f7\",\"license\":\"GPL-2.0-or-later\",\"urls\":[\"bzz-raw://b99c8c9ae8e27ee6559e5866bea82cbc9ffc8247f8d15b7422a4deb287d4d047\",\"dweb:/ipfs/QmfL8gaqt3ffAnm6nVj5ksuNpLygXuL3xq5VBqrkwC2JJ3\"]},\"@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolOwnerActions.sol\":{\"keccak256\":\"0x759b78a2918af9e99e246dc3af084f654e48ef32bb4e4cb8a966aa3dcaece235\",\"license\":\"GPL-2.0-or-later\",\"urls\":[\"bzz-raw://64144fb96e1c7fdba87305acadb98a198d26a3d46c097cb3a666e567f6f29735\",\"dweb:/ipfs/QmUnWVwN9FKB9uV5Pr8YfLpWZnYM2DENnRMaadZ492JS9u\"]},\"@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolState.sol\":{\"keccak256\":\"0x852dc1f5df7dcf7f11e7bb3eed79f0cea72ad4b25f6a9d2c35aafb48925fd49f\",\"license\":\"GPL-2.0-or-later\",\"urls\":[\"bzz-raw://ed63907c38ff36b0e22bc9ffc53e791ea74f0d4f0e7c257fdfb5aaf8825b1f0f\",\"dweb:/ipfs/QmSQrckghEjs6HVsA5GVgpNpZWvTXMY5eQLF7cN6deFeEg\"]},\"project:/contracts/ancillary/IOracle.sol\":{\"keccak256\":\"0x064fa1cd7144ad033fdd3650ed2c35164d0a7ee7382f03491e9f0c7467b2580b\",\"license\":\"GPL-3.0-or-later\",\"urls\":[\"bzz-raw://92a164706b04f4bea4decc44ee94da92c0fd972aa04f38152e4f536cc562e247\",\"dweb:/ipfs/QmS2Qmx1zfgzuLfXMGMbFZxSr1M2oTZRXG61W99qjT8F46\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
@@ -23,21 +34,42 @@
   "deployedGeneratedSources": [],
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "// SPDX-License-Identifier: GPL-3.0-or-later\npragma solidity ^0.8.0;\n\ninterface IOracle {\n    /**\n     * @return price WAD-scaled - 18 dec places\n     */\n    function latestPrice() external view returns (uint price);\n}\n",
+  "source": "// SPDX-License-Identifier: GPL-3.0-or-later\npragma solidity ^0.8.0;\nimport \"@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol\";\n\n\ninterface IOracle {\n    /**\n     * @return price WAD-scaled - 18 dec places\n     */\n    function latestPrice(IUniswapV3Pool pool, uint128 amountInToken) external view returns (uint price);\n}\n",
   "sourcePath": "/home/kevin/Code/solidity_projects/beraMarket/contracts/ancillary/IOracle.sol",
   "ast": {
     "absolutePath": "project:/contracts/ancillary/IOracle.sol",
     "exportedSymbols": {
       "IOracle": [
-        3589
+        3898
+      ],
+      "IUniswapV3Pool": [
+        1896
+      ],
+      "IUniswapV3PoolActions": [
+        2006
+      ],
+      "IUniswapV3PoolDerivedState": [
+        2037
+      ],
+      "IUniswapV3PoolEvents": [
+        2156
+      ],
+      "IUniswapV3PoolImmutables": [
+        2196
+      ],
+      "IUniswapV3PoolOwnerActions": [
+        2222
+      ],
+      "IUniswapV3PoolState": [
+        2330
       ]
     },
-    "id": 3590,
+    "id": 3899,
     "license": "GPL-3.0-or-later",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 3582,
+        "id": 3885,
         "literals": [
           "solidity",
           "^",
@@ -45,7 +77,19 @@
           ".0"
         ],
         "nodeType": "PragmaDirective",
-        "src": "45:23:17"
+        "src": "45:23:25"
+      },
+      {
+        "absolutePath": "@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol",
+        "file": "@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol",
+        "id": 3886,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 3899,
+        "sourceUnit": 1897,
+        "src": "69:66:25",
+        "symbolAliases": [],
+        "unitAlias": ""
       },
       {
         "abstract": false,
@@ -54,48 +98,110 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "fullyImplemented": false,
-        "id": 3589,
+        "id": 3898,
         "linearizedBaseContracts": [
-          3589
+          3898
         ],
         "name": "IOracle",
-        "nameLocation": "80:7:17",
+        "nameLocation": "148:7:25",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "documentation": {
-              "id": 3583,
+              "id": 3887,
               "nodeType": "StructuredDocumentation",
-              "src": "94:59:17",
+              "src": "162:59:25",
               "text": " @return price WAD-scaled - 18 dec places"
             },
-            "functionSelector": "a3e6ba94",
-            "id": 3588,
+            "functionSelector": "3d3c18a4",
+            "id": 3897,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "latestPrice",
-            "nameLocation": "167:11:17",
+            "nameLocation": "235:11:25",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 3584,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "178:2:17"
-            },
-            "returnParameters": {
-              "id": 3587,
+              "id": 3893,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3586,
+                  "id": 3890,
+                  "mutability": "mutable",
+                  "name": "pool",
+                  "nameLocation": "262:4:25",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3897,
+                  "src": "247:19:25",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IUniswapV3Pool_$1896",
+                    "typeString": "contract IUniswapV3Pool"
+                  },
+                  "typeName": {
+                    "id": 3889,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 3888,
+                      "name": "IUniswapV3Pool",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 1896,
+                      "src": "247:14:25"
+                    },
+                    "referencedDeclaration": 1896,
+                    "src": "247:14:25",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IUniswapV3Pool_$1896",
+                      "typeString": "contract IUniswapV3Pool"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 3892,
+                  "mutability": "mutable",
+                  "name": "amountInToken",
+                  "nameLocation": "276:13:25",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3897,
+                  "src": "268:21:25",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint128",
+                    "typeString": "uint128"
+                  },
+                  "typeName": {
+                    "id": 3891,
+                    "name": "uint128",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "268:7:25",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint128",
+                      "typeString": "uint128"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "246:44:25"
+            },
+            "returnParameters": {
+              "id": 3896,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3895,
                   "mutability": "mutable",
                   "name": "price",
-                  "nameLocation": "209:5:17",
+                  "nameLocation": "319:5:25",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3588,
-                  "src": "204:10:17",
+                  "scope": 3897,
+                  "src": "314:10:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -103,10 +209,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 3585,
+                    "id": 3894,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "204:4:17",
+                    "src": "314:4:25",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -115,35 +221,56 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "203:12:17"
+              "src": "313:12:25"
             },
-            "scope": 3589,
-            "src": "158:58:17",
+            "scope": 3898,
+            "src": "226:100:25",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 3590,
-        "src": "70:148:17",
+        "scope": 3899,
+        "src": "138:190:25",
         "usedErrors": []
       }
     ],
-    "src": "45:174:17"
+    "src": "45:284:25"
   },
   "legacyAST": {
     "absolutePath": "project:/contracts/ancillary/IOracle.sol",
     "exportedSymbols": {
       "IOracle": [
-        3589
+        3898
+      ],
+      "IUniswapV3Pool": [
+        1896
+      ],
+      "IUniswapV3PoolActions": [
+        2006
+      ],
+      "IUniswapV3PoolDerivedState": [
+        2037
+      ],
+      "IUniswapV3PoolEvents": [
+        2156
+      ],
+      "IUniswapV3PoolImmutables": [
+        2196
+      ],
+      "IUniswapV3PoolOwnerActions": [
+        2222
+      ],
+      "IUniswapV3PoolState": [
+        2330
       ]
     },
-    "id": 3590,
+    "id": 3899,
     "license": "GPL-3.0-or-later",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 3582,
+        "id": 3885,
         "literals": [
           "solidity",
           "^",
@@ -151,7 +278,19 @@
           ".0"
         ],
         "nodeType": "PragmaDirective",
-        "src": "45:23:17"
+        "src": "45:23:25"
+      },
+      {
+        "absolutePath": "@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol",
+        "file": "@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol",
+        "id": 3886,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 3899,
+        "sourceUnit": 1897,
+        "src": "69:66:25",
+        "symbolAliases": [],
+        "unitAlias": ""
       },
       {
         "abstract": false,
@@ -160,48 +299,110 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "fullyImplemented": false,
-        "id": 3589,
+        "id": 3898,
         "linearizedBaseContracts": [
-          3589
+          3898
         ],
         "name": "IOracle",
-        "nameLocation": "80:7:17",
+        "nameLocation": "148:7:25",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "documentation": {
-              "id": 3583,
+              "id": 3887,
               "nodeType": "StructuredDocumentation",
-              "src": "94:59:17",
+              "src": "162:59:25",
               "text": " @return price WAD-scaled - 18 dec places"
             },
-            "functionSelector": "a3e6ba94",
-            "id": 3588,
+            "functionSelector": "3d3c18a4",
+            "id": 3897,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "latestPrice",
-            "nameLocation": "167:11:17",
+            "nameLocation": "235:11:25",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 3584,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "178:2:17"
-            },
-            "returnParameters": {
-              "id": 3587,
+              "id": 3893,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3586,
+                  "id": 3890,
+                  "mutability": "mutable",
+                  "name": "pool",
+                  "nameLocation": "262:4:25",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3897,
+                  "src": "247:19:25",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IUniswapV3Pool_$1896",
+                    "typeString": "contract IUniswapV3Pool"
+                  },
+                  "typeName": {
+                    "id": 3889,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 3888,
+                      "name": "IUniswapV3Pool",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 1896,
+                      "src": "247:14:25"
+                    },
+                    "referencedDeclaration": 1896,
+                    "src": "247:14:25",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IUniswapV3Pool_$1896",
+                      "typeString": "contract IUniswapV3Pool"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 3892,
+                  "mutability": "mutable",
+                  "name": "amountInToken",
+                  "nameLocation": "276:13:25",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3897,
+                  "src": "268:21:25",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint128",
+                    "typeString": "uint128"
+                  },
+                  "typeName": {
+                    "id": 3891,
+                    "name": "uint128",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "268:7:25",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint128",
+                      "typeString": "uint128"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "246:44:25"
+            },
+            "returnParameters": {
+              "id": 3896,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3895,
                   "mutability": "mutable",
                   "name": "price",
-                  "nameLocation": "209:5:17",
+                  "nameLocation": "319:5:25",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3588,
-                  "src": "204:10:17",
+                  "scope": 3897,
+                  "src": "314:10:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -209,10 +410,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 3585,
+                    "id": 3894,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "204:4:17",
+                    "src": "314:4:25",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -221,21 +422,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "203:12:17"
+              "src": "313:12:25"
             },
-            "scope": 3589,
-            "src": "158:58:17",
+            "scope": 3898,
+            "src": "226:100:25",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 3590,
-        "src": "70:148:17",
+        "scope": 3899,
+        "src": "138:190:25",
         "usedErrors": []
       }
     ],
-    "src": "45:174:17"
+    "src": "45:284:25"
   },
   "compiler": {
     "name": "solc",
@@ -243,11 +444,11 @@
   },
   "networks": {},
   "schemaVersion": "3.4.3",
-  "updatedAt": "2021-12-26T23:22:06.740Z",
+  "updatedAt": "2021-12-30T18:11:28.781Z",
   "devdoc": {
     "kind": "dev",
     "methods": {
-      "latestPrice()": {
+      "latestPrice(address,uint128)": {
         "returns": {
           "price": "WAD-scaled - 18 dec places"
         }

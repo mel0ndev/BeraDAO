@@ -15,8 +15,9 @@
 ----> 0x1e3d6eab4bcf24bcd04721caa11c478a2e59852d  <----
 
 ### DOING
- - Testing new oracle pricing logic
-
+ - REFACTOR
+    - code base is pretty dogshit and unoptimized
+    - probably takes a week or two?  
 
 ### TESTING
   - Standard Pool Testing:
