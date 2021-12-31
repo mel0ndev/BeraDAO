@@ -10,6 +10,11 @@
 				"internalType": "contract BeraWrapper",
 				"name": "_beraWrapper",
 				"type": "address"
+			},
+			{
+				"internalType": "contract TWAPOracle",
+				"name": "_twapOracle",
+				"type": "address"
 			}
 		],
 		"stateMutability": "nonpayable",
@@ -67,12 +72,7 @@
 			},
 			{
 				"internalType": "uint256",
-				"name": "_userShortID",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "priceAtClose",
+				"name": "userShortID",
 				"type": "uint256"
 			}
 		],
@@ -131,6 +131,35 @@
 				"internalType": "address",
 				"name": "liquidator",
 				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "shortID",
+				"type": "uint256"
+			}
+		],
+		"name": "getTokenAndFeeShortedByUser",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "token",
+				"type": "address"
+			},
+			{
+				"internalType": "uint24",
+				"name": "fee",
+				"type": "uint24"
 			}
 		],
 		"stateMutability": "view",
@@ -244,12 +273,12 @@
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "user",
+				"name": "userUnderwater",
 				"type": "address"
 			},
 			{
 				"internalType": "address",
-				"name": "to",
+				"name": "liquidator",
 				"type": "address"
 			},
 			{
@@ -421,6 +450,19 @@
 		"type": "function"
 	},
 	{
+		"inputs": [],
+		"name": "twapOracle",
+		"outputs": [
+			{
+				"internalType": "contract TWAPOracle",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "address",
@@ -458,7 +500,7 @@
 			},
 			{
 				"internalType": "uint256",
-				"name": "_userShortID",
+				"name": "userShortID",
 				"type": "uint256"
 			}
 		],

@@ -146,7 +146,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -170,7 +171,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -194,7 +196,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -207,7 +210,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -246,7 +250,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -259,7 +264,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -362,7 +368,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -381,7 +388,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -24337,8 +24345,8 @@
     "1": {
       "events": {},
       "links": {},
-      "address": "0x1B00B497C2763abD0Dfd3796eFEaC84dA8F76d2c",
-      "transactionHash": "0xd639b863102436b0e1f496b4aae8bff30a9a47feb0cf8b77445d2617bc9df5a8"
+      "address": "0x9f88e0951bBeE2104F89F223163B50B9163c38e7",
+      "transactionHash": "0x21daf6cd6aaee95085f9eded26db4e35ef25770ba8485cba04674ac942158b15"
     },
     "137": {
       "events": {},
@@ -24354,7 +24362,8 @@
     }
   },
   "schemaVersion": "3.4.3",
-  "updatedAt": "2021-12-30T18:11:28.756Z",
+  "updatedAt": "2021-12-31T18:17:04.418Z",
+  "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
     "methods": {

@@ -131,8 +131,8 @@ contract BeraPoolStandardRisk is ERC1155Holder {
                 //TEST ONLY
                 uint priceAtWrap =
                     twapOracle.latestPrice(
-                        IUniswapV3Pool(twapOracle.getPoolForTWAP(tokenToShort, poolFee)),
-                        uint128(amount)
+                        twapOracle.getPoolForTWAP(tokenToShort, poolFee),
+                        tokenToShort
                     );
 
                 //execute the second swap and transfer funds to pool for holding
@@ -172,8 +172,8 @@ contract BeraPoolStandardRisk is ERC1155Holder {
         //get entry price by shortID and subtract by current price
         (address token, uint24 fee) = getTokenAndFeeShortedByUser(userUnderwater, shortID);
         uint currentPrice = twapOracle.latestPrice(
-                IUniswapV3Pool(twapOracle.getPoolForTWAP(token, fee)),
-                uint128(getUserShortBalance(userUnderwater, shortID))
+                twapOracle.getPoolForTWAP(token, fee),
+                token
             );
         uint drawdown = getUserEntryPrice(userUnderwater, shortID) - currentPrice;
         //give the users a 5% buffer on their deposit amount before they can be liquidated
@@ -234,12 +234,11 @@ contract BeraPoolStandardRisk is ERC1155Holder {
         public {
             require(user == msg.sender, "CLOSE: Not your position");
             //get price at pool for shortBal of positionID
+            (address token, uint24 fee) = getTokenAndFeeShortedByUser(user, userShortID);
             uint priceAtClose = twapOracle.latestPrice(
-                IUniswapV3Pool(twapOracle.getPoolForTWAP(
-                    users[user].tokenShortedByPositionID[userShortID],
-                    users[user].poolFeeByPositionID[userShortID])
-                ), uint128(users[user].userShortBalanceByID[userShortID])
-            );
+                    twapOracle.getPoolForTWAP(token, fee),
+                    token
+                );
             beraWrapper.unwrapPosition(user, userShortID);
 
             //calculate position balance using entryPrice - current price

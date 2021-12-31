@@ -2,19 +2,14 @@
 	{
 		"inputs": [
 			{
-				"internalType": "contract IUniswapV3Pool",
-				"name": "pool",
+				"internalType": "contract IUniswapV3Factory",
+				"name": "factory",
 				"type": "address"
 			},
 			{
 				"internalType": "uint256",
 				"name": "tokenToPrice",
 				"type": "uint256"
-			},
-			{
-				"internalType": "int256",
-				"name": "decimalPlaces",
-				"type": "int256"
 			}
 		],
 		"stateMutability": "nonpayable",
@@ -22,7 +17,7 @@
 	},
 	{
 		"inputs": [],
-		"name": "UNISWAP_TWAP_PERIOD",
+		"name": "TWAP_PERIOD",
 		"outputs": [
 			{
 				"internalType": "uint32",
@@ -34,7 +29,42 @@
 		"type": "function"
 	},
 	{
-		"inputs": [],
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "tokenA",
+				"type": "address"
+			},
+			{
+				"internalType": "uint24",
+				"name": "fee",
+				"type": "uint24"
+			}
+		],
+		"name": "getPoolForTWAP",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "pool",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "token0",
+				"type": "address"
+			}
+		],
 		"name": "latestPrice",
 		"outputs": [
 			{
@@ -48,12 +78,12 @@
 	},
 	{
 		"inputs": [],
-		"name": "uniswapScaleFactor",
+		"name": "uniswapFactory",
 		"outputs": [
 			{
-				"internalType": "uint128",
+				"internalType": "contract IUniswapV3Factory",
 				"name": "",
-				"type": "uint128"
+				"type": "address"
 			}
 		],
 		"stateMutability": "view",
@@ -67,19 +97,6 @@
 				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "uniswapV3Pool",
-		"outputs": [
-			{
-				"internalType": "contract IUniswapV3Pool",
-				"name": "",
-				"type": "address"
 			}
 		],
 		"stateMutability": "view",
