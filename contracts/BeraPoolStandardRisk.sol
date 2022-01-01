@@ -12,6 +12,7 @@ import "@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol";
 import "./BeraWrapper.sol";
 import "./ancillary/PnLCalculator.sol";
 import "./ancillary/TWAPoracle.sol";
+import "./ancillary/SwapOracle.sol";
 
 
 contract BeraPoolStandardRisk is ERC1155Holder {
@@ -44,14 +45,17 @@ contract BeraPoolStandardRisk is ERC1155Holder {
     ISwapRouter public immutable swapRouter;
     BeraWrapper public beraWrapper;
     TWAPOracle public twapOracle;
+    SwapOracle public swapOracle;
 
     constructor(ISwapRouter _swapRouter,
         BeraWrapper _beraWrapper,
-        TWAPOracle _twapOracle) { //solhint-disable func-visibility
+        TWAPOracle _twapOracle,
+        SwapOracle _swapOracle) { //solhint-disable func-visibility
         owner = msg.sender;
         swapRouter = _swapRouter;
         beraWrapper = _beraWrapper;
         twapOracle = _twapOracle;
+        swapOracle = _swapOracle;
     }
 
     function depositCollateral(uint amount, address collateral) external {
@@ -78,7 +82,7 @@ contract BeraPoolStandardRisk is ERC1155Holder {
         IERC20(DAI_ADDRESS).transfer(msg.sender, amount);
     }
 
-    //used to claim the profit rewards from collecting trader losses
+    //used to claim the profit rewards from collecting trader losses in this pool
     function claimRewards() external {
         sendOwedProfits(msg.sender);
     }
@@ -87,7 +91,7 @@ contract BeraPoolStandardRisk is ERC1155Holder {
     // amount refers to how much dai to swap for amountOut of the token the user
     // wants to short
     //
-    // will likely have to split the logic for the function up, he's getting pretty chonky
+    // will likely have to split the logic for the function up, she's getting pretty chonky
     function swapAndShortStandard(
             uint amount,
             address tokenToShort,
@@ -126,13 +130,12 @@ contract BeraPoolStandardRisk is ERC1155Holder {
                 //execute the frist swap
                 amountOut = swapRouter.exactInputSingle(params);
 
-                //Call twapPriceOracle here or find a better way to capture price
-                //TODO: Price wrapping
-                //TEST ONLY
+                //get TWAP price (3 min)
+                //destructure pool request
                 uint priceAtWrap =
-                    twapOracle.latestPrice(
-                        twapOracle.getPoolForTWAP(tokenToShort, poolFee),
-                        tokenToShort
+                    swapOracle.getSwapPrice(
+                        tokenToShort,
+                        poolFee
                     );
 
                 //execute the second swap and transfer funds to pool for holding
@@ -171,9 +174,9 @@ contract BeraPoolStandardRisk is ERC1155Holder {
     function liquidateUser(address userUnderwater, address liquidator, uint shortID) external {
         //get entry price by shortID and subtract by current price
         (address token, uint24 fee) = getTokenAndFeeShortedByUser(userUnderwater, shortID);
-        uint currentPrice = twapOracle.latestPrice(
-                twapOracle.getPoolForTWAP(token, fee),
-                token
+        uint currentPrice = swapOracle.getSwapPrice(
+                token,
+                fee
             );
         uint drawdown = getUserEntryPrice(userUnderwater, shortID) - currentPrice;
         //give the users a 5% buffer on their deposit amount before they can be liquidated
@@ -233,12 +236,14 @@ contract BeraPoolStandardRisk is ERC1155Holder {
         uint userShortID)
         public {
             require(user == msg.sender, "CLOSE: Not your position");
+
             //get price at pool for shortBal of positionID
             (address token, uint24 fee) = getTokenAndFeeShortedByUser(user, userShortID);
-            uint priceAtClose = twapOracle.latestPrice(
-                    twapOracle.getPoolForTWAP(token, fee),
-                    token
+            uint priceAtClose = swapOracle.getSwapPrice(
+                    token,
+                    fee
                 );
+
             beraWrapper.unwrapPosition(user, userShortID);
 
             //calculate position balance using entryPrice - current price

@@ -18,27 +18,30 @@ const beraPoolStandardRiskABI = require('./BeraPoolStandardRisk.json');
 const beraWrapperABI = require('./BeraWrapper.json');
 const beraPoolABI = require('./BeraPool.json');
 const oracleABI = require('./oracleABI.json');
+const swapOracleABI = require('./swapOracleABI.json');
 
 //load contract addresses
 //mainnet
 const daiAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
 const wethAddress = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
 const routerAddress = "0xE592427A0AEce92De3Edee1F18E0157C05861564";
-const dpxAddress = "0x0ff5A8451A839f5F0BB3562689D9A44089738D11"
+const dpxAddress = '0x0ff5A8451A839f5F0BB3562689D9A44089738D11';
+const fttAddress = '0x50D1c9771902476076eCFc8B2A83Ad6b9355a4c9';
 
 //locals
-const beraWrapperAddress = '0x9f88e0951bBeE2104F89F223163B50B9163c38e7';
-const twapOracleAddress = '0xcc77E311D3640b2754852C5F0FF8eb4A613Fb51e';
-const beraPoolStandardRiskAddress = '0x29eaC87f8B706b4949cf5F9808F59b0383bC4385';
+const beraWrapperAddress = '0x7906896a784226C9E8Fc32032db665832EB5351D';
+const twapOracleAddress = '0x017719C4d9C3ECcC78fa1b7fa1D2254Ac79428A9';
+const swapOracleAddress = '0x1Ad982e03973d6d2cBa104a0f0DbFC02FCeB7b7f';
+const beraPoolStandardRiskAddress = '0xe67c7Da18E20Df11B48f206219F7c8A128ff3FE3';
 
 //load accounts
 const unlockedAccount = '0x2feb1512183545f48f6b9c5b4ebfcaf49cfca6f3';
-const recipient = '0x9a2f686B045173F4d3403DA74ffbeb7A7F17112e';
-const privateKey = '0xb14be080848ceb50df3272341ef9b871f1ec54f2063f75b3421937bde527f36e';
+const recipient = '0x43321927F721eFC37fF5F1401C657B0358E3A5a6';
+const privateKey = '0x4f7b40d265fb97e3f5e107d656c5bdbe83ae6dc236377192a2e973f99defdf37';
 
-const account1 = '0xf7281A572E83AB85BF3F23aDE4844E23ac1a456D';
-const account2 = '0x993348E6ED2a6381FdDD07CF3493EDF2244503e3';
-const account3 = '0xd843Af3b2c1AE36E0E8A723573C2E86a68fc78CC';
+const account1 = '0x3A031386D02810Ef0c44115249dCc29D960fFcBA';
+const account2 = '0xB390810CA54469112B8e0C8eb4a75c3BdED3C3D3';
+const account3 = '0x16659cdFB718fA25f96aEDc32bE45d3eB2Ad65e2';
 let userArray = [];
 userArray.push(account1, account2, account3);
 
@@ -56,6 +59,11 @@ let beraPoolStandardRisk = new web3.eth.Contract(
 let oracle = new web3.eth.Contract(
   oracleABI,
   twapOracleAddress
+);
+
+let swapOracle = new web3.eth.Contract(
+  swapOracleABI,
+  swapOracleAddress
 );
 
 let routerContract = new web3.eth.Contract(
@@ -186,11 +194,8 @@ async function shortInstance() {
 await dai.methods.approve(beraPoolStandardRiskAddress, '1000000000000000000000').send({from: recipient});
 await beraPoolStandardRisk.methods.depositCollateral('1000000000000000000000', daiAddress).send({from: recipient, gas: 6721975});
 
-let oraclePool = await oracle.methods.getPoolForTWAP(dpxAddress, 1000).call();
-console.log(oraclePool);
-
-let oraclePrice = await oracle.methods.latestPrice(oraclePool, wethAddress).call();
-console.log(oraclePrice);
+let swapOraclePrice = await swapOracle.methods.getSwapPrice(wethAddress, 3000).call();
+console.log(swapOraclePrice);
 
 // await dai.methods.approve(beraPoolStandardRiskAddress, '1000000000000000000000').send({from: recipient, gas: 238989});
 // //first test that users cannot short unless they have deposited funds

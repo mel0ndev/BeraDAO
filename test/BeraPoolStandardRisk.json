@@ -15,6 +15,11 @@
 				"internalType": "contract TWAPOracle",
 				"name": "_twapOracle",
 				"type": "address"
+			},
+			{
+				"internalType": "contract SwapOracle",
+				"name": "_swapOracle",
+				"type": "address"
 			}
 		],
 		"stateMutability": "nonpayable",
@@ -434,6 +439,19 @@
 			}
 		],
 		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "swapOracle",
+		"outputs": [
+			{
+				"internalType": "contract SwapOracle",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
