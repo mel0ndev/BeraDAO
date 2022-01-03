@@ -202,8 +202,8 @@ let ethPrice = await swapOracle.methods.getSwapPrice(wethAddress, 3000).call();
 let oracleInitial = await oracle.methods.latestPrice(poolAddress[0], 1).call();
 console.log(oracleInitial * ethPrice / 1e36);
 
-// let swapETHPrice = await swapOracle.methods.getSwapPrice(jewelAddress, 10000).call();
-// console.log(swapETHPrice / 1e36);
+let swapETHPrice = await swapOracle.methods.getSwapPrice(jewelAddress, 10000).call();
+console.log(swapETHPrice / 1e36);
 
 
 // let swapOraclePrice = await swapOracle.methods.getSwapPrice(jewelAddress, 1000).call();

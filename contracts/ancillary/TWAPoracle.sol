@@ -51,10 +51,12 @@ contract TWAPOracle is IOracle {
     so we should pass in `tokenToPrice == 1'.
     // ^^^^^^^^^^^^^ this is handled by the swapOracle, so use that for pricing data
     */
-    function latestPrice(address pool, uint tokenToPrice)
+    function latestPrice(address pool)
         public virtual override view returns (uint price) {
-            require(tokenToPrice == 0 || tokenToPrice == 1, "tokenToPrice not 0 or 1");
+            //keeping this here for now in case a special case token appears with less than 18 decimals
+            //will deal with that later bro fuck it
             uint128 uniswapScaleFactor = uint128(WAD);
+
             int24 twapTick = OracleLibrary.consult(pool, TWAP_PERIOD);
 
             //if the pool has dai or weth as token0 ie. DAI/USDC or WETH/USDC
@@ -74,11 +76,5 @@ contract TWAPOracle is IOracle {
                 IUniswapV3Pool(pool).token0(),
                 IUniswapV3Pool(pool).token1()
             );
-
-
-    //solhint-disable
-    //             price = tokenToPrice == 1 ?
-    //         OracleLibrary.getQuoteAtTick(twapTick, uniswapScaleFactor, IUniswapV3Pool(pool).token1(), IUniswapV3Pool(pool).token0()) :
-    //         OracleLibrary.getQuoteAtTick(twapTick, uniswapScaleFactor, IUniswapV3Pool(pool).token0(), IUniswapV3Pool(pool).token1());
-    }
+        }
 }
