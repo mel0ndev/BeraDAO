@@ -66,11 +66,6 @@
 						"type": "address"
 					},
 					{
-						"internalType": "address",
-						"name": "token0",
-						"type": "address"
-					},
-					{
 						"internalType": "uint256",
 						"name": "tokenToPrice",
 						"type": "uint256"
@@ -104,7 +99,7 @@
 		"devdoc": {
 			"kind": "dev",
 			"methods": {
-				"latestPrice(address,address,uint256)": {
+				"latestPrice(address,uint256)": {
 					"params": {
 						"tokenToPrice": "Which token we're pricing (0 or 1) relative to the other. Eg, for the USDC/ETH pool (token0 = USDC, token1 = ETH), we want the price of ETH in terms of USDC, not vice versa: so we should pass in `tokenToPrice == 1'. // ^^^^^^^^^^^^^ this is handled by the swapOracle, so use that for pricing data"
 					}
@@ -118,7 +113,7 @@
 				"constructor": {
 					"notice": "Example pools to pass in: USDC/ETH (0.05%): 0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640, 1, -12 ETH/USDT (0.05%): 0x11b815efb8f581194ae79006d24e0d814b7697f6, 0, -12"
 				},
-				"latestPrice(address,address,uint256)": {
+				"latestPrice(address,uint256)": {
 					"notice": "decimalPlaces How many decimal places are already included in the numbers Uniswap returns.  So, `decimalPlaces = 3` means when Uniswap returns 12345, it actually represents 12.345 (ie, the last three digits were the decimal part). `decimalPlaces = -3` means when Uniswap returns 12345, it actually represents 12,345,000."
 				}
 			},
@@ -246,19 +241,19 @@
 			]
 		},
 		"contracts/ancillary/IOracle.sol": {
-			"keccak256": "0xcdbae3d74d374548576f040c825c3caace16ec0fd2c0de0cf629bbb32581f87d",
+			"keccak256": "0xa41a8286a44d25dd4fd881751973dece27ff2a81adc8eb0711a30f4744358e17",
 			"license": "GPL-3.0-or-later",
 			"urls": [
-				"bzz-raw://5f0365bb96518a30aa22c0f23a21e04f0c54f0ddf52ed1b3201f5b64e9ce1906",
-				"dweb:/ipfs/QmZGqNwQ8U3qQLfVc2iRquJ39Nk5h4zj4BZXuZnfKGdkXn"
+				"bzz-raw://5f167dcadaee993611493881e03419bbf9465d16d47bcbbb21f0384eab701330",
+				"dweb:/ipfs/QmXoScKSPiPcr4dbD9N1pmVE1CpQ39QPpSeEHW9zfcscvK"
 			]
 		},
 		"contracts/ancillary/TWAPoracle.sol": {
-			"keccak256": "0x71b23a45097fb73b7ef3c3888f9f1ed3abfcf5bcad594748c60052c75ed36e21",
+			"keccak256": "0xc06de25cda645392dd07d4d3b57668306438f245e45c50f398391817f65a7eb0",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://1fbec5576d7d928e44eb4cf0913fbbec6de64bf15cfe16d13c19f2fd1aeaf2cc",
-				"dweb:/ipfs/QmQ1HmYqJUEkjAFdbS3XTyV3dM81cTzr3B433L89usjVuD"
+				"bzz-raw://c9351fd13986a8b753f381f38aea579c36047a6f86ad9275b60639fe6799d6a8",
+				"dweb:/ipfs/QmdFRuxA9UhLLmfjJeApScYVw2SoyqMxew37LvmXZDVKDr"
 			]
 		},
 		"contracts/uniswapv08/v3-core/FullMath.sol": {

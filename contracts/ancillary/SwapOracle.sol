@@ -23,13 +23,14 @@ contract SwapOracle {
     function getSwapPrice(address token0, uint24 fee) external view
         returns(uint quote) {
             //first we get the price of weth in dai for the most popular fee pool -- 0.3%
-            uint wethPrice = twapOracle.latestPrice(WETH_DAI_POOL, WETH_ADDRESS, 1);
+            uint wethPrice = twapOracle.latestPrice(WETH_DAI_POOL, 1);
             //check for dai path, otherwise get price in weth
             (address pool, uint8 returnCode) = twapOracle.getPoolForTWAP(token0, fee);
             if (returnCode == 1) { //if return is 1 then pool == weth pool
-                uint tokenPriceInWeth = twapOracle.latestPrice(pool, token0, 0);
+                //worked for FTT/WETH but not for WETH/WRLD 
+                uint tokenPriceInWeth = twapOracle.latestPrice(pool, 0);
                 return quote = tokenPriceInWeth * wethPrice;
             } //else we return quote == dai pool price
-            return quote = twapOracle.latestPrice(pool, token0, 1);
+            return quote = twapOracle.latestPrice(pool, 1);
         }
 }

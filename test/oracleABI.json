@@ -60,11 +60,6 @@
 				"type": "address"
 			},
 			{
-				"internalType": "address",
-				"name": "token0",
-				"type": "address"
-			},
-			{
 				"internalType": "uint256",
 				"name": "tokenToPrice",
 				"type": "uint256"

@@ -51,23 +51,34 @@ contract TWAPOracle is IOracle {
     so we should pass in `tokenToPrice == 1'.
     // ^^^^^^^^^^^^^ this is handled by the swapOracle, so use that for pricing data
     */
-    function latestPrice(address pool, address token0, uint tokenToPrice)
+    function latestPrice(address pool, uint tokenToPrice)
         public virtual override view returns (uint price) {
             require(tokenToPrice == 0 || tokenToPrice == 1, "tokenToPrice not 0 or 1");
-
-            int decimalPlaces = int8(ERC20(token0).decimals());
-
-            if (decimalPlaces == 0) {
-                decimalPlaces = 18;
-            }
-
-            uint128 uniswapScaleFactor = uint128(decimalPlaces >= 0 ?
-                WAD / 10 ** uint(decimalPlaces) :
-                WAD * 10 ** uint(-decimalPlaces));
-
+            uint128 uniswapScaleFactor = uint128(WAD);
             int24 twapTick = OracleLibrary.consult(pool, TWAP_PERIOD);
-                price = tokenToPrice == 1 ? //solhint-disable
-            OracleLibrary.getQuoteAtTick(twapTick, uniswapScaleFactor, IUniswapV3Pool(pool).token1(), IUniswapV3Pool(pool).token0()) :
-            OracleLibrary.getQuoteAtTick(twapTick, uniswapScaleFactor, IUniswapV3Pool(pool).token0(), IUniswapV3Pool(pool).token1());
+
+            //if the pool has dai or weth as token0 ie. DAI/USDC or WETH/USDC
+            if (DAI_ADDRESS == IUniswapV3Pool(pool).token0() ||
+                WETH_ADDRESS == IUniswapV3Pool(pool).token0()) {
+                return price = OracleLibrary.getQuoteAtTick(
+                    twapTick,
+                    uniswapScaleFactor,
+                    IUniswapV3Pool(pool).token1(),
+                    IUniswapV3Pool(pool).token0()
+                );
+            }
+            //else we treturn dai or weth as token1 ie FTT/WETH or RAI/DAI
+            return price = OracleLibrary.getQuoteAtTick(
+                twapTick,
+                uniswapScaleFactor,
+                IUniswapV3Pool(pool).token0(),
+                IUniswapV3Pool(pool).token1()
+            );
+
+
+    //solhint-disable
+    //             price = tokenToPrice == 1 ?
+    //         OracleLibrary.getQuoteAtTick(twapTick, uniswapScaleFactor, IUniswapV3Pool(pool).token1(), IUniswapV3Pool(pool).token0()) :
+    //         OracleLibrary.getQuoteAtTick(twapTick, uniswapScaleFactor, IUniswapV3Pool(pool).token0(), IUniswapV3Pool(pool).token1());
     }
 }

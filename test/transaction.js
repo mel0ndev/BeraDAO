@@ -27,21 +27,22 @@ const wethAddress = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
 const routerAddress = "0xE592427A0AEce92De3Edee1F18E0157C05861564";
 const dpxAddress = '0x0ff5A8451A839f5F0BB3562689D9A44089738D11';
 const fttAddress = '0x50D1c9771902476076eCFc8B2A83Ad6b9355a4c9';
+const jewelAddress = '0xd5d86fc8d5c0ea1ac1ac5dfab6e529c9967a45e9';
 
 //locals
-const beraWrapperAddress = '0x7906896a784226C9E8Fc32032db665832EB5351D';
-const twapOracleAddress = '0x017719C4d9C3ECcC78fa1b7fa1D2254Ac79428A9';
-const swapOracleAddress = '0x1Ad982e03973d6d2cBa104a0f0DbFC02FCeB7b7f';
-const beraPoolStandardRiskAddress = '0xe67c7Da18E20Df11B48f206219F7c8A128ff3FE3';
+const beraWrapperAddress = '0x7a33Eea201a67701A7D93e1D3efF4B145863355B';
+const twapOracleAddress = '0x72AFa5058d90f34b79edd39522Fe541D0d9C9DB8';
+const swapOracleAddress = '0x1925d965cbbcc47b7454a0cec536B42901aC47a7';
+const beraPoolStandardRiskAddress = '0x36c2cB7ad916Fe17bA4e6fcB80B785Ab9995026F';
 
 //load accounts
 const unlockedAccount = '0x2feb1512183545f48f6b9c5b4ebfcaf49cfca6f3';
-const recipient = '0x43321927F721eFC37fF5F1401C657B0358E3A5a6';
-const privateKey = '0x4f7b40d265fb97e3f5e107d656c5bdbe83ae6dc236377192a2e973f99defdf37';
+const recipient = '0x35Fc2cf9a75AEc472a83190B07a348014328D6BB';
+const privateKey = '0x1b934f1ee1262db8e7402608a19ed9888b6cf5f28d398f764b024a9e07e167f4';
 
-const account1 = '0x3A031386D02810Ef0c44115249dCc29D960fFcBA';
-const account2 = '0xB390810CA54469112B8e0C8eb4a75c3BdED3C3D3';
-const account3 = '0x16659cdFB718fA25f96aEDc32bE45d3eB2Ad65e2';
+const account1 = '0xd45ADD1b95d03F75993b2Fc9285Eed7fBc8c759e';
+const account2 = '0x4aC3aCF727Ea59d30D2D6A3D02880550a334E193';
+const account3 = '0x0899757421680dD02632CC2793143362c1DD2d38';
 let userArray = [];
 userArray.push(account1, account2, account3);
 
@@ -182,7 +183,7 @@ daiBalance = await dai.methods.balanceOf(recipient).call();
 console.log(`New Balance: ${daiBalance / 1e18} DAI`);
 
 //call local contracts here in main function
-await addUsers();
+//await addUsers();
 await shortInstance();
 }
 
@@ -194,8 +195,19 @@ async function shortInstance() {
 await dai.methods.approve(beraPoolStandardRiskAddress, '1000000000000000000000').send({from: recipient});
 await beraPoolStandardRisk.methods.depositCollateral('1000000000000000000000', daiAddress).send({from: recipient, gas: 6721975});
 
-let swapOraclePrice = await swapOracle.methods.getSwapPrice(wethAddress, 3000).call();
-console.log(swapOraclePrice);
+let poolAddress = await oracle.methods.getPoolForTWAP(jewelAddress, 10000).call();
+console.log(poolAddress);
+let ethPrice = await swapOracle.methods.getSwapPrice(wethAddress, 3000).call();
+
+let oracleInitial = await oracle.methods.latestPrice(poolAddress[0], 1).call();
+console.log(oracleInitial * ethPrice / 1e36);
+
+// let swapETHPrice = await swapOracle.methods.getSwapPrice(jewelAddress, 10000).call();
+// console.log(swapETHPrice / 1e36);
+
+
+// let swapOraclePrice = await swapOracle.methods.getSwapPrice(jewelAddress, 1000).call();
+// console.log(swapOraclePrice);
 
 // await dai.methods.approve(beraPoolStandardRiskAddress, '1000000000000000000000').send({from: recipient, gas: 238989});
 // //first test that users cannot short unless they have deposited funds
