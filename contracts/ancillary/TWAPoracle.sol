@@ -38,19 +38,6 @@ contract TWAPOracle is IOracle {
         return (pool, 0);
     }
 
-    // We want latestPrice() to return WAD-fixed-point (18-decimal-place) numbers.
-    // So, eg, if Uniswap's output numbers
-    // include 3 decimal places (ie, are already scaled by 10**3), we need to scale them by another 10**15:
-    /** decimalPlaces How many decimal places are already included in the numbers Uniswap returns.  So,
-    * `decimalPlaces = 3` means when Uniswap returns 12345,
-    it actually represents 12.345 (ie, the last three digits were the
-    * decimal part). `decimalPlaces = -3` means when Uniswap returns 12345, it actually represents 12,345,000.
-    * @param tokenToPrice Which token we're pricing (0 or 1) relative to the other.
-    Eg, for the USDC/ETH pool (token0 = USDC,
-    * token1 = ETH), we want the price of ETH in terms of USDC, not vice versa:
-    so we should pass in `tokenToPrice == 1'.
-    // ^^^^^^^^^^^^^ this is handled by the swapOracle, so use that for pricing data
-    */
     function latestPrice(address pool)
         public virtual override view returns (uint price) {
             //keeping this here for now in case a special case token appears with less than 18 decimals

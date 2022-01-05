@@ -28,6 +28,7 @@ const routerAddress = "0xE592427A0AEce92De3Edee1F18E0157C05861564";
 const dpxAddress = '0x0ff5A8451A839f5F0BB3562689D9A44089738D11';
 const fttAddress = '0x50D1c9771902476076eCFc8B2A83Ad6b9355a4c9';
 const jewelAddress = '0xd5d86fc8d5c0ea1ac1ac5dfab6e529c9967a45e9';
+const shibAddress = '0x28d4a32e275ebb5f16d14ef924281ddcade9a683';
 
 //locals
 const beraWrapperAddress = '0x7a33Eea201a67701A7D93e1D3efF4B145863355B';
@@ -37,12 +38,12 @@ const beraPoolStandardRiskAddress = '0x36c2cB7ad916Fe17bA4e6fcB80B785Ab9995026F'
 
 //load accounts
 const unlockedAccount = '0x2feb1512183545f48f6b9c5b4ebfcaf49cfca6f3';
-const recipient = '0x35Fc2cf9a75AEc472a83190B07a348014328D6BB';
-const privateKey = '0x1b934f1ee1262db8e7402608a19ed9888b6cf5f28d398f764b024a9e07e167f4';
+const recipient = '0x12DB380B8A119081ff3D60e6F6030bF449ddCBD8';
+const privateKey = '0x2c4a2e993ec7038e4c656ea0414cee910eb2db2c565cb41b15818ccaa8fcc9d2';
 
-const account1 = '0xd45ADD1b95d03F75993b2Fc9285Eed7fBc8c759e';
-const account2 = '0x4aC3aCF727Ea59d30D2D6A3D02880550a334E193';
-const account3 = '0x0899757421680dD02632CC2793143362c1DD2d38';
+const account1 = '0x7257fE6Bb53203f49629AfA890231702A82da72B';
+const account2 = '0x04d0fE3E87acfB96596E4B7CAd64E2a4CCBAbD6d';
+const account3 = '0xF0266dEB3407A53e75DCb93C29bdC0dD7b56dF81';
 let userArray = [];
 userArray.push(account1, account2, account3);
 
@@ -202,7 +203,7 @@ let ethPrice = await swapOracle.methods.getSwapPrice(wethAddress, 3000).call();
 let oracleInitial = await oracle.methods.latestPrice(poolAddress[0], 1).call();
 console.log(oracleInitial * ethPrice / 1e36);
 
-let swapETHPrice = await swapOracle.methods.getSwapPrice(jewelAddress, 10000).call();
+let swapETHPrice = await swapOracle.methods.getSwapPrice(shibAddress, 10000).call();
 console.log(swapETHPrice / 1e36);
 
 

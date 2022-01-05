@@ -7,5 +7,5 @@ interface IOracle {
     /**
      * @return price WAD-scaled - 18 dec places
      */
-    function latestPrice(address pool, uint tokenToPrice) external view returns (uint price);
+    function latestPrice(address pool) external view returns (uint price);
 }

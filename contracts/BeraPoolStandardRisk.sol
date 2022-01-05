@@ -164,8 +164,7 @@ contract BeraPoolStandardRisk is ERC1155Holder {
                 // inShort[msg.sender][userShortID[msg.sender]] = true;
                 users[msg.sender].isPositionInShort[users[msg.sender].userShortID] = true;
 
-                users[msg.sender].tokenShortedByPositionID[users[msg.sender].userShortID]
-                    = tokenToShort;
+                users[msg.sender].tokenShortedByPositionID[users[msg.sender].userShortID] = tokenToShort;
             }
 
     // if you are reading this comment, this is a way for you to make some money
@@ -246,10 +245,12 @@ contract BeraPoolStandardRisk is ERC1155Holder {
 
             beraWrapper.unwrapPosition(user, userShortID);
 
-            //calculate position balance using entryPrice - current price
+            //calculate position balance using entryPrice - current price * tradeSize
             //returnValue of 0 indicates a winning trade, while 1 indicates a loss
             (uint amountPNL, uint returnValue) =
-            PnLCalculator.calculatePNL(users[msg.sender].entryPrice[userShortID], priceAtClose);
+            PnLCalculator.calculatePNL(users[msg.sender].entryPrice[userShortID],
+                priceAtClose,
+                int(users[user].userShortBalanceByID[userShortID]));
 
             //if user has made money, we update their balance directly
             //keeping in mind that dai is always stored in this contract and will only be transfered
