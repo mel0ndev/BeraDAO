@@ -13,7 +13,6 @@ contract BeraWrapper is ERC1155 {
     mapping(uint => Position) public positionData;
 
     struct Position {
-        address positionOwner; //address of user that shorted
         address associatedPool; //standard or high risk pool
         uint shortAmount;
         address tokenShorted;
@@ -24,8 +23,7 @@ contract BeraWrapper is ERC1155 {
         owner = msg.sender;
     }
 
-    function wrapPosition(address positionOwner,
-                address associatedPool,
+    function wrapPosition(address associatedPool,
                 uint shortAmount,
                 address tokenShorted,
                 uint priceAtWrap)
@@ -34,46 +32,45 @@ contract BeraWrapper is ERC1155 {
                     positionIDTotal++;
 
                     positionData[positionIDTotal] = Position({
-                        positionOwner: positionOwner,
                         associatedPool: associatedPool,
                         shortAmount: shortAmount,
                         tokenShorted: tokenShorted,
                         priceAtWrap: priceAtWrap
                     });
 
-                    _mint(positionOwner, positionIDTotal, 1, "");
+                    _mint(msg.sender, positionIDTotal, 1, "");
                 }
 
-    function unwrapPosition(address positionOwner, uint positionID) external {
-        require(positionOwner == positionData[positionID].positionOwner,
-            "Wrapper: only the owner can unwrap the position");
+    function unwrapPosition(uint positionID) external {
+        // require(msg.sender == address(beraPoolStandardRisk),
+        //     "Wrapper: only the owner can unwrap the position");
 
         //we burn the token to release the funds
-        _burn(positionOwner, positionID, 1);
+        //broken rn
+        _burn(msg.sender, positionID, 1);
     }
 
     //SHOULD BE USED TO TRANSFER POSITIONS
-    //should be called from associated pool contract only (will have to add this later)
-    function transferPosition(address to, address from, uint _positionID, uint amount) external {
-        require(msg.sender == positionData[_positionID].positionOwner,
-            "Wrapper: only the owner can transfer a position");
-        require(from == positionData[_positionID].positionOwner,
-            "Wrapper: only the owner can transfer a position");
-
-        //send position
-        safeTransferFrom(to, from, _positionID, amount, "");
+    function transferPosition(address to, uint _positionID, uint amount) external {
+        //require(msg.sender == positionData[_positionID].positionOwner,
+            //"Wrapper: only the owner can transfer a position");
+            //check that msg.sender has the token in their balance
+        require(balanceOf(msg.sender, _positionID) == amount,
+            "Wrapper: not correct position or position size");
 
         //update new owner
-        //might have some security issues with this, come back and recheck this later
-		positionData[_positionID].positionOwner = to; 
+        //positionData[_positionID].positionOwner = to;
+
+        //send position
+        safeTransferFrom(to, msg.sender, _positionID, amount, "");
     }
 
     //if position happens to get sent without the transferPosition() func being called then
     //users can update it manually with this func
     function updatePosition(address newPositionOwner, uint _positionID) external {
-        if (ERC1155.balanceOf(newPositionOwner, _positionID) > 0) {
+        if (balanceOf(newPositionOwner, _positionID) > 0) {
             //update new owner
-            positionData[_positionID].positionOwner = newPositionOwner;
+            //positionData[_positionID].positionOwner = newPositionOwner;
         }
     }
 }

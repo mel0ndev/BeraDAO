@@ -31,19 +31,19 @@ const jewelAddress = '0xd5d86fc8d5c0ea1ac1ac5dfab6e529c9967a45e9';
 const shibAddress = '0x28d4a32e275ebb5f16d14ef924281ddcade9a683';
 
 //locals
-const beraWrapperAddress = '0x7a33Eea201a67701A7D93e1D3efF4B145863355B';
-const twapOracleAddress = '0x72AFa5058d90f34b79edd39522Fe541D0d9C9DB8';
-const swapOracleAddress = '0x1925d965cbbcc47b7454a0cec536B42901aC47a7';
-const beraPoolStandardRiskAddress = '0x36c2cB7ad916Fe17bA4e6fcB80B785Ab9995026F';
+let beraWrapperAddress = '0xcBF6F8192b10bBE44498e0B1480B9f275F7E4B4f';
+let twapOracleAddress = '0x0C11984667383ce0C874438BD031035B179651Ca';
+let swapOracleAddress = '0x066d2A7196e2545ff61CDa0925faE70208a1a724';
+let beraPoolStandardRiskAddress = '0x53395E74D07a98B4A4Bd07fC70917fFea168aa03';
 
 //load accounts
 const unlockedAccount = '0x2feb1512183545f48f6b9c5b4ebfcaf49cfca6f3';
-const recipient = '0x12DB380B8A119081ff3D60e6F6030bF449ddCBD8';
-const privateKey = '0x2c4a2e993ec7038e4c656ea0414cee910eb2db2c565cb41b15818ccaa8fcc9d2';
+const recipient = '0x3fb4033a7A2bB248D2414B3540CE28257FDe55aa';
+const privateKey = '0xb911aae099efc8a72b90c16f01c20d3a42a0724f5c5cfc2336d8b4d84faaad48';
 
-const account1 = '0x7257fE6Bb53203f49629AfA890231702A82da72B';
-const account2 = '0x04d0fE3E87acfB96596E4B7CAd64E2a4CCBAbD6d';
-const account3 = '0xF0266dEB3407A53e75DCb93C29bdC0dD7b56dF81';
+const account1 = '0x9E0Da84f46DeB90bbaE270331EA3971fE25F73Ee';
+const account2 = '0xAeEBcCc9fbf57cb9D7Bc47E661a52380150e4EA6';
+const account3 = '0xeb624D0d1d2600dfb15d7D19bD29667af8701C5F';
 let userArray = [];
 userArray.push(account1, account2, account3);
 
@@ -85,8 +85,8 @@ let dai = new web3.eth.Contract(
 
 let poolBalance2;
 let id;
-
 ////////////////////////////////////////////////////////////////////////////////
+
 
 
 async function main() {
@@ -184,7 +184,7 @@ daiBalance = await dai.methods.balanceOf(recipient).call();
 console.log(`New Balance: ${daiBalance / 1e18} DAI`);
 
 //call local contracts here in main function
-//await addUsers();
+await addUsers();
 await shortInstance();
 }
 
@@ -200,81 +200,79 @@ let poolAddress = await oracle.methods.getPoolForTWAP(jewelAddress, 10000).call(
 console.log(poolAddress);
 let ethPrice = await swapOracle.methods.getSwapPrice(wethAddress, 3000).call();
 
-let oracleInitial = await oracle.methods.latestPrice(poolAddress[0], 1).call();
+let oracleInitial = await oracle.methods.latestPrice(poolAddress[0]).call();
 console.log(oracleInitial * ethPrice / 1e36);
 
-let swapETHPrice = await swapOracle.methods.getSwapPrice(shibAddress, 10000).call();
+let swapETHPrice = await swapOracle.methods.getSwapPrice(jewelAddress, 10000).call();
 console.log(swapETHPrice / 1e36);
 
 
-// let swapOraclePrice = await swapOracle.methods.getSwapPrice(jewelAddress, 1000).call();
-// console.log(swapOraclePrice);
+await dai.methods.approve(beraPoolStandardRiskAddress, '1000000000000000000000').send({from: recipient, gas: 238989});
+//first test that users cannot short unless they have deposited funds
+await beraPoolStandardRisk.methods.swapAndShortStandard(
+  '1000000000000000000000',
+  wethAddress,
+  3000, //pool fee
+  0
+).send({
+  from: recipient,
+  to: beraPoolStandardRiskAddress,
+  gas: 900000
+});
 
-// await dai.methods.approve(beraPoolStandardRiskAddress, '1000000000000000000000').send({from: recipient, gas: 238989});
-// //first test that users cannot short unless they have deposited funds
-// await beraPoolStandardRisk.methods.swapAndShortStandard(
-//   '1000000000000000000000',
-//   wethAddress,
-//   3000, //pool fee
-//   0
-// ).send({
-//   from: recipient,
-//   to: beraPoolStandardRiskAddress,
-//   gas: 900000
-// });
-//
-// //priceAtWrap is passed in at $3000 hard coded into contract for testing right now
-//
-// let accountStruct = await beraPoolStandardRisk.methods.users(recipient).call();
-// console.log(accountStruct);
-//
-// //check balances to see if short worked as intended
-// let userShortBal = await beraPoolStandardRisk.methods.getUserShortBalance(recipient, 1).call();
-// console.log(`Short Balance for position: ${userShortBal / 1e18}`);
-//
-// let poolBalance = await dai.methods.balanceOf(beraPoolStandardRiskAddress).call();
-// console.log(`Total Pool Balance: ${poolBalance / 1e18}`);
-//
-// let entryPrice = await beraPoolStandardRisk.methods.getUserEntryPrice(recipient, 1).call();
-// console.log(`Entry Price at Position 1: ${entryPrice}`);
-//
-// let positionID = await beraWrapper.methods.positionIDTotal().call();
-// let positionData = await beraWrapper.methods.positionData(positionID).call();
-// console.log(positionData);
+//priceAtWrap is passed in at $3000 hard coded into contract for testing right now
+
+let accountStruct = await beraPoolStandardRisk.methods.users(recipient).call();
+console.log(accountStruct);
+
+//check balances to see if short worked as intended
+let userShortBal = await beraPoolStandardRisk.methods.getUserShortBalance(recipient, 1).call();
+console.log(`Short Balance for position: ${userShortBal / 1e18}`);
+
+let poolBalance = await dai.methods.balanceOf(beraPoolStandardRiskAddress).call();
+console.log(`Total Pool Balance: ${poolBalance / 1e18}`);
+
+let entryPrice = await beraPoolStandardRisk.methods.getUserEntryPrice(recipient, 1).call();
+console.log(`Entry Price at Position 1: ${entryPrice}`);
+
+let positionID = await beraWrapper.methods.positionIDTotal().call();
+let positionData = await beraWrapper.methods.positionData(positionID).call();
+console.log(positionData);
 
 
-// await beraPoolStandardRisk.methods.closeShortStandardPool(
-//   recipient,
-//   1 //user shortID
-// ).send({
-//   from: recipient,
-//   gas: 900000
-// });
-// console.log("Successful Close");
-//
-// //recheck balance of deposit balance of msg.sender
-// let profits = await beraPoolStandardRisk.methods.users(recipient).call();
-// let realprofits = profits.userDepositBalance;
-// console.log(`Deposit Amount after loss: ${realprofits / 1e18}`);
-// console.log('Profits have been added to the account!');
-//
-// //CURRENT ISSUES:
-// // deposit amounts in web3 and solidity do not match, missing decimals in one or the other
-// // and is causing problems with the result on the pnlCalc function
-//
-// let rewards = await beraPoolStandardRisk.methods.globalRewards().call();
-// console.log(`The global rewards variable is: ${rewards / 1e18}`);
-//
-// for (j = 0; j < userArray.length; j++) {
-//   let checkBal = await beraPoolStandardRisk.methods.users(userArray[j]).call();
-//     console.log(checkBal.userDepositBalance / 1e18);
-//   let pullBasedRewards = await beraPoolStandardRisk.methods.checkRewards(userArray[j]).call();
-//     console.log(`User has: ${pullBasedRewards / 1e18} available to withdraw`);
-// }
-//
-//
-// let oraclePrice = await oracle.methods.latestPrice().call();
-// console.log(oraclePrice);
+console.log("Successfully opened a position!");
+
+
+////////////////////////////////////////////////////////////////////////////////////////////
+
+await beraPoolStandardRisk.methods.closeShortStandardPool(
+  recipient,
+  1 //user shortID
+).send({
+  from: recipient,
+  gas: 900000
+});
+console.log("Successful Close");
+
+//recheck balance of deposit balance of msg.sender
+let profits = await beraPoolStandardRisk.methods.users(recipient).call();
+let realprofits = profits.userDepositBalance;
+console.log(`Deposit Amount after loss: ${realprofits / 1e18}`);
+console.log('Profits have been added to the account!');
+
+//CURRENT ISSUES:
+// deposit amounts in web3 and solidity do not match, missing decimals in one or the other
+// and is causing problems with the result on the pnlCalc function
+
+let rewards = await beraPoolStandardRisk.methods.globalRewards().call();
+console.log(`The global rewards variable is: ${rewards / 1e18}`);
+
+for (j = 0; j < userArray.length; j++) {
+  let checkBal = await beraPoolStandardRisk.methods.users(userArray[j]).call();
+    console.log(checkBal.userDepositBalance / 1e18);
+  let pullBasedRewards = await beraPoolStandardRisk.methods.checkRewards(userArray[j]).call();
+    console.log(`User has: ${pullBasedRewards / 1e18} available to withdraw`);
+}
 
 }
 

@@ -40,21 +40,19 @@
           - pool address is receiving the funds as intended
 
 
-      - Swap and Short : //FUNCTIONAL
-          - swapandshort is storing each short separately as intended
-          - is working as one function call
-          - is sending an erc1155
-              - BUG: on initial short, error is "unable to burn -- owner not msg.sender"
+      - Swap Short: //COMPLETE REDESIGN
+          - Standard Risk pool accepts only 0.3 and 0.05 pools only High risk will accept all
+          - Check that users are receiving dai back from the pool on open
+          - check that proper fees are taken
+          - use swap price as price to return DAI
 
 
-      - Closing Position: //SOMEWHAT WORKING BUT DEPENDENT ON ORACLE  
-        - THIS HAS BEEN FIXED (I THINK) BY MULTIPLYING THE PARAMS BY 1e18
-          ***I AM LEAVING THIS HERE FOR LATER BECAUSE I AM NOT SURE HOW ORACLES PASS IN NUMBERS YET
-          AND I AM SURE I WILL HAVE TO REWORK THIS AGAIN***
-          - PnLCalculator is now functioning but has potential remaining issues
-          - now testing distribution of funds for trading losses
-          - Funds are going to be collected and have to be pulled out by users, based on the globalRewards variable stored in the contract
-          - liquidation logic implemented but not tested  
+        - On close:
+          - We swap back for dai and then transfer that amount from users wallet, which will revert if they
+            do not have enough dai in their wallet to send back to the protocol. 
+
+
+
 
 
       - Withdraws:

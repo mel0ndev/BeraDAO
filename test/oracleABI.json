@@ -58,11 +58,6 @@
 				"internalType": "address",
 				"name": "pool",
 				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "tokenToPrice",
-				"type": "uint256"
 			}
 		],
 		"name": "latestPrice",
