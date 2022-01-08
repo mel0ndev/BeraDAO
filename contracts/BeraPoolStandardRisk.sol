@@ -5,10 +5,7 @@ pragma abicoder v2;
 
 import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
 import "@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol";
-import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
-import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol";
 import "./BeraWrapper.sol";
 import "./BeraSwapper.sol";
 import "./ancillary/PnLCalculator.sol";
@@ -61,8 +58,7 @@ contract BeraPoolStandardRisk is ERC1155Holder {
         swapOracle = _swapOracle;
     }
 
-    function depositCollateral(uint amount, address collateral) external {
-        require(IERC20(collateral) == IERC20(DAI_ADDRESS), "STANDARD POOL: Not DAI");
+    function depositCollateral(uint amount) external {
         //used for withdrawl later
         users[msg.sender].userDepositBalance += amount;
         //transfer DAI to this contract
@@ -75,6 +71,8 @@ contract BeraPoolStandardRisk is ERC1155Holder {
         //checking if the funds locked in the position have been released before allowing them to be withdrawn
         require(getUserShortBool(msg.sender, userShortID) == false,
             "COLLATERAL: close your current position before trying to withdraw");
+        require(IERC20(DAI_ADDRESS).balanceOf(msg.sender) == users[msg.sender].userDepositBalance,
+            "COLLATERAL: balance mismatch");
         //reset balance of user on withdraw
         users[msg.sender].userDepositBalance -= amount;
         IERC20(DAI_ADDRESS).transfer(msg.sender, amount);
@@ -193,9 +191,6 @@ contract BeraPoolStandardRisk is ERC1155Holder {
     }
 
     //TODO
-    //contract already has the DAI needed to close the trade, can just check the price and
-    //calculate the difference between the opening and closing prices, no need for expensive swaps
-    //in the standardPool contract
     function closeSwapShort(
         address user, //we pass in a user instead of msg.sender in the case of liquidation
         uint userShortID,
@@ -220,8 +215,8 @@ contract BeraPoolStandardRisk is ERC1155Holder {
             //swap back to DAI
             uint amountOut = beraSwapper._swapShort(
                 user,
-                DAI_ADDRESS, //
-                token,
+                DAI_ADDRESS, //in token
+                token, // out token
                 fee,
                 users[user].tokenAmountByPositionID[userShortID],
                 amountOutMin
@@ -233,13 +228,18 @@ contract BeraPoolStandardRisk is ERC1155Holder {
                 priceAtClose, //closing price
                 int(amountOut) //trade size
             );
-            if (returnValue == 0) {
-            //transfer funds back from user -- they are keeping the difference
-                IERC20(DAI_ADDRESS).transferFrom(user, address(this), amountOut);
+            // if the trade is a loss --
+            // they transfer back the dai they borrowed and we take from their deposited amount
+            if (returnValue == 1) {
+                users[user].userDepositBalance -= amountPNL;
+                globalRewards += amountPNL;
             }
-            //if the trade is a loss we take from their deposited amount and increase global rewards
-            users[user].userDepositBalance -= amountPNL;
-            globalRewards += amountPNL;
+
+            //can only close for full amount in v1 
+            users[user].shortBalanceByID[userShortID] = 0;
+            //transfer funds back from user -- they are keeping the difference
+            //amountOut will be used regardless of win/loss so we can use it in both situations
+            IERC20(DAI_ADDRESS).transferFrom(user, address(this), amountOut);
         }
 
     function updateUserMappings(

@@ -9,7 +9,7 @@
     <v-card color="#191919"
     flat>
       <div class="titleWrapper">
-          <h1> Swap and Short </h1>
+          <h1> Swap Short </h1>
       </div>
 
           <template>
@@ -227,7 +227,7 @@ methods: {
     },
 
     onSubmit() {
-      this.drizzleInstance.contracts['BeraRouter'].methods['depositCollateral'].cacheSend(1000, 0xe6cF3B60AFA84f999F9F5c3B551172EFFdE3B321, 0x3dfcc7f20d200dc5b6Dd885b11E77a848dB9f6d6);
+      this.drizzleInstance.contracts['BeraRouter'].methods['depositCollateral'].cacheSend();
     }
 
   }

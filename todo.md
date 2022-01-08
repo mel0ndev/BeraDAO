@@ -15,29 +15,21 @@
 ----> 0x1e3d6eab4bcf24bcd04721caa11c478a2e59852d  <----
 
 ### DOING
- - REFACTOR
-    - code base is pretty dogshit and unoptimized
-    - probably takes a week or two?  
+ - Protocol REDESIGN
+    - redoing how shorts are handled on the back end, will function more like a loan
+
+### NEW
+  - Constants.sol
+        - STORE ALL CONSTANTS IN HERE -- SAVE GAS
+        - lots of reused globals can be put into one file and reused everywhere, gonna make things much
+          easier later on
+        - also acts as a deployer so all contracts can have access to each other 
 
 ### TESTING
   - Standard Pool Testing:
       - Swapping not allowed in pool unless collateral has been deposited //WORKS
 
-      - Deposits: //KIND OF FUNCTIONAL (with minor bugs)
-
-        - ISSUES:
-          - Need to keep track of depositBalance in conjunction with shortAmount
-              - currently users can deposit once and then use those funds to open more positions with those //FIXED
-                funds. ie, deposit 1000 dai once and use it numerous times to open 1000 dai positions
-          - Deposits are not stored as 1e18 for userDepositBalance and will fuck up distribution //FIXED
-        - WHAT WORKS
-          - basic deposit
-          - addresses are being pushed into array as intended
-              - public dynamic arrays require a uint to be passed into them as a parameter in web3?
-              - this could possibly be the size of the array? maybe keep track of it somewhere to pass to
-                frontend function
-          - depositCollateralBalance is being updated as intended
-          - pool address is receiving the funds as intended
+      - Deposits:
 
 
       - Swap Short: //COMPLETE REDESIGN
@@ -45,11 +37,22 @@
           - Check that users are receiving dai back from the pool on open
           - check that proper fees are taken
           - use swap price as price to return DAI
+          - add to their shortID by 1
+          - check if they have collateral
+              - if they do, we check that the total amount is not exceeded by their total amount already in     shorts
+          - take a 1% fee and add it to global controlled by protocol
+          - execute swap on BeraSwapper
+          - get twap for price at wrap  
+          - execute BeraWrapper postionWrap()
+          - update account details for other parts of protocol to use
 
 
         - On close:
+          - we check that they have the nft in their wallet to redeem for their profits
+          - we check that the position is still active
+          -
           - We swap back for dai and then transfer that amount from users wallet, which will revert if they
-            do not have enough dai in their wallet to send back to the protocol. 
+            do not have enough dai in their wallet to send back to the protocol.
 
 
 

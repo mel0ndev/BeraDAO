@@ -46,9 +46,8 @@ contract BeraSwapper {
     function _supplyShort(
         address user,
         address tokenSupplied,
-        address associatedPool,
-        uint amount) external {
-
+        uint amount,
+        address associatedPool) external {
         //transfer tokens to pool
         TransferHelper.safeTransferFrom(tokenSupplied, user, address(associatedPool), amount);
         TransferHelper.safeApprove(tokenSupplied, address(associatedPool), amount);
