@@ -41,28 +41,24 @@ contract BeraPoolStandardRisk is ERC1155Holder {
 
     address private constant DAI_ADDRESS = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
 
-    ISwapRouter public immutable swapRouter;
     BeraWrapper public beraWrapper;
     BeraSwapper public beraSwapper;
     SwapOracle public swapOracle;
 
-    constructor(ISwapRouter _swapRouter,
-        BeraWrapper _beraWrapper,
-        TWAPOracle _twapOracle,
+    constructor(BeraWrapper _beraWrapper,
         SwapOracle _swapOracle,
         BeraSwapper _beraSwapper) { //solhint-disable func-visibility
         owner = msg.sender;
-        swapRouter = _swapRouter;
         beraWrapper = _beraWrapper;
-        beraSwapper = _beraSwapper;
         swapOracle = _swapOracle;
+        beraSwapper = _beraSwapper;
     }
 
     function depositCollateral(uint amount) external {
         //used for withdrawl later
         users[msg.sender].userDepositBalance += amount;
         //transfer DAI to this contract
-        IERC20(collateral).transferFrom(msg.sender, address(this), amount);
+        IERC20(DAI_ADDRESS).transferFrom(msg.sender, address(this), amount);
     }
 
     function withdrawFromPool(uint amount, uint userShortID) external {
@@ -115,7 +111,7 @@ contract BeraPoolStandardRisk is ERC1155Holder {
                     tokenToShort,
                     DAI_ADDRESS,
                     poolFee,
-                    amountToSend,
+                    amountToSend, //amount being sent to swapper
                     amountOutMin
                 );
 
@@ -127,21 +123,21 @@ contract BeraPoolStandardRisk is ERC1155Holder {
                     tokenToShort, // what token was shorted
                     priceAtWrap // the price of 1 token0 in dai
                 );
-
-                //update Account details
-                updateUserMappings(
-                    msg.sender, // the user
-                    users[msg.sender].userShortID, //the position ID
-                    priceAtWrap, // the entry price
-                    amountToSend, // how much of the users collateral has been used in this position
-                    tokenToShort,
-                    amountOut, // amount of token the contract is storing for the user AKA size of short denom in token
-                    poolFee
-                );
-
-                //now we transfer dai to user and hold their tokens for them
-                uint amountToReturn = amountOut * priceAtWrap;
-                IERC20(DAI_ADDRESS).transfer(msg.sender, amountToReturn);
+                //
+                // //update Account details
+                // updateUserMappings(
+                //     msg.sender, // the user
+                //     users[msg.sender].userShortID, //the position ID
+                //     priceAtWrap, // the entry price
+                //     amountToSend, // how much of the users collateral has been used in this position
+                //     tokenToShort,
+                //     amountOut, // amount of token the contract is storing for the user AKA size of short denom in token
+                //     poolFee
+                // );
+                //
+                // //now we transfer dai to user and hold their tokens for them
+                // uint amountToReturn = amountOut * priceAtWrap;
+                // IERC20(DAI_ADDRESS).transfer(msg.sender, amountToReturn);
             }
 
     // if you are reading this comment, this is a way for you to make some money
@@ -214,7 +210,7 @@ contract BeraPoolStandardRisk is ERC1155Holder {
 
             //swap back to DAI
             uint amountOut = beraSwapper._swapShort(
-                user,
+                msg.sender,
                 DAI_ADDRESS, //in token
                 token, // out token
                 fee,
@@ -235,8 +231,8 @@ contract BeraPoolStandardRisk is ERC1155Holder {
                 globalRewards += amountPNL;
             }
 
-            //can only close for full amount in v1 
-            users[user].shortBalanceByID[userShortID] = 0;
+            //can only close for full amount in v1
+            users[user].userShortBalanceByID[userShortID] = 0;
             //transfer funds back from user -- they are keeping the difference
             //amountOut will be used regardless of win/loss so we can use it in both situations
             IERC20(DAI_ADDRESS).transferFrom(user, address(this), amountOut);

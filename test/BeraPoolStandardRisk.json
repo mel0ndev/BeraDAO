@@ -2,23 +2,18 @@
 	{
 		"inputs": [
 			{
-				"internalType": "contract ISwapRouter",
-				"name": "_swapRouter",
-				"type": "address"
-			},
-			{
 				"internalType": "contract BeraWrapper",
 				"name": "_beraWrapper",
 				"type": "address"
 			},
 			{
-				"internalType": "contract TWAPOracle",
-				"name": "_twapOracle",
+				"internalType": "contract SwapOracle",
+				"name": "_swapOracle",
 				"type": "address"
 			},
 			{
-				"internalType": "contract SwapOracle",
-				"name": "_swapOracle",
+				"internalType": "contract BeraSwapper",
+				"name": "_beraSwapper",
 				"type": "address"
 			}
 		],
@@ -28,6 +23,19 @@
 	{
 		"stateMutability": "payable",
 		"type": "fallback"
+	},
+	{
+		"inputs": [],
+		"name": "beraSwapper",
+		"outputs": [
+			{
+				"internalType": "contract BeraSwapper",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
 	},
 	{
 		"inputs": [],
@@ -79,9 +87,14 @@
 				"internalType": "uint256",
 				"name": "userShortID",
 				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amountOutMin",
+				"type": "uint256"
 			}
 		],
-		"name": "closeShortStandardPool",
+		"name": "closeSwapShort",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -92,11 +105,6 @@
 				"internalType": "uint256",
 				"name": "amount",
 				"type": "uint256"
-			},
-			{
-				"internalType": "address",
-				"name": "collateral",
-				"type": "address"
 			}
 		],
 		"name": "depositCollateral",
@@ -389,6 +397,19 @@
 		"type": "function"
 	},
 	{
+		"inputs": [],
+		"name": "protocolOwnedLiquidity",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "bytes4",
@@ -402,6 +423,19 @@
 				"internalType": "bool",
 				"name": "",
 				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "swapOracle",
+		"outputs": [
+			{
+				"internalType": "contract SwapOracle",
+				"name": "",
+				"type": "address"
 			}
 		],
 		"stateMutability": "view",
@@ -430,54 +464,9 @@
 				"type": "uint256"
 			}
 		],
-		"name": "swapAndShortStandard",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "amountOut",
-				"type": "uint256"
-			}
-		],
+		"name": "swapShort",
+		"outputs": [],
 		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "swapOracle",
-		"outputs": [
-			{
-				"internalType": "contract SwapOracle",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "swapRouter",
-		"outputs": [
-			{
-				"internalType": "contract ISwapRouter",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "twapOracle",
-		"outputs": [
-			{
-				"internalType": "contract TWAPOracle",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
 		"type": "function"
 	},
 	{

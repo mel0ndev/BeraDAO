@@ -1,5 +1,6 @@
 const BeraPoolStandardRisk = artifacts.require("BeraPoolStandardRisk");
 const BeraWrapper = artifacts.require("BeraWrapper");
+const BeraSwapper = artifacts.require("BeraSwapper");
 const PnLCalculator = artifacts.require("PnLCalculator");
 const TWAPOracle = artifacts.require("TWAPOracle");
 const SwapOracle = artifacts.require("SwapOracle");
@@ -13,6 +14,10 @@ module.exports = async function(deployer) {
   const instance = await BeraWrapper.deployed();
   const wrapperAddress = await instance.address;
 
+  await deployer.deploy(BeraSwapper, swapRouter);
+  const swapperInstance = await BeraSwapper.deployed();
+  const swapperAddress = await swapperInstance.address;
+
   await deployer.deploy(PnLCalculator);
   await deployer.link(PnLCalculator, BeraPoolStandardRisk)
 
@@ -25,10 +30,9 @@ module.exports = async function(deployer) {
   const swapOracleAddress = await swapOracle.address;
 
   await deployer.deploy(BeraPoolStandardRisk,
-      swapRouter,
       wrapperAddress,
-      oracleAddress,
-      swapOracleAddress);
+      swapOracleAddress,
+      swapperAddress);
   const initial = await BeraPoolStandardRisk.deployed();
   const poolAddress = await initial.address;
 

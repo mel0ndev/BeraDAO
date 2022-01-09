@@ -3,11 +3,15 @@ pragma solidity ^0.8.0;
 
 import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
 import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
+import "./ancillary/IOracle.sol";
 
 
 contract BeraSwapper {
 
     ISwapRouter public immutable swapRouter;
+    IOracle public oracle;
+    address private constant WETH_ADDRESS = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+    uint24 private constant DAI_FEE = 3000;
 
     constructor(ISwapRouter _swapRouter) {
         swapRouter = _swapRouter;
@@ -18,13 +22,29 @@ contract BeraSwapper {
     function _swapShort(
         address user,
         address tokenToShort, //what token is shorted //opposite on close
-        address tokenSupplied, //what token is supplied //opposite on close
+        address tokenSupplied, //dai on open //opposite on close
         uint24 poolFee,
         uint amount,
         uint amountOutMin) external returns(uint amountOut) {
 
         TransferHelper.safeTransferFrom(tokenSupplied, user, address(this), amount);
         TransferHelper.safeApprove(tokenSupplied, address(swapRouter), amount);
+
+        (, uint returnValue) = oracle.getPoolForTWAP(tokenToShort, poolFee);
+        if (returnValue == 1) {
+
+            ISwapRouter.ExactInputParams memory multiParams =
+            ISwapRouter.ExactInputParams({
+                path: abi.encodePacked(tokenSupplied, DAI_FEE, WETH_ADDRESS, poolFee, tokenToShort),
+                recipient: msg.sender,
+                deadline: block.timestamp,
+                amountIn: amount,
+                amountOutMinimum: amountOutMin
+            });
+
+            // Executes the swap.
+            amountOut = swapRouter.exactInput(multiParams);
+        }
 
         ISwapRouter.ExactInputSingleParams memory params =
         ISwapRouter.ExactInputSingleParams({

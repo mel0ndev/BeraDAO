@@ -2,11 +2,6 @@
 const Web3 = require('web3');
 const web3 = new Web3('ws://127.0.0.1:8545');
 
-// const contractJson = require('../vapp/src/contracts')
-// const contract = require('truffle-contract')
-// const testContract = contract(contractJson)
-// const ABI = testContract.abi
-
 //load ABIs to interact with contracts
 //public ABIs
 const wethABI = require('./abi.json');
@@ -16,7 +11,7 @@ const routerABI = require('./routerAbi.json'); //Uniswap Router
 //local contracts
 const beraPoolStandardRiskABI = require('./BeraPoolStandardRisk.json');
 const beraWrapperABI = require('./BeraWrapper.json');
-const beraPoolABI = require('./BeraPool.json');
+const beraSwapperABI = require('./beraSwapperABI.json');
 const oracleABI = require('./oracleABI.json');
 const swapOracleABI = require('./swapOracleABI.json');
 
@@ -29,21 +24,23 @@ const dpxAddress = '0x0ff5A8451A839f5F0BB3562689D9A44089738D11';
 const fttAddress = '0x50D1c9771902476076eCFc8B2A83Ad6b9355a4c9';
 const jewelAddress = '0xd5d86fc8d5c0ea1ac1ac5dfab6e529c9967a45e9';
 const shibAddress = '0x28d4a32e275ebb5f16d14ef924281ddcade9a683';
+const raiAddress = '0x03ab458634910aad20ef5f1c8ee96f1d6ac54919';
 
 //locals
-let beraWrapperAddress = '0xcBF6F8192b10bBE44498e0B1480B9f275F7E4B4f';
-let twapOracleAddress = '0x0C11984667383ce0C874438BD031035B179651Ca';
-let swapOracleAddress = '0x066d2A7196e2545ff61CDa0925faE70208a1a724';
-let beraPoolStandardRiskAddress = '0x53395E74D07a98B4A4Bd07fC70917fFea168aa03';
+let beraWrapperAddress = '0x2A97d8f289b0fCcE94107E8237237710EA0b5956';
+let beraSwapperAddress = '0x2A97d8f289b0fCcE94107E8237237710EA0b5956';
+let twapOracleAddress = '0x7608099153148159af6E36434D28a5fF692929DC';
+let swapOracleAddress = '0x1B5424296Ee6cB3b7F7bee7b54EA086B31541ff4';
+let beraPoolStandardRiskAddress = '0x53507d389eFE6F354f3065a6DcdD001f3AcF8870';
 
 //load accounts
 const unlockedAccount = '0x2feb1512183545f48f6b9c5b4ebfcaf49cfca6f3';
-const recipient = '0x3fb4033a7A2bB248D2414B3540CE28257FDe55aa';
-const privateKey = '0xb911aae099efc8a72b90c16f01c20d3a42a0724f5c5cfc2336d8b4d84faaad48';
+const recipient = '0x461825c82c859CC1C04aE9f1f93f27b2C1C86477';
+const privateKey = '0x1178c212eb4d096ab6c20c4ed071ae9d909a1f7517deaf0902dbb510d762a03f';
 
-const account1 = '0x9E0Da84f46DeB90bbaE270331EA3971fE25F73Ee';
-const account2 = '0xAeEBcCc9fbf57cb9D7Bc47E661a52380150e4EA6';
-const account3 = '0xeb624D0d1d2600dfb15d7D19bD29667af8701C5F';
+const account1 = '0x72d58Eb5a1bFA7B9D47Ab47893376Bd4E5Fc762c';
+const account2 = '0x8e7EdAc30C16d04b4Eda2E08ADbce32C0e124FB3';
+const account3 = '0x20839C0D979b768C8797bC299A74F231f3287a6f';
 let userArray = [];
 userArray.push(account1, account2, account3);
 
@@ -56,6 +53,11 @@ let beraWrapper = new web3.eth.Contract(
 let beraPoolStandardRisk = new web3.eth.Contract(
   beraPoolStandardRiskABI,
   beraPoolStandardRiskAddress
+);
+
+let beraSwapper = new web3.eth.Contract(
+  beraSwapperABI,
+  beraSwapperAddress
 );
 
 let oracle = new web3.eth.Contract(
@@ -188,104 +190,36 @@ await addUsers();
 await shortInstance();
 }
 
+async function addUsers() {
 
+    for (i = 0; i < userArray.length; i++) {
+        await dai.methods.approve(beraPoolStandardRiskAddress, '1000000000000000000000').send({from: userArray[i]});
+        await beraPoolStandardRisk.methods.depositCollateral('1000000000000000000000').send({from: userArray[i], gas: 6721975});
+    }
+    console.log('Users added!');
+
+}
+
+//TODO fix ABIs for next test 
 
 async function shortInstance() {
 
 //approve standardPool to spend DAI
 await dai.methods.approve(beraPoolStandardRiskAddress, '1000000000000000000000').send({from: recipient});
-await beraPoolStandardRisk.methods.depositCollateral('1000000000000000000000', daiAddress).send({from: recipient, gas: 6721975});
+await beraPoolStandardRisk.methods.depositCollateral('1000000000000000000000').send({from: recipient, gas: 6721975});
 
-let poolAddress = await oracle.methods.getPoolForTWAP(jewelAddress, 10000).call();
-console.log(poolAddress);
-let ethPrice = await swapOracle.methods.getSwapPrice(wethAddress, 3000).call();
+await dai.methods.approve(beraSwapperAddress, '1000000000000000000000').send({from: recipient});
+await beraPoolStandardRisk.methods.swapShort(
+    '1000000000000000000000', //1000 dai
+    fttAddress,
+    3000, //0.05% pool
+    0
+).send({from: recipient, to: beraPoolStandardRiskAddress, gas: 6721975});
+console.log('Swap Short opened!');
 
-let oracleInitial = await oracle.methods.latestPrice(poolAddress[0]).call();
-console.log(oracleInitial * ethPrice / 1e36);
+let poolWETHBalance = await wethToken.methods.balanceOf(beraPoolStandardRiskAddress).call();
+console.log(poolWETHBalance / 1e18);
 
-let swapETHPrice = await swapOracle.methods.getSwapPrice(jewelAddress, 10000).call();
-console.log(swapETHPrice / 1e36);
-
-
-await dai.methods.approve(beraPoolStandardRiskAddress, '1000000000000000000000').send({from: recipient, gas: 238989});
-//first test that users cannot short unless they have deposited funds
-await beraPoolStandardRisk.methods.swapAndShortStandard(
-  '1000000000000000000000',
-  wethAddress,
-  3000, //pool fee
-  0
-).send({
-  from: recipient,
-  to: beraPoolStandardRiskAddress,
-  gas: 900000
-});
-
-//priceAtWrap is passed in at $3000 hard coded into contract for testing right now
-
-let accountStruct = await beraPoolStandardRisk.methods.users(recipient).call();
-console.log(accountStruct);
-
-//check balances to see if short worked as intended
-let userShortBal = await beraPoolStandardRisk.methods.getUserShortBalance(recipient, 1).call();
-console.log(`Short Balance for position: ${userShortBal / 1e18}`);
-
-let poolBalance = await dai.methods.balanceOf(beraPoolStandardRiskAddress).call();
-console.log(`Total Pool Balance: ${poolBalance / 1e18}`);
-
-let entryPrice = await beraPoolStandardRisk.methods.getUserEntryPrice(recipient, 1).call();
-console.log(`Entry Price at Position 1: ${entryPrice}`);
-
-let positionID = await beraWrapper.methods.positionIDTotal().call();
-let positionData = await beraWrapper.methods.positionData(positionID).call();
-console.log(positionData);
-
-
-console.log("Successfully opened a position!");
-
-
-////////////////////////////////////////////////////////////////////////////////////////////
-
-await beraPoolStandardRisk.methods.closeShortStandardPool(
-  recipient,
-  1 //user shortID
-).send({
-  from: recipient,
-  gas: 900000
-});
-console.log("Successful Close");
-
-//recheck balance of deposit balance of msg.sender
-let profits = await beraPoolStandardRisk.methods.users(recipient).call();
-let realprofits = profits.userDepositBalance;
-console.log(`Deposit Amount after loss: ${realprofits / 1e18}`);
-console.log('Profits have been added to the account!');
-
-//CURRENT ISSUES:
-// deposit amounts in web3 and solidity do not match, missing decimals in one or the other
-// and is causing problems with the result on the pnlCalc function
-
-let rewards = await beraPoolStandardRisk.methods.globalRewards().call();
-console.log(`The global rewards variable is: ${rewards / 1e18}`);
-
-for (j = 0; j < userArray.length; j++) {
-  let checkBal = await beraPoolStandardRisk.methods.users(userArray[j]).call();
-    console.log(checkBal.userDepositBalance / 1e18);
-  let pullBasedRewards = await beraPoolStandardRisk.methods.checkRewards(userArray[j]).call();
-    console.log(`User has: ${pullBasedRewards / 1e18} available to withdraw`);
-}
 
 }
-
-async function addUsers() {
-  for (i = 0; i < userArray.length; i++) {
-    await dai.methods.approve(beraPoolStandardRiskAddress, '1000000000000000000000').send({from: userArray[i]});
-    await beraPoolStandardRisk.methods.depositCollateral('1000000000000000000000', daiAddress).send
-    ({
-      from: userArray[i],
-      gas: 6721975
-    });
-  }
-  console.log('Account array done depositing');
-}
-
 main();

@@ -9,8 +9,6 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./IOracle.sol";
 
 
-//TODO
-//reworking contract now, is kinda fucked in the current state did not finish
 contract TWAPOracle is IOracle {
 
     uint32 public constant TWAP_PERIOD = 3 minutes;
@@ -28,7 +26,7 @@ contract TWAPOracle is IOracle {
         uniswapFactory = factory;
     }
 
-    function getPoolForTWAP(address tokenA, uint24 fee) external view returns (address, uint8) {
+    function getPoolForTWAP(address tokenA, uint24 fee) external override view returns (address, uint8) {
         address pool = uniswapFactory.getPool(tokenA, DAI_ADDRESS, fee);
         //if there isn't a dai pool, we check for a weth pool
         if (pool == address(0)) {

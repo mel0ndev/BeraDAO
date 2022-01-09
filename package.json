@@ -18,8 +18,12 @@
   "license": "ISC",
   "dependencies": {
     "@openzeppelin/contracts": "^4.3.1",
+    "@uniswap/sdk-core": "^3.0.1",
+    "@uniswap/smart-order-router": "^2.5.9",
     "@uniswap/v3-core": "^1.0.0",
     "@uniswap/v3-periphery": "^1.1.1",
+    "@uniswap/v3-sdk": "^3.7.1",
+    "ganache-cli": "^6.12.2",
     "openzeppelin-solidity": "^2.1.1",
     "uniswapv3-oracle": "^1.0.1",
     "web3": "^1.5.3"
