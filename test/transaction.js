@@ -18,29 +18,31 @@ const swapOracleABI = require('./swapOracleABI.json');
 //load contract addresses
 //mainnet
 const daiAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
-const wethAddress = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+const wethAddress = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'; //has dai pool
 const routerAddress = "0xE592427A0AEce92De3Edee1F18E0157C05861564";
-const dpxAddress = '0x0ff5A8451A839f5F0BB3562689D9A44089738D11';
-const fttAddress = '0x50D1c9771902476076eCFc8B2A83Ad6b9355a4c9';
-const jewelAddress = '0xd5d86fc8d5c0ea1ac1ac5dfab6e529c9967a45e9';
-const shibAddress = '0x28d4a32e275ebb5f16d14ef924281ddcade9a683';
-const raiAddress = '0x03ab458634910aad20ef5f1c8ee96f1d6ac54919';
+const fttAddress = '0x50D1c9771902476076eCFc8B2A83Ad6b9355a4c9'; //has dai no pool
+const raiAddress = '0x03ab458634910aad20ef5f1c8ee96f1d6ac54919'; //has dai pool
+const usdcAddress = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
+const keepAddress = '0x85Eee30c52B0b379b046Fb0F85F4f3Dc3009aFEC';
+const shibAddress = '0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE'; //0.3% SHIB/WETH pool
+const k3prAddress = '0x1cEB5cB57C4D4E2b2433641b95Dd330A33185A44' //1% K3PR/WETH pool
+const uniAddress = '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984'; //0.3% UNI/WETH pool
 
 //locals
-let beraWrapperAddress = '0x2A97d8f289b0fCcE94107E8237237710EA0b5956';
-let beraSwapperAddress = '0x2A97d8f289b0fCcE94107E8237237710EA0b5956';
-let twapOracleAddress = '0x7608099153148159af6E36434D28a5fF692929DC';
-let swapOracleAddress = '0x1B5424296Ee6cB3b7F7bee7b54EA086B31541ff4';
-let beraPoolStandardRiskAddress = '0x53507d389eFE6F354f3065a6DcdD001f3AcF8870';
+let beraWrapperAddress = '0x31Bd3dA124d0eA2AbE1871249d26b53A3fDC0AFA';
+let twapOracleAddress = '0xf50d856E8F2032557f7c14e599A6a8Ec8a918e82';
+let swapOracleAddress = '0x717994B2AEb62f1d24089960E76Cb76Fa7066CC4';
+let beraSwapperAddress = '0xC77397D7C5Ce9b5453A332b74392C631301A6e51';
+let beraPoolStandardRiskAddress = '0x535C57934555C679FC79Fa958BA1c0fE68BdD616';
 
 //load accounts
 const unlockedAccount = '0x2feb1512183545f48f6b9c5b4ebfcaf49cfca6f3';
-const recipient = '0x461825c82c859CC1C04aE9f1f93f27b2C1C86477';
-const privateKey = '0x1178c212eb4d096ab6c20c4ed071ae9d909a1f7517deaf0902dbb510d762a03f';
+const recipient = '0x267080c6A28C007739Db8A0B1D3715Ddba23a58D';
+const privateKey = '0x6ceaa1e00a1ab2301050f153a73e1bca3b283011505f87ab020508ed87caa686';
 
-const account1 = '0x72d58Eb5a1bFA7B9D47Ab47893376Bd4E5Fc762c';
-const account2 = '0x8e7EdAc30C16d04b4Eda2E08ADbce32C0e124FB3';
-const account3 = '0x20839C0D979b768C8797bC299A74F231f3287a6f';
+const account1 = '0xF5D7503Ba6dc58C7a512A9F81C32ab41A6ada7B4';
+const account2 = '0x4fBCcB40678252057d2163baD44f3a18eb3f7De1';
+const account3 = '0x4a8c3Fc7bBBd02B2d379496360b7F2eccDb5bc0f';
 let userArray = [];
 userArray.push(account1, account2, account3);
 
@@ -200,7 +202,7 @@ async function addUsers() {
 
 }
 
-//TODO fix ABIs for next test 
+//TODO fix ABIs for next test
 
 async function shortInstance() {
 
@@ -211,8 +213,8 @@ await beraPoolStandardRisk.methods.depositCollateral('1000000000000000000000').s
 await dai.methods.approve(beraSwapperAddress, '1000000000000000000000').send({from: recipient});
 await beraPoolStandardRisk.methods.swapShort(
     '1000000000000000000000', //1000 dai
-    fttAddress,
-    3000, //0.05% pool
+    usdcAddress, // dai -> weth -> uni
+    3000, //0.3% pool
     0
 ).send({from: recipient, to: beraPoolStandardRiskAddress, gas: 6721975});
 console.log('Swap Short opened!');

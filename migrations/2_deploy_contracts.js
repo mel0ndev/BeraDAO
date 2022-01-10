@@ -14,9 +14,6 @@ module.exports = async function(deployer) {
   const instance = await BeraWrapper.deployed();
   const wrapperAddress = await instance.address;
 
-  await deployer.deploy(BeraSwapper, swapRouter);
-  const swapperInstance = await BeraSwapper.deployed();
-  const swapperAddress = await swapperInstance.address;
 
   await deployer.deploy(PnLCalculator);
   await deployer.link(PnLCalculator, BeraPoolStandardRisk)
@@ -28,6 +25,10 @@ module.exports = async function(deployer) {
   await deployer.deploy(SwapOracle, oracleAddress);
   const swapOracle = await SwapOracle.deployed();
   const swapOracleAddress = await swapOracle.address;
+
+  await deployer.deploy(BeraSwapper, swapRouter, oracleAddress);
+  const swapperInstance = await BeraSwapper.deployed();
+  const swapperAddress = await swapperInstance.address;
 
   await deployer.deploy(BeraPoolStandardRisk,
       wrapperAddress,

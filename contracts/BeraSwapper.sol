@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
+pragma abicoder v2;
 
 import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
 import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
@@ -13,8 +14,9 @@ contract BeraSwapper {
     address private constant WETH_ADDRESS = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
     uint24 private constant DAI_FEE = 3000;
 
-    constructor(ISwapRouter _swapRouter) {
+    constructor(ISwapRouter _swapRouter, IOracle _oracle) {
         swapRouter = _swapRouter;
+        oracle = _oracle;
     }
 
     // amount here refers to how much of the token shorted is passed back into the swapRouter
@@ -30,7 +32,7 @@ contract BeraSwapper {
         TransferHelper.safeTransferFrom(tokenSupplied, user, address(this), amount);
         TransferHelper.safeApprove(tokenSupplied, address(swapRouter), amount);
 
-        (, uint returnValue) = oracle.getPoolForTWAP(tokenToShort, poolFee);
+        (, uint8 returnValue) = oracle.getPoolForTWAP(tokenToShort, poolFee);
         if (returnValue == 1) {
 
             ISwapRouter.ExactInputParams memory multiParams =
@@ -44,22 +46,24 @@ contract BeraSwapper {
 
             // Executes the swap.
             amountOut = swapRouter.exactInput(multiParams);
+          //don't judge me for using else it is readable >:(
+        } else {
+
+            ISwapRouter.ExactInputSingleParams memory params =
+            ISwapRouter.ExactInputSingleParams({
+                tokenIn: tokenSupplied,
+                tokenOut: tokenToShort,
+                fee: poolFee,
+                recipient: msg.sender, //refers to pool that calls function
+                deadline: block.timestamp, //solhint-disable not-rely-on-time
+                amountIn: amount, //amountToSend
+                amountOutMinimum: amountOutMin, //used to check price
+                sqrtPriceLimitX96: 0
+            });
+
+            //execute the swap
+            amountOut = swapRouter.exactInputSingle(params);
         }
-
-        ISwapRouter.ExactInputSingleParams memory params =
-        ISwapRouter.ExactInputSingleParams({
-            tokenIn: tokenSupplied,
-            tokenOut: tokenToShort,
-            fee: poolFee,
-            recipient: msg.sender, //refers to pool that calls function
-            deadline: block.timestamp, //solhint-disable not-rely-on-time
-            amountIn: amount, //amountToSend
-            amountOutMinimum: amountOutMin, //used to check price
-            sqrtPriceLimitX96: 0
-        });
-
-        //execute the swap
-        amountOut = swapRouter.exactInputSingle(params);
     }
 
     //PLACEHOLDER ---> TODO

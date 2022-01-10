@@ -6057,12 +6057,12 @@
     "1": {
       "events": {},
       "links": {},
-      "address": "0x1B5424296Ee6cB3b7F7bee7b54EA086B31541ff4",
-      "transactionHash": "0x18ec718e226f20803723b9c9af5f4d7a04df189de7a0d0ba735651cfdd5e0b5b"
+      "address": "0xf4DA256BDD97edaa5Acf4E81A910652DE17074BF",
+      "transactionHash": "0x5c2d5ec5979cb9d45bf1027a55a2cb3bb9fb2da8773bfc0989a65048795cb1ff"
     }
   },
   "schemaVersion": "3.4.3",
-  "updatedAt": "2022-01-08T22:48:22.123Z",
+  "updatedAt": "2022-01-10T00:53:23.374Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",

@@ -5,6 +5,11 @@
 				"internalType": "contract ISwapRouter",
 				"name": "_swapRouter",
 				"type": "address"
+			},
+			{
+				"internalType": "contract IOracle",
+				"name": "_oracle",
+				"type": "address"
 			}
 		],
 		"stateMutability": "nonpayable",
@@ -80,6 +85,19 @@
 			}
 		],
 		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "oracle",
+		"outputs": [
+			{
+				"internalType": "contract IOracle",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
