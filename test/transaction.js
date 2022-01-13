@@ -25,24 +25,26 @@ const raiAddress = '0x03ab458634910aad20ef5f1c8ee96f1d6ac54919'; //has dai pool
 const usdcAddress = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
 const keepAddress = '0x85Eee30c52B0b379b046Fb0F85F4f3Dc3009aFEC';
 const shibAddress = '0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE'; //0.3% SHIB/WETH pool
-const k3prAddress = '0x1cEB5cB57C4D4E2b2433641b95Dd330A33185A44' //1% K3PR/WETH pool
+const kp3rAddress = '0x1cEB5cB57C4D4E2b2433641b95Dd330A33185A44' //1% K3PR/WETH pool
 const uniAddress = '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984'; //0.3% UNI/WETH pool
+const ringAddress = '0x3b94440C8c4F69D5C9F47BaB9C5A93064Df460F5'; //0.3% RING/WETH pool
 
 //locals
-let beraWrapperAddress = '0x31Bd3dA124d0eA2AbE1871249d26b53A3fDC0AFA';
-let twapOracleAddress = '0xf50d856E8F2032557f7c14e599A6a8Ec8a918e82';
-let swapOracleAddress = '0x717994B2AEb62f1d24089960E76Cb76Fa7066CC4';
-let beraSwapperAddress = '0xC77397D7C5Ce9b5453A332b74392C631301A6e51';
-let beraPoolStandardRiskAddress = '0x535C57934555C679FC79Fa958BA1c0fE68BdD616';
+let beraWrapperAddress = '0x1a79d3B3e90Cf163e523442C9DAC3E8b016FA3b7';
+let twapOracleAddress = '0x4E940a1874E6b71E2eE88705b2cBC1367D8DeD9c';
+let swapOracleAddress = '0x5706DB3a8E67CbB4ed7e84C05657c1C41cf66507';
+let beraSwapperAddress = '0x50b5Ce789C946ADA50cE12B537c7395CF5280F76';
+let beraPoolStandardRiskAddress = '0x43c01c530ea6f1891b5Cf5517E49989836e522A5';
 
 //load accounts
+//truffle test accounts so they change every time incl. private key
 const unlockedAccount = '0x2feb1512183545f48f6b9c5b4ebfcaf49cfca6f3';
-const recipient = '0x267080c6A28C007739Db8A0B1D3715Ddba23a58D';
-const privateKey = '0x6ceaa1e00a1ab2301050f153a73e1bca3b283011505f87ab020508ed87caa686';
+const recipient = '0xB9eb0c6C166acAaC66CF60220CE9789Ec662d233';
+const privateKey = '0xb0178fd5960defe3bb7ef3326a58bab1dba4d9048b9e6ced6ddd3f5bce6a4ffe';
 
-const account1 = '0xF5D7503Ba6dc58C7a512A9F81C32ab41A6ada7B4';
-const account2 = '0x4fBCcB40678252057d2163baD44f3a18eb3f7De1';
-const account3 = '0x4a8c3Fc7bBBd02B2d379496360b7F2eccDb5bc0f';
+const account1 = '0x9144304b457f1E13A4cfF38bABb87b991D35047D';
+const account2 = '0x20db1f0d99AA6FC10a32EaFFdE278D0D7C60288D';
+const account3 = '0x737901723D63a3Ee884c1293774aF8db86e28655';
 let userArray = [];
 userArray.push(account1, account2, account3);
 
@@ -188,8 +190,18 @@ daiBalance = await dai.methods.balanceOf(recipient).call();
 console.log(`New Balance: ${daiBalance / 1e18} DAI`);
 
 //call local contracts here in main function
+await oracleTests();
 await addUsers();
 await shortInstance();
+}
+
+
+async function oracleTests() {
+
+let highRiskCoinPrice = await swapOracle.methods.getSwapPrice(ringAddress, 3000).call();
+console.log(highRiskCoinPrice / 1e18);
+
+
 }
 
 async function addUsers() {
@@ -199,10 +211,13 @@ async function addUsers() {
         await beraPoolStandardRisk.methods.depositCollateral('1000000000000000000000').send({from: userArray[i], gas: 6721975});
     }
     console.log('Users added!');
+    let poolDaiBalance = await dai.methods.balanceOf(beraPoolStandardRiskAddress).call();
+    console.log(poolDaiBalance / 1e18);
+
 
 }
 
-//TODO fix ABIs for next test
+
 
 async function shortInstance() {
 
@@ -210,17 +225,24 @@ async function shortInstance() {
 await dai.methods.approve(beraPoolStandardRiskAddress, '1000000000000000000000').send({from: recipient});
 await beraPoolStandardRisk.methods.depositCollateral('1000000000000000000000').send({from: recipient, gas: 6721975});
 
-await dai.methods.approve(beraSwapperAddress, '1000000000000000000000').send({from: recipient});
+await dai.methods.approve(beraSwapperAddress, '2000000000000000000000').send({from: recipient});
 await beraPoolStandardRisk.methods.swapShort(
     '1000000000000000000000', //1000 dai
-    usdcAddress, // dai -> weth -> uni
+    ringAddress, // dai -> weth -> uni
     3000, //0.3% pool
     0
 ).send({from: recipient, to: beraPoolStandardRiskAddress, gas: 6721975});
 console.log('Swap Short opened!');
 
+let posData = await beraWrapper.methods.positionData(4).call();
+console.log(posData);
+
 let poolWETHBalance = await wethToken.methods.balanceOf(beraPoolStandardRiskAddress).call();
 console.log(poolWETHBalance / 1e18);
+let poolDaiBalance = await dai.methods.balanceOf(beraPoolStandardRiskAddress).call();
+console.log(poolDaiBalance / 1e18);
+let userBalanceAfterSwap = await dai.methods.balanceOf(recipient).call();
+console.log(userBalanceAfterSwap / 1e18);
 
 
 }

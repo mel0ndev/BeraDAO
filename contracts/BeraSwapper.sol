@@ -39,7 +39,7 @@ contract BeraSwapper {
             ISwapRouter.ExactInputParams({
                 path: abi.encodePacked(tokenSupplied, DAI_FEE, WETH_ADDRESS, poolFee, tokenToShort),
                 recipient: msg.sender,
-                deadline: block.timestamp,
+                deadline: block.timestamp, //solhint-disable not-rely-on-time
                 amountIn: amount,
                 amountOutMinimum: amountOutMin
             });

@@ -11,11 +11,11 @@ import "./IOracle.sol";
 
 contract TWAPOracle is IOracle {
 
-    uint32 public constant TWAP_PERIOD = 3 minutes;
+    uint32 public constant TWAP_PERIOD = 2 minutes;
     address private constant DAI_ADDRESS = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
     address private constant WETH_ADDRESS = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
     IUniswapV3Factory public immutable uniswapFactory;
-    uint private constant WAD = 1e18;
+    uint128 private constant WAD = 1e18;
 
     /**
      * @notice Example pools to pass in:
@@ -38,27 +38,31 @@ contract TWAPOracle is IOracle {
 
     function latestPrice(address pool)
         public virtual override view returns (uint price) {
-            //keeping this here for now in case a special case token appears with less than 18 decimals
-            //will deal with that later bro fuck it
-            uint128 uniswapScaleFactor = uint128(WAD);
-
             int24 twapTick = OracleLibrary.consult(pool, TWAP_PERIOD);
 
             //if the pool has dai or weth as token0 ie. DAI/USDC or WETH/USDC
             if (DAI_ADDRESS == IUniswapV3Pool(pool).token0() ||
                 WETH_ADDRESS == IUniswapV3Pool(pool).token0()) {
+                //keeping this here for now in case a special case token appears with less than 18 decimals
+                uint128 scaleFactor = uint128(1 ** ERC20(IUniswapV3Pool(pool).token1()).decimals());
+
+                if (scaleFactor == 0) {
+                    scaleFactor = WAD;
+                }
+
                 return price = OracleLibrary.getQuoteAtTick(
                     twapTick,
-                    uniswapScaleFactor,
-                    IUniswapV3Pool(pool).token1(),
+                    scaleFactor, //decimals of token or 18 by default 
+                    IUniswapV3Pool(pool).token1(), //price token1 in terms of token0 (get token price in eth)
                     IUniswapV3Pool(pool).token0()
                 );
+
             }
-            //else we treturn dai or weth as token1 ie FTT/WETH or RAI/DAI
+            //else we return dai or weth as token1 ie FTT/WETH or RAI/DAI
             return price = OracleLibrary.getQuoteAtTick(
                 twapTick,
-                uniswapScaleFactor,
-                IUniswapV3Pool(pool).token0(),
+                WAD,
+                IUniswapV3Pool(pool).token0(), //price token0 in terms of token1
                 IUniswapV3Pool(pool).token1()
             );
         }

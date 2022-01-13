@@ -8,13 +8,8 @@
 			{
 				"inputs": [
 					{
-						"internalType": "contract ISwapRouter",
-						"name": "_swapRouter",
-						"type": "address"
-					},
-					{
-						"internalType": "contract IOracle",
-						"name": "_oracle",
+						"internalType": "contract TWAPOracle",
+						"name": "_twapOracle",
 						"type": "address"
 					}
 				],
@@ -25,82 +20,21 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "user",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "tokenSupplied",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amount",
-						"type": "uint256"
-					},
-					{
-						"internalType": "address",
-						"name": "associatedPool",
-						"type": "address"
-					}
-				],
-				"name": "_supplyShort",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "user",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "tokenToShort",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "tokenSupplied",
+						"name": "token0",
 						"type": "address"
 					},
 					{
 						"internalType": "uint24",
-						"name": "poolFee",
+						"name": "fee",
 						"type": "uint24"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amount",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amountOutMin",
-						"type": "uint256"
 					}
 				],
-				"name": "_swapShort",
+				"name": "getSwapPrice",
 				"outputs": [
 					{
 						"internalType": "uint256",
-						"name": "amountOut",
+						"name": "quote",
 						"type": "uint256"
-					}
-				],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "oracle",
-				"outputs": [
-					{
-						"internalType": "contract IOracle",
-						"name": "",
-						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -108,10 +42,10 @@
 			},
 			{
 				"inputs": [],
-				"name": "swapRouter",
+				"name": "twapOracle",
 				"outputs": [
 					{
-						"internalType": "contract ISwapRouter",
+						"internalType": "contract TWAPOracle",
 						"name": "",
 						"type": "address"
 					}
@@ -133,7 +67,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/BeraSwapper.sol": "BeraSwapper"
+			"contracts/ancillary/SwapOracle.sol": "SwapOracle"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -147,12 +81,44 @@
 		"remappings": []
 	},
 	"sources": {
+		"@openzeppelin/contracts/token/ERC20/ERC20.sol": {
+			"keccak256": "0xd1d8caaeb45f78e0b0715664d56c220c283c89bf8b8c02954af86404d6b367f8",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://300a0cc7be3b26c96c22a47ffa9530a585e1c4f2dba3021d9bf309dc63007487",
+				"dweb:/ipfs/QmQmxsvxK6CaJmQ4D8vDCYPLHMqcMmZLcBqedG4GFAbzu9"
+			]
+		},
 		"@openzeppelin/contracts/token/ERC20/IERC20.sol": {
 			"keccak256": "0x61437cb513a887a1bbad006e7b1c8b414478427d33de47c5600af3c748f108da",
 			"license": "MIT",
 			"urls": [
 				"bzz-raw://2c3d0973630ed74f2b5ce3944677a885dc70ec32fc83b35f55045a10224da32b",
 				"dweb:/ipfs/QmbefZ5RoEZKNHXCALfh683PnaNYzKPcKMFjyY1DVAgq8A"
+			]
+		},
+		"@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol": {
+			"keccak256": "0x8de418a5503946cabe331f35fe242d3201a73f67f77aaeb7110acb1f30423aca",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://5a376d3dda2cb70536c0a45c208b29b34ac560c4cb4f513a42079f96ba47d2dd",
+				"dweb:/ipfs/QmZQg6gn1sUpM8wHzwNvSnihumUCAhxD119MpXeKp8B9s8"
+			]
+		},
+		"@openzeppelin/contracts/utils/Context.sol": {
+			"keccak256": "0xe2e337e6dde9ef6b680e07338c493ebea1b5fd09b43424112868e9cc1706bca7",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6df0ddf21ce9f58271bdfaa85cde98b200ef242a05a3f85c2bc10a8294800a92",
+				"dweb:/ipfs/QmRK2Y5Yc6BK7tGKkgsgn3aJEQGi5aakeSPZvS65PV8Xp3"
+			]
+		},
+		"@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol": {
+			"keccak256": "0xcc3d0c93fc9ac0febbe09f941b465b57f750bcf3b48432da0b97dc289cfdc489",
+			"license": "GPL-2.0-or-later",
+			"urls": [
+				"bzz-raw://b9379ad954680c44a0bc523b314ae4c4da735f9fe1d02aa56ea5bdba6f1136f2",
+				"dweb:/ipfs/QmZXdgQNXKAckrXWz9R3mc47F1fvDvr28a2ewJrwNAw71B"
 			]
 		},
 		"@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol": {
@@ -219,6 +185,14 @@
 				"dweb:/ipfs/QmSQrckghEjs6HVsA5GVgpNpZWvTXMY5eQLF7cN6deFeEg"
 			]
 		},
+		"@uniswap/v3-core/contracts/libraries/LowGasSafeMath.sol": {
+			"keccak256": "0x86715eb960f18e01ac94e3bba4614ed51a887fa3c5bd1c43bf80aa98e019cf2d",
+			"license": "GPL-2.0-or-later",
+			"urls": [
+				"bzz-raw://bfc1d5d58e59015086b0e65a6c3a2ddad312e2350480510f6c0c8167f3d71a37",
+				"dweb:/ipfs/QmQndULYjFsHKHjMAKLMfc12vWbVB5FawtioHtvwcWRJZp"
+			]
+		},
 		"@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol": {
 			"keccak256": "0x9bfaf1feb32814623e627ab70f2409760b15d95f1f9b058e2b3399a8bb732975",
 			"license": "GPL-2.0-or-later",
@@ -227,28 +201,60 @@
 				"dweb:/ipfs/QmQj2CSCSwqDSU4KMNWxGsN2336Cy64WgpV1X1EHXNZWxM"
 			]
 		},
-		"@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol": {
-			"keccak256": "0x9af98b0908c96320ca6d08b22f0efca864742f6adbe5794cafe2d1d2e808b0cd",
-			"license": "GPL-2.0-or-later",
-			"urls": [
-				"bzz-raw://da1d1e81e5bf534f0bf2934b3193db6cb1933f91ec006d2b88e9ad10a617a2d2",
-				"dweb:/ipfs/QmcPBk47QLMFWcX2y2S9eMFsJgoYWBd3R8ey55Bgmv6w6v"
-			]
-		},
-		"contracts/BeraSwapper.sol": {
-			"keccak256": "0x87e4859a8cb4e58a509056227f1d7a38e1a179f16800816ab87a1e6892ecd583",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://99584051ae8f1166e8504ade340d8e892bb701580deee814130ff7fbb87b6a8b",
-				"dweb:/ipfs/QmWutN3RvSWGSfWyyjPPUHaxf75K7uKAB2WvRzebpzwNQH"
-			]
-		},
 		"contracts/ancillary/IOracle.sol": {
 			"keccak256": "0x806a1e756b1bf50c191e702cc2cb0bbefc3aaab7e5b1a02142881ead157cf57e",
 			"license": "GPL-3.0-or-later",
 			"urls": [
 				"bzz-raw://7c1d6af71f61ec671c5ba12ee696727c5a0e1878eb629e0d8968cefc0306d58d",
 				"dweb:/ipfs/QmNoeRU7n5Jjg6cH9fyM4hdpmEjSLfw7LFTrtbFR5TrLBe"
+			]
+		},
+		"contracts/ancillary/SwapOracle.sol": {
+			"keccak256": "0xe7736ff8d3930466f4026d863876b0fdfbc826e3af82eebcf55c4448ce306142",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://b8fbe3cc9ca09a2ab8ee6e1d3fae52a4bfa0deb1d88a05e35b5ea654cb05c5e4",
+				"dweb:/ipfs/QmV27ugvt3gxjtX3EcMG5sMsRWqQ2muMroBvaBuABPNuug"
+			]
+		},
+		"contracts/ancillary/TWAPoracle.sol": {
+			"keccak256": "0x3c5dfd1c37af624804d2f202c0ee78dac11c90be6c81a08e4c32d27e122c55d4",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://175eac36842d887c4acbb035dc76b97fa940986ff57c070dd4b5cd9ac7443288",
+				"dweb:/ipfs/QmNiGMY75MoPp11Azpt8iJvSzV9R9TG1Kp47BFxt36PjTc"
+			]
+		},
+		"contracts/uniswapv08/v3-core/FullMath.sol": {
+			"keccak256": "0x952e725c56dbd289472791252895614d486c4653b6676294d44c903e6e526810",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://f81790f9011b80795190055af6ff083e0b66140945d616864d7abfedc2097018",
+				"dweb:/ipfs/Qmep2qonPseT8sta3x8ncePyGGCi4AgRDWfE5v13PF4HGF"
+			]
+		},
+		"contracts/uniswapv08/v3-core/TickMath.sol": {
+			"keccak256": "0x19498e907f73695e4222ac9fe2d5500039a280373b4df3e7fd655dcdbd80bafe",
+			"license": "GPL-2.0-or-later",
+			"urls": [
+				"bzz-raw://625defdb4115d52e63566a581f61c9b19f3d28484a66606316477f8f79b6f579",
+				"dweb:/ipfs/QmNiLfg3F7AJuPTKuiV8uqRjeM3vhSHvtGCPXkoAEsFAZs"
+			]
+		},
+		"contracts/uniswapv08/v3-periphery/OracleLibrary.sol": {
+			"keccak256": "0x828faf50ae1f821569eb7b9d0071d0bbea3730eaf3cb39b2dc35a3aed842ac33",
+			"license": "GPL-2.0-or-later",
+			"urls": [
+				"bzz-raw://55b79c53453a4551e5f702441c0aec46e83ca50e97c20dab14ef399342efdb7b",
+				"dweb:/ipfs/QmfN6jzYRZvfvUrXFvE6ewevyrZq3fTKxKZZyn417ycBk1"
+			]
+		},
+		"contracts/uniswapv08/v3-periphery/PoolAddress.sol": {
+			"keccak256": "0x6eaebb0d204470cbbc0f6ab5c595f35e78c4fcf494fff7abf4c8840705577adc",
+			"license": "GPL-2.0-or-later",
+			"urls": [
+				"bzz-raw://a0b58bccb7003d0450d4d7b4f85276f2ae95cd1682cc8d6c70b79739e41268f9",
+				"dweb:/ipfs/QmW6DejUL38FVv1fb71xpfkEYhdK17SiVwB3oGofG7QtWJ"
 			]
 		}
 	},

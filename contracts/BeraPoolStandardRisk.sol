@@ -92,6 +92,8 @@ contract BeraPoolStandardRisk is ERC1155Holder {
             external { //solhint-disable function-max-lines
                 require(amount <= users[msg.sender].userDepositBalance, "SWAP: not enough collateral");
                 require(poolFee == 3000 || poolFee == 500, "SWAP: Not high risk pool");
+                //get TWAP price (3 min) to wrap position
+                uint priceAtWrap = swapOracle.getSwapPrice(tokenToShort, poolFee);
 
                 users[msg.sender].userShortID += 1;
                 //get total amount of collateral in shorts if user has opened a position before
@@ -115,29 +117,27 @@ contract BeraPoolStandardRisk is ERC1155Holder {
                     amountOutMin
                 );
 
-                //get TWAP price (3 min) to wrap position
-                uint priceAtWrap = swapOracle.getSwapPrice(tokenToShort, poolFee);
                 beraWrapper.wrapPosition(
                     address(this), // the associated pool
                     amountOut,  // the amount of token shorted
                     tokenToShort, // what token was shorted
-                    priceAtWrap // the price of 1 token0 in dai
+                    priceAtWrap // the price of 1 tokenToShort in dai
                 );
-                //
-                // //update Account details
-                // updateUserMappings(
-                //     msg.sender, // the user
-                //     users[msg.sender].userShortID, //the position ID
-                //     priceAtWrap, // the entry price
-                //     amountToSend, // how much of the users collateral has been used in this position
-                //     tokenToShort,
-                //     amountOut, // amount of token the contract is storing for the user AKA size of short denom in token
-                //     poolFee
-                // );
-                //
+
+                //update Account details
+                updateUserMappings(
+                    msg.sender, // the user
+                    users[msg.sender].userShortID, //the position ID
+                    priceAtWrap, // the entry price
+                    amountToSend, // how much of the users collateral has been used in this position
+                    tokenToShort,
+                    amountOut, // amount of token the contract is storing for the user AKA size of short denom in token
+                    poolFee
+                );
+
                 // //now we transfer dai to user and hold their tokens for them
-                // uint amountToReturn = amountOut * priceAtWrap;
-                // IERC20(DAI_ADDRESS).transfer(msg.sender, amountToReturn);
+                uint amountToReturn = amountOut * priceAtWrap / 1e18;
+                IERC20(DAI_ADDRESS).transfer(msg.sender, amountToReturn);
             }
 
     // if you are reading this comment, this is a way for you to make some money

@@ -759,19 +759,19 @@
 			]
 		},
 		"contracts/BeraPoolStandardRisk.sol": {
-			"keccak256": "0x1e95118233c4e055850154eeb48d964db9c347b0ba69385712ca87c704aafb26",
+			"keccak256": "0xfee124429777048ffe3396649fee38ae4ed58f8dacec6bb809f94045dd4b2dd4",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://4193fd833f57a122ead1b51a91f8dad40e3796d0d0266dc9479b7323700e9be5",
-				"dweb:/ipfs/QmaWCbvHrxrHwtJAw93yaRLknuLYvCJwewVaRiUqWoarZH"
+				"bzz-raw://55d0c0e2f8b89202563e7c57aadb4dcba25f52f52433b9dd1046d91e934639cc",
+				"dweb:/ipfs/QmZNMybZaMxgwBnNSCEeQE7MXpdoKNYfphM9B9ac9Zz7mb"
 			]
 		},
 		"contracts/BeraSwapper.sol": {
-			"keccak256": "0xde9def739d46f5d0386af8fb5cdfbecca767bf91b393941a486c1992a86075b2",
+			"keccak256": "0xe6c9649ebd40b31927ebaeeb2b167b017c858d38ebfcae4611fac4c3fbd139d3",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://d01fa595da1e31fd9a5245a911cee912ae29483668724f42f8d2573f06336c06",
-				"dweb:/ipfs/QmQ9vSwALqqew8Rxzkk9m2u8dzM5FD4wvy94yfhEe7xKjw"
+				"bzz-raw://cf3992d621c74c8b9f316aca986749d3b6b69fceba3620871c2b95b2cb914d35",
+				"dweb:/ipfs/QmTeS3rDjimdpyrnGg9esrQhRabiUaskACs3w37LpZyF7z"
 			]
 		},
 		"contracts/BeraWrapper.sol": {
@@ -799,19 +799,19 @@
 			]
 		},
 		"contracts/ancillary/SwapOracle.sol": {
-			"keccak256": "0x23a54c7c262e61a19f331ab440f1fc0c1a3f270c0cc2057c139c39fc01fc538b",
+			"keccak256": "0xe7736ff8d3930466f4026d863876b0fdfbc826e3af82eebcf55c4448ce306142",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://c5076422aec2d824b3e6fe5a5b39b370fa13637d8dff1d10a06ef9679f64ba1c",
-				"dweb:/ipfs/QmaDS2wNquF8SpLPrLF49WXzYiANi2oyyBcwEPB4PPL5hq"
+				"bzz-raw://b8fbe3cc9ca09a2ab8ee6e1d3fae52a4bfa0deb1d88a05e35b5ea654cb05c5e4",
+				"dweb:/ipfs/QmV27ugvt3gxjtX3EcMG5sMsRWqQ2muMroBvaBuABPNuug"
 			]
 		},
 		"contracts/ancillary/TWAPoracle.sol": {
-			"keccak256": "0x23a782205211c8c2ed20ec98263d01a89307ca95ff3ae2f237c235f346fd4ac5",
+			"keccak256": "0x3c5dfd1c37af624804d2f202c0ee78dac11c90be6c81a08e4c32d27e122c55d4",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://37fa9983d1baad4fb2859e17983b459026ef34e8e277d3cc0de1a77f603cef9f",
-				"dweb:/ipfs/QmdbCKCZySWr4vbCgnBZdv82UxmfvJhvt5M8qaEixchBnW"
+				"bzz-raw://175eac36842d887c4acbb035dc76b97fa940986ff57c070dd4b5cd9ac7443288",
+				"dweb:/ipfs/QmNiGMY75MoPp11Azpt8iJvSzV9R9TG1Kp47BFxt36PjTc"
 			]
 		},
 		"contracts/uniswapv08/v3-core/FullMath.sol": {

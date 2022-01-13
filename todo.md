@@ -18,12 +18,12 @@
  - Protocol REDESIGN
     - redoing how shorts are handled on the back end, will function more like a loan
 
-### NEW
+### NEW //TODO
   - Constants.sol
         - STORE ALL CONSTANTS IN HERE -- SAVE GAS
         - lots of reused globals can be put into one file and reused everywhere, gonna make things much
           easier later on
-        - also acts as a deployer so all contracts can have access to each other 
+        - also acts as a deployer so all contracts can have access to each other
 
 ### TESTING
   - Standard Pool Testing:
@@ -33,13 +33,16 @@
 
 
       - Swap Short: //COMPLETE REDESIGN
+
+        - swaps are now functional, need to test ERC1155 and decide if I want the amount to be in the ERC1155
+
           - Standard Risk pool accepts only 0.3 and 0.05 pools only High risk will accept all
           - Check that users are receiving dai back from the pool on open
           - check that proper fees are taken
           - use swap price as price to return DAI
           - add to their shortID by 1
           - check if they have collateral
-              - if they do, we check that the total amount is not exceeded by their total amount already in     shorts
+              - if they do, we check that the total amount is not exceeded by their total amount already in   shorts
           - take a 1% fee and add it to global controlled by protocol
           - execute swap on BeraSwapper
           - get twap for price at wrap  
