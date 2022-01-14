@@ -34,7 +34,6 @@ contract BeraSwapper {
 
         (, uint8 returnValue) = oracle.getPoolForTWAP(tokenToShort, poolFee);
         if (returnValue == 1) {
-
             ISwapRouter.ExactInputParams memory multiParams =
             ISwapRouter.ExactInputParams({
                 path: abi.encodePacked(tokenSupplied, DAI_FEE, WETH_ADDRESS, poolFee, tokenToShort),
@@ -48,7 +47,6 @@ contract BeraSwapper {
             amountOut = swapRouter.exactInput(multiParams);
           //don't judge me for using else it is readable >:(
         } else {
-
             ISwapRouter.ExactInputSingleParams memory params =
             ISwapRouter.ExactInputSingleParams({
                 tokenIn: tokenSupplied,
@@ -60,7 +58,6 @@ contract BeraSwapper {
                 amountOutMinimum: amountOutMin, //used to check price
                 sqrtPriceLimitX96: 0
             });
-
             //execute the swap
             amountOut = swapRouter.exactInputSingle(params);
         }
@@ -70,12 +67,14 @@ contract BeraSwapper {
     function _supplyShort(
         address user,
         address tokenSupplied,
+        uint24 fee,
         uint amount,
-        address associatedPool) external {
+        address associatedPool) external returns (uint amountOut) {
         //transfer tokens to pool
         TransferHelper.safeTransferFrom(tokenSupplied, user, address(associatedPool), amount);
-        TransferHelper.safeApprove(tokenSupplied, address(associatedPool), amount);
 
+        uint tokenPrice = swapOracle.getSwapPrice(tokenSupplied, fee);
+        amountOut = tokenPrice * amount;
     }
 
 }

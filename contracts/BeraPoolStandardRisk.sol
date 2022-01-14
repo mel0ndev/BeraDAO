@@ -20,6 +20,7 @@ contract BeraPoolStandardRisk is ERC1155Holder {
     mapping(address => Account) public users;
 
     struct Liquidation {
+        bool isUnderwater;
         bool wasLiquidated;
         address liquidator;
     }
@@ -41,9 +42,9 @@ contract BeraPoolStandardRisk is ERC1155Holder {
 
     address private constant DAI_ADDRESS = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
 
-    BeraWrapper public beraWrapper;
-    BeraSwapper public beraSwapper;
-    SwapOracle public swapOracle;
+    BeraWrapper private beraWrapper;
+    BeraSwapper private beraSwapper;
+    SwapOracle private swapOracle;
 
     constructor(BeraWrapper _beraWrapper,
         SwapOracle _swapOracle,
@@ -58,6 +59,7 @@ contract BeraPoolStandardRisk is ERC1155Holder {
         //used for withdrawl later
         users[msg.sender].userDepositBalance += amount;
         //transfer DAI to this contract
+        TransferHelper.safeTransferFrom(DAI_ADDRESS, msg.sender, address(this), amount);
         IERC20(DAI_ADDRESS).transferFrom(msg.sender, address(this), amount);
     }
 
@@ -135,10 +137,28 @@ contract BeraPoolStandardRisk is ERC1155Holder {
                     poolFee
                 );
 
-                // //now we transfer dai to user and hold their tokens for them
+                // now we transfer dai to user and hold their tokens for them
                 uint amountToReturn = amountOut * priceAtWrap / 1e18;
                 IERC20(DAI_ADDRESS).transfer(msg.sender, amountToReturn);
             }
+
+    function supplyShort(
+        address tokenToShort,
+        uint24 poolFee,
+        uint amount) external returns(amountOut) {
+
+        amountOut = beraSwapper._supplyShort(
+            msg.sender,
+            tokenToShort,
+            poolFee, //used to get price
+            amount,
+            address(this) // sends tokent to this contract 
+        );
+        //check that dai amount is lte deposit balance
+        require(amountOut <= users[msg.sender].userDepositBalance, "SHORT: Not enough collateral");
+        //send dai back at market price
+        IERC20(DAI_ADDRESS).transfer(msg.sender, amountOut).
+    }
 
     // if you are reading this comment, this is a way for you to make some money
     // and keep the protocol alive and kicking
@@ -187,24 +207,22 @@ contract BeraPoolStandardRisk is ERC1155Holder {
     }
 
     //TODO
+    // if you are liquidating an underwater position make sure to first update the user's liqData
     function closeSwapShort(
         address user, //we pass in a user instead of msg.sender in the case of liquidation
         uint userShortID,
         uint amountOutMin)
         public {
-            //check again how ERC1155 do balances
-            require(beraWrapper.balanceOf(msg.sender, userShortID) > 0, "CLOSE: Not your position");
-            require(users[msg.sender].isPositionInShort[userShortID] == true, "CLOSE: Positon inactive");
+            require(beraWrapper.balanceOf(user, userShortID) > 0 ||
+                users[user].liqData[userShortID].isUnderwater == true, "CLOSE: Not your position OR not underwater");
+            require(users[user].isPositionInShort[userShortID] == true, "CLOSE: Positon inactive");
             //get price at pool for shortBal of positionID
             (address token, uint24 fee) = getTokenAndFeeShortedByUser(user, userShortID);
-            uint priceAtClose = swapOracle.getSwapPrice(
-                    token,
-                    fee
-                );
+            uint priceAtClose = swapOracle.getSwapPrice(token, fee);
             //unwrwap and free funds
             beraWrapper.unwrapPosition(userShortID);
-            users[msg.sender].isPositionInShort[userShortID] = false;
-            users[msg.sender].userShortBalanceByID[userShortID] = 0;
+            users[user].isPositionInShort[userShortID] = false;
+            users[user].userShortBalanceByID[userShortID] = 0;
             require(users[msg.sender].isPositionInShort[userShortID] == false,
                 "CLOSE: Position still active");
 
@@ -214,7 +232,7 @@ contract BeraPoolStandardRisk is ERC1155Holder {
                 DAI_ADDRESS, //in token
                 token, // out token
                 fee,
-                users[user].tokenAmountByPositionID[userShortID],
+                users[user].tokenAmountByPositionID[userShortID], //amount to send
                 amountOutMin
             );
 
@@ -224,17 +242,13 @@ contract BeraPoolStandardRisk is ERC1155Holder {
                 priceAtClose, //closing price
                 int(amountOut) //trade size
             );
-            // if the trade is a loss --
-            // they transfer back the dai they borrowed and we take from their deposited amount
+            // if the trade is a loss we update the rewards by the difference
             if (returnValue == 1) {
-                users[user].userDepositBalance -= amountPNL;
                 globalRewards += amountPNL;
             }
-
-            //can only close for full amount in v1
-            users[user].userShortBalanceByID[userShortID] = 0;
-            //transfer funds back from user -- they are keeping the difference
-            //amountOut will be used regardless of win/loss so we can use it in both situations
+            //transfer funds back from user -- they are keeping the difference on a win and paying more for a loss
+            //amountOut will be used for the current market rate
+            // regardless of win/loss so we can use it in both situations
             IERC20(DAI_ADDRESS).transferFrom(user, address(this), amountOut);
         }
 
@@ -248,8 +262,7 @@ contract BeraPoolStandardRisk is ERC1155Holder {
         uint24 poolFee
     ) internal {
         users[user].entryPrice[shortID] = entryPrice;
-        //update user balance of the user current positionID
-        //this is used to keep track of how much of the users deposit is currently being used
+        //this is used to keep track of how much of the users deposit is currently being used by which positionID
         users[user].userShortBalanceByID[shortID] = shortBalanceByID;
         //update userPositionNumber current short status
         users[user].isPositionInShort[shortID] = true;
@@ -274,13 +287,5 @@ contract BeraPoolStandardRisk is ERC1155Holder {
             users[user].lastClaimedRewards = globalRewards;
         }
     }
-
-    receive() external payable { //solhint-disable state-visibility
-
-}
-
-    fallback() external payable { //solhint-disable
-
-}
 
 }
