@@ -5,13 +5,13 @@ pragma solidity ^0.8.0; //solhint-disable compiler-fixed
 import "@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol";
 import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
 import "./TWAPoracle.sol";
+import "./Constants.sol";
 
 
 contract SwapOracle {
 
     TWAPOracle public immutable twapOracle;
-    address private constant WETH_DAI_POOL = 0xC2e9F25Be6257c210d7Adf0D4Cd6E3E881ba25f8;
-    address private constant WETH_ADDRESS = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+    address public immutable WETH_DAI_POOL = 0xC2e9F25Be6257c210d7Adf0D4Cd6E3E881ba25f8;
 
     constructor(TWAPOracle _twapOracle) { //solhint-disable func-visibility
         twapOracle = _twapOracle;

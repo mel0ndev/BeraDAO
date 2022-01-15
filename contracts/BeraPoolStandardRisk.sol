@@ -44,18 +44,18 @@ contract BeraPoolStandardRisk is ERC1155Holder {
 
     uint public protocolOwnedLiquidity;
     uint public globalRewards;
-    address private constant DAI_ADDRESS = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
 
+    address public immutable DAI_ADDRESS = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
     BeraWrapper private beraWrapper;
     BeraSwapper private beraSwapper;
     SwapOracle private swapOracle;
 
-    constructor(BeraWrapper _beraWrapper,
-        SwapOracle _swapOracle,
-        BeraSwapper _beraSwapper) { //solhint-disable func-visibility
+    constructor(SwapOracle _swapOracle,
+        BeraWrapper _beraWrapper,
+        BeraSwapper _beraSwapper) {
         owner = msg.sender;
-        beraWrapper = _beraWrapper;
         swapOracle = _swapOracle;
+        beraWrapper = _beraWrapper;
         beraSwapper = _beraSwapper;
     }
 
@@ -164,7 +164,7 @@ contract BeraPoolStandardRisk is ERC1155Holder {
     // keep in mind that you need to have deposited collateral to receive rewards
     function liquidateUser(address userUnderwater, address liquidator, uint128 shortID) external {
         //get entry price by shortID and subtract by current price
-        (address token, uint24 fee) = getTokenAndFeeShortedByUser(userUnderwater, shortID);
+        //(address token, uint24 fee) = getTokenAndFeeShortedByUser(userUnderwater, shortID);
 
     }
 
@@ -216,11 +216,12 @@ contract BeraPoolStandardRisk is ERC1155Holder {
             (address token, uint24 fee) = getTokenAndFeeShortedByUser(user, userShortID);
             uint priceAtClose = swapOracle.getSwapPrice(token, fee);
 
-            //unwrwap and free funds
+            //unwrap position (burn and delete index from mappings)
             //delegatecall so msg.sender is user and not contract
             (bool success, ) =
                 address(beraWrapper).delegatecall( //solhint-disable avoid-low-level-calls
                 abi.encodeWithSelector(BeraWrapper.unwrapPosition.selector, userShortID));
+            require(success, "delegatecall failed");
 
             users[user].userPositionData[userShortID].userShortBalanceByID = 0;
 
