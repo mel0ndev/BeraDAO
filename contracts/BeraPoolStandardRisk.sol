@@ -59,22 +59,18 @@ contract BeraPoolStandardRisk is ERC1155Holder {
         beraSwapper = _beraSwapper;
     }
 
-    function depositCollateral(uint amount) external {
+    function depositCollateral(uint128 amount) external {
         //used for withdrawl later
         users[msg.sender].userDepositBalance += amount;
         //transfer DAI to this contract
         TransferHelper.safeTransferFrom(DAI_ADDRESS, msg.sender, address(this), amount);
-        IERC20(DAI_ADDRESS).transferFrom(msg.sender, address(this), amount);
     }
 
-    function withdrawFromPool(uint amount, uint userShortID) external {
+    function withdrawFromPool(uint128 amount, uint userShortID) external {
         require(amount <= users[msg.sender].userDepositBalance,
-            "COLLATERAL: trying to withdraw more collateral than deposited");
+            "WITHDRAW: too much");
         //checking if the funds locked in the position have been released before allowing them to be withdrawn
-        require(getUserShortBool(msg.sender, userShortID) == false,
-            "COLLATERAL: close your current position before trying to withdraw");
-        require(IERC20(DAI_ADDRESS).balanceOf(msg.sender) == users[msg.sender].userDepositBalance,
-            "COLLATERAL: balance mismatch");
+        require(beraWrapper.balanceOf(msg.sender, userShortID) == 0, "WITHDRAW: Position active");
         //reset balance of user on withdraw
         users[msg.sender].userDepositBalance -= amount;
         IERC20(DAI_ADDRESS).transfer(msg.sender, amount);
@@ -86,10 +82,7 @@ contract BeraPoolStandardRisk is ERC1155Holder {
     }
 
     // deposit collateral into user account before being allowed to short
-    // amount refers to how much dai to swap for amountOut of the token the user
-    // wants to short
-    //
-    // will likely have to split the logic for the function up, she's getting pretty chonky
+    // amount refers to how much dai to swap for amountOut of the token the user wants to short
     function swapShort(
             uint amount,
             address tokenToShort,
@@ -125,9 +118,9 @@ contract BeraPoolStandardRisk is ERC1155Holder {
                     msg.sender, // the user
                     users[msg.sender].userShortID, //the position ID
                     priceAtWrap, // the entry price
-                    amountToSend, // how much of the users collateral has been used in this position
+                    uint128(amountToSend), // how much of the users collateral has been used in this position
                     tokenToShort,
-                    amountOut, // amount of token the contract is storing for the user AKA size of short denom in token
+                    uint128(amountOut), // amount of token the contract is storing AKA size of short in token
                     poolFee
                 );
 
@@ -169,19 +162,19 @@ contract BeraPoolStandardRisk is ERC1155Holder {
     // if you are reading this comment, this is a way for you to make some money
     // and keep the protocol alive and kicking
     // keep in mind that you need to have deposited collateral to receive rewards
-    function liquidateUser(address userUnderwater, address liquidator, uint shortID) external {
+    function liquidateUser(address userUnderwater, address liquidator, uint128 shortID) external {
         //get entry price by shortID and subtract by current price
         (address token, uint24 fee) = getTokenAndFeeShortedByUser(userUnderwater, shortID);
 
     }
 
-    function getLiquidator(address user, uint shortID) public view returns(address liquidator) {
+    function getLiquidator(address user, uint128 shortID) public view returns(address liquidator) {
         return users[user].liqData[shortID].liquidator;
     }
 
     function getTotalCollateral(address user) public view returns(uint totalCollateral) {
-        for (uint i = 0; i <= users[user].userShortID; i++) {
-            totalCollateral += users[user].userShortBalanceByID[i];
+        for (uint128 i = 0; i <= users[user].userShortID; i++) {
+            totalCollateral += users[user].userPositionData[i].userShortBalanceByID;
         }
         return (totalCollateral);
     }
@@ -194,17 +187,17 @@ contract BeraPoolStandardRisk is ERC1155Holder {
         return globals = globalRewards;
     }
 
-    function getUserShortBalance(address user, uint shortID) public view returns(uint bal) {
-        return bal = users[user].userShortBalanceByID[shortID];
+    function getUserShortBalance(address user, uint128 shortID) public view returns(uint bal) {
+        return bal = users[user].userPositionData[shortID].userShortBalanceByID;
     }
 
-    function getUserEntryPrice(address user, uint shortID) public view returns(uint entry) {
-        return entry = users[user].entryPrice[shortID];
+    function getUserEntryPrice(address user, uint128 shortID) public view returns(uint entry) {
+        return entry = users[user].userPositionData[shortID].entryPrice;
     }
 
-    function getTokenAndFeeShortedByUser(address user, uint shortID) public view returns(address token, uint24 fee) {
-        token = users[user].tokenShortedByPositionID[shortID];
-        fee = uint24(users[user].poolFeeByPositionID[shortID]);
+    function getTokenAndFeeShortedByUser(address user, uint128 shortID) public view returns(address token, uint24 fee) {
+        token = users[user].userPositionData[shortID].tokenShortedByPositionID;
+        fee = users[user].userPositionData[shortID].poolFeeByPositionID;
         return (token, fee);
     }
 
@@ -212,11 +205,10 @@ contract BeraPoolStandardRisk is ERC1155Holder {
     // if you are liquidating an underwater position make sure to first update the user's liqData
     function closeShort(
         address user, //we pass in a user instead of msg.sender to accounts for liquidations
-        uint userShortID,
-        uint publicPositionID,
+        uint128 userShortID,
         uint amountOutMin)
         public {
-            require(beraWrapper.balanceOf(user, publicPositionID) > 0 ||
+            require(beraWrapper.balanceOf(user, users[user].userPositionData[userShortID].globalPositionID) > 0 ||
                 users[user].liqData[userShortID].isUnderwater == true,
                     "CLOSE: Not your position OR not underwater OR inactive");
 
@@ -226,19 +218,19 @@ contract BeraPoolStandardRisk is ERC1155Holder {
 
             //unwrwap and free funds
             //delegatecall so msg.sender is user and not contract
-            beraWrapper.delegatecall( //solhint-disable avoid-low-level-calls
+            (bool success, ) =
+                address(beraWrapper).delegatecall( //solhint-disable avoid-low-level-calls
                 abi.encodeWithSelector(BeraWrapper.unwrapPosition.selector, userShortID));
 
-            users[user].userShortBalanceByID[userShortID] = 0;
+            users[user].userPositionData[userShortID].userShortBalanceByID = 0;
 
-            require(beraWrapper.balanceOf(user, globalPositionID) == 0, "CLOSE: Position Active");
             //swap back to DAI
             uint amountOut = beraSwapper._swapShort(
                 msg.sender,
                 DAI_ADDRESS, //in token
                 token, // out token
                 fee,
-                users[user].tokenAmountByPositionID[userShortID], //amount to send
+                users[user].userPositionData[userShortID].tokenAmountByPositionID, //amount to send
                 amountOutMin
             );
 
@@ -260,20 +252,20 @@ contract BeraPoolStandardRisk is ERC1155Holder {
 
     function updateUserMappings(
         address user,
-        uint shortID,
+        uint128 shortID,
         uint entryPrice,
-        uint shortBalanceByID,
+        uint128 shortBalanceByID,
         address tokenToShort,
-        uint tokenTradeSize,
+        uint128 tokenTradeSize,
         uint24 poolFee
     ) internal {
-        users[user].entryPrice[shortID] = entryPrice;
+        users[user].userPositionData[shortID].entryPrice = entryPrice;
         //this is used to keep track of how much of the users deposit is currently being used by which positionID
-        users[user].userShortBalanceByID[shortID] = shortBalanceByID;
+        users[user].userPositionData[shortID].userShortBalanceByID = shortBalanceByID;
         //update token and fee by ID
-        users[user].tokenShortedByPositionID[shortID] = tokenToShort;
-        users[user].tokenAmountByPositionID[shortID] = tokenTradeSize;
-        users[user].poolFeeByPositionID[shortID] = poolFee;
+        users[user].userPositionData[shortID].tokenShortedByPositionID = tokenToShort;
+        users[user].userPositionData[shortID].tokenAmountByPositionID = tokenTradeSize;
+        users[user].userPositionData[shortID].poolFeeByPositionID = poolFee;
     }
 
     function updateGlobalsAndCheckCollateral(
@@ -303,13 +295,14 @@ contract BeraPoolStandardRisk is ERC1155Holder {
     //the percentage reward is based on the last time they claimed vs the total reward calculated
     //this will allow us to avoid using a loop for reward distribution
     //and allow users to pull their own rewards when they want
-    function checkOwedProfits(address user) internal view returns (uint) {
+    function checkOwedProfits(address user) internal view returns (uint128) {
         uint percentageReward = globalRewards - users[user].lastClaimedRewards;
-        return users[user].userDepositBalance * percentageReward / IERC20(DAI_ADDRESS).balanceOf(address(this));
+        return users[user].userDepositBalance * uint128(percentageReward /
+                IERC20(DAI_ADDRESS).balanceOf(address(this)));
     }
 
     function sendOwedProfits(address user) internal {
-        uint owed = checkOwedProfits(user);
+        uint128 owed = checkOwedProfits(user);
         if (owed > 0) {
             users[user].userDepositBalance += owed;
             users[user].lastClaimedRewards = globalRewards;

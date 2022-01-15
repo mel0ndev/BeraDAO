@@ -45,14 +45,21 @@ contract BeraWrapper is ERC1155 {
         }
 
     function unwrapPosition(uint positionID) external {
-        require(IERC1155.balanaceOf(msg.sender, positionID) > 0, "UNWRAP: Position not yours or not found");
+        require(ERC1155.balanceOf(msg.sender, positionID) > 0, "UNWRAP: Position not yours or not found");
         //we burn the token to release the funds
         _burn(msg.sender, positionID, 1);
+        delete positionData[positionID];
     }
 
     //SHOULD BE USED TO TRANSFER POSITIONS
     function transferPosition(address to, uint positionID) external {
+        //check that receiver has a high enough balance
+        // require(getTotalCollateral(to) <=
+        //     positionData[positionID].shortAmount * positionData[positionID].priceAtWrap,
+        //     "RECEIVER: Not enough collateral");
+
         //to, from, globalID, number of tokens, metadata
-        IERC1155.safeTransferFrom(to, msg.sender, positionID, 1, "");
+        ERC1155.safeTransferFrom(to, msg.sender, positionID, 1, "");
     }
+
 }

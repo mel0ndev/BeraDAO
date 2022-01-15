@@ -30,21 +30,21 @@ const uniAddress = '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984'; //0.3% UNI/WETH
 const ringAddress = '0x3b94440C8c4F69D5C9F47BaB9C5A93064Df460F5'; //0.3% RING/WETH pool
 
 //locals
-let beraWrapperAddress = '0x1a79d3B3e90Cf163e523442C9DAC3E8b016FA3b7';
-let twapOracleAddress = '0x4E940a1874E6b71E2eE88705b2cBC1367D8DeD9c';
-let swapOracleAddress = '0x5706DB3a8E67CbB4ed7e84C05657c1C41cf66507';
-let beraSwapperAddress = '0x50b5Ce789C946ADA50cE12B537c7395CF5280F76';
-let beraPoolStandardRiskAddress = '0x43c01c530ea6f1891b5Cf5517E49989836e522A5';
+let beraWrapperAddress = '0xca95B05c01Ab67820F3f2b937D6787daCA134618';
+let twapOracleAddress = '0x471d7BB85521Dbbf1Cb605574b105159Bc89aFF5';
+let swapOracleAddress = '0xAA4a77A2bbd8c47995D993473F48793627C0C761';
+let beraSwapperAddress = '0x5485B0dd02Dd1a079E7f55B87070d0AfEb8b2021';
+let beraPoolStandardRiskAddress = '0xA35F3f1772EC2846D8B896865ba819A5183A45Dd';
 
 //load accounts
 //truffle test accounts so they change every time incl. private key
 const unlockedAccount = '0x2feb1512183545f48f6b9c5b4ebfcaf49cfca6f3';
-const recipient = '0xB9eb0c6C166acAaC66CF60220CE9789Ec662d233';
-const privateKey = '0xb0178fd5960defe3bb7ef3326a58bab1dba4d9048b9e6ced6ddd3f5bce6a4ffe';
+const recipient = '0x48731d0Ef457E976E571505c2AeD6E1e6fBa198E';
+const privateKey = '0x3dfa0f1bd36b210ef6c3e6768e5839f5c171e8c9309931ec67866e55710573e3';
 
-const account1 = '0x9144304b457f1E13A4cfF38bABb87b991D35047D';
-const account2 = '0x20db1f0d99AA6FC10a32EaFFdE278D0D7C60288D';
-const account3 = '0x737901723D63a3Ee884c1293774aF8db86e28655';
+const account1 = '0x2bF8Ce319E3dB620DcA20d0A666253d79321CfB2';
+const account2 = '0x9A0c1bB99745473ceAFe87E8C0A62A4C864FC89c';
+const account3 = '0xACCBB5029b9d44B85cfC513d65191a499a714F69';
 let userArray = [];
 userArray.push(account1, account2, account3);
 
@@ -228,14 +228,17 @@ await beraPoolStandardRisk.methods.depositCollateral('1000000000000000000000').s
 await dai.methods.approve(beraSwapperAddress, '2000000000000000000000').send({from: recipient});
 await beraPoolStandardRisk.methods.swapShort(
     '1000000000000000000000', //1000 dai
-    ringAddress, // dai -> weth -> uni
+    wethAddress, // dai -> weth -> uni
     3000, //0.3% pool
-    0
+    0 //out min, use uni-sdk on front end
 ).send({from: recipient, to: beraPoolStandardRiskAddress, gas: 6721975});
 console.log('Swap Short opened!');
 
-let posData = await beraWrapper.methods.positionData(4).call();
+let posData = await beraWrapper.methods.positionData(2).call();
 console.log(posData);
+
+let account = await beraPoolStandardRisk.methods.users(recipient).call();
+console.log(account);
 
 let poolWETHBalance = await wethToken.methods.balanceOf(beraPoolStandardRiskAddress).call();
 console.log(poolWETHBalance / 1e18);

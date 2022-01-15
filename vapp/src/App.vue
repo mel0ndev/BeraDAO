@@ -98,10 +98,7 @@ import Account from "./components/Account.vue";
 <style>
 
 #inspire{
-  background-color: #0c0c0c;
-  background-image: url("./assets/bg.png");
-  background-position: center;
-  background-size: cover;
+      background-image: radial-gradient(circle, #1e1e1e, #191919, #000000)    ;
 }
 
 .itemContent {

@@ -26,7 +26,7 @@ module.exports = async function(deployer) {
   const swapOracle = await SwapOracle.deployed();
   const swapOracleAddress = await swapOracle.address;
 
-  await deployer.deploy(BeraSwapper, swapRouter, oracleAddress);
+  await deployer.deploy(BeraSwapper, swapRouter, oracleAddress, swapOracleAddress);
   const swapperInstance = await BeraSwapper.deployed();
   const swapperAddress = await swapperInstance.address;
 

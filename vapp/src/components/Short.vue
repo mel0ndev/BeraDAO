@@ -102,8 +102,7 @@
               v-model="value"
               :items="tokens"
               rounded
-              solo
-              chips
+              solo-inverted
               dark
               flat
               color="red"
@@ -117,18 +116,6 @@
         </v-row>
       </v-container>
     </v-form>
-
-    <v-divider></v-divider>
-
-    <div class="denomWrapper">
-      <div class="imgWrapper">
-        <v-img src="../assets/dai.png"
-          width="50px"
-          height="50px">
-          </v-img>
-      </div>
-        <h3> Base pair is DAI </h3>
-    </div>
 
     <div class="buttonWrapper">
       <v-btn
@@ -241,6 +228,7 @@ methods: {
 .center {
   display: flex;
   justify-content: center;
+  padding-top: 5%; 
 }
 
 .switchWrapper {

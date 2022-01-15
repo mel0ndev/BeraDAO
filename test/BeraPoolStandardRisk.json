@@ -21,36 +21,6 @@
 		"type": "constructor"
 	},
 	{
-		"stateMutability": "payable",
-		"type": "fallback"
-	},
-	{
-		"inputs": [],
-		"name": "beraSwapper",
-		"outputs": [
-			{
-				"internalType": "contract BeraSwapper",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "beraWrapper",
-		"outputs": [
-			{
-				"internalType": "contract BeraWrapper",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
 		"inputs": [
 			{
 				"internalType": "address",
@@ -84,9 +54,9 @@
 				"type": "address"
 			},
 			{
-				"internalType": "uint256",
+				"internalType": "uint128",
 				"name": "userShortID",
-				"type": "uint256"
+				"type": "uint128"
 			},
 			{
 				"internalType": "uint256",
@@ -94,7 +64,7 @@
 				"type": "uint256"
 			}
 		],
-		"name": "closeSwapShort",
+		"name": "closeShort",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -102,9 +72,9 @@
 	{
 		"inputs": [
 			{
-				"internalType": "uint256",
+				"internalType": "uint128",
 				"name": "amount",
-				"type": "uint256"
+				"type": "uint128"
 			}
 		],
 		"name": "depositCollateral",
@@ -133,9 +103,9 @@
 				"type": "address"
 			},
 			{
-				"internalType": "uint256",
+				"internalType": "uint128",
 				"name": "shortID",
-				"type": "uint256"
+				"type": "uint128"
 			}
 		],
 		"name": "getLiquidator",
@@ -157,9 +127,9 @@
 				"type": "address"
 			},
 			{
-				"internalType": "uint256",
+				"internalType": "uint128",
 				"name": "shortID",
-				"type": "uint256"
+				"type": "uint128"
 			}
 		],
 		"name": "getTokenAndFeeShortedByUser",
@@ -205,9 +175,9 @@
 				"type": "address"
 			},
 			{
-				"internalType": "uint256",
+				"internalType": "uint128",
 				"name": "shortID",
-				"type": "uint256"
+				"type": "uint128"
 			}
 		],
 		"name": "getUserEntryPrice",
@@ -229,9 +199,9 @@
 				"type": "address"
 			},
 			{
-				"internalType": "uint256",
+				"internalType": "uint128",
 				"name": "shortID",
-				"type": "uint256"
+				"type": "uint128"
 			}
 		],
 		"name": "getUserShortBalance",
@@ -240,30 +210,6 @@
 				"internalType": "uint256",
 				"name": "bal",
 				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "user",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "shortID",
-				"type": "uint256"
-			}
-		],
-		"name": "getUserShortBool",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "isShort",
-				"type": "bool"
 			}
 		],
 		"stateMutability": "view",
@@ -295,9 +241,9 @@
 				"type": "address"
 			},
 			{
-				"internalType": "uint256",
+				"internalType": "uint128",
 				"name": "shortID",
-				"type": "uint256"
+				"type": "uint128"
 			}
 		],
 		"name": "liquidateUser",
@@ -412,6 +358,35 @@
 	{
 		"inputs": [
 			{
+				"internalType": "address",
+				"name": "tokenToShort",
+				"type": "address"
+			},
+			{
+				"internalType": "uint24",
+				"name": "poolFee",
+				"type": "uint24"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "supplyShort",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "amountOut",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "bytes4",
 				"name": "interfaceId",
 				"type": "bytes4"
@@ -423,19 +398,6 @@
 				"internalType": "bool",
 				"name": "",
 				"type": "bool"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "swapOracle",
-		"outputs": [
-			{
-				"internalType": "contract SwapOracle",
-				"name": "",
-				"type": "address"
 			}
 		],
 		"stateMutability": "view",
@@ -481,18 +443,18 @@
 		"outputs": [
 			{
 				"internalType": "uint256",
-				"name": "userDepositBalance",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
 				"name": "lastClaimedRewards",
 				"type": "uint256"
 			},
 			{
-				"internalType": "uint256",
+				"internalType": "uint128",
+				"name": "userDepositBalance",
+				"type": "uint128"
+			},
+			{
+				"internalType": "uint128",
 				"name": "userShortID",
-				"type": "uint256"
+				"type": "uint128"
 			}
 		],
 		"stateMutability": "view",
@@ -501,9 +463,9 @@
 	{
 		"inputs": [
 			{
-				"internalType": "uint256",
+				"internalType": "uint128",
 				"name": "amount",
-				"type": "uint256"
+				"type": "uint128"
 			},
 			{
 				"internalType": "uint256",
@@ -515,9 +477,5 @@
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
-	},
-	{
-		"stateMutability": "payable",
-		"type": "receive"
 	}
 ]

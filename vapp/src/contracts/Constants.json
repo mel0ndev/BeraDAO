@@ -2,6 +2,27 @@
   "contractName": "Constants",
   "abi": [
     {
+      "inputs": [
+        {
+          "internalType": "contract BeraWrapper",
+          "name": "_beraWrapper",
+          "type": "address"
+        },
+        {
+          "internalType": "contract BeraSwapper",
+          "name": "_beraSwapper",
+          "type": "address"
+        },
+        {
+          "internalType": "contract BeraPoolStandardRisk",
+          "name": "_standardRiskPool",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
       "inputs": [],
       "name": "DAI_ADDRESS",
       "outputs": [
@@ -13,25 +34,1408 @@
       ],
       "stateMutability": "view",
       "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "WETH_ADDRESS",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "WETH_DAI_POOL",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "beraPoolStandardRisk",
+      "outputs": [
+        {
+          "internalType": "contract BeraPoolStandardRisk",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "beraSwapper",
+      "outputs": [
+        {
+          "internalType": "contract BeraSwapper",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "beraWrapper",
+      "outputs": [
+        {
+          "internalType": "contract BeraWrapper",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.8.11+commit.d7f03943\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"DAI_ADDRESS\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/ancillary/Constants.sol\":\"Constants\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/ancillary/Constants.sol\":{\"keccak256\":\"0xef6a9234cf0e4471da8075bc371edeea9b6712cfd13e3244ea51f64a617936d3\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://6fbbc4b2fa32e03e3d710fb9a72c01d9707d0c45fdeddf0e2d11d55307c56432\",\"dweb:/ipfs/QmUYVH9QnEsq3DEzaFGPAXE8LqPgYuN8CAEmnSgEGkh7UP\"]}},\"version\":1}",
-  "bytecode": "0x60a0604052736b175474e89094c44da98b954eedeac495271d0f73ffffffffffffffffffffffffffffffffffffffff1660809073ffffffffffffffffffffffffffffffffffffffff1681525034801561005757600080fd5b5060805160f761007060003960006049015260f76000f3fe6080604052348015600f57600080fd5b506004361060285760003560e01c80632a4c0a1a14602d575b600080fd5b60336047565b604051603e919060a8565b60405180910390f35b7f000000000000000000000000000000000000000000000000000000000000000081565b600073ffffffffffffffffffffffffffffffffffffffff82169050919050565b6000609482606b565b9050919050565b60a281608b565b82525050565b600060208201905060bb6000830184609b565b9291505056fea2646970667358221220ea049d9851459f6c0f020efb1cf39639b1c9b061fe0cec33368362b163ecb4cb64736f6c634300080b0033",
-  "deployedBytecode": "0x6080604052348015600f57600080fd5b506004361060285760003560e01c80632a4c0a1a14602d575b600080fd5b60336047565b604051603e919060a8565b60405180910390f35b7f000000000000000000000000000000000000000000000000000000000000000081565b600073ffffffffffffffffffffffffffffffffffffffff82169050919050565b6000609482606b565b9050919050565b60a281608b565b82525050565b600060208201905060bb6000830184609b565b9291505056fea2646970667358221220ea049d9851459f6c0f020efb1cf39639b1c9b061fe0cec33368362b163ecb4cb64736f6c634300080b0033",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.11+commit.d7f03943\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"contract BeraWrapper\",\"name\":\"_beraWrapper\",\"type\":\"address\"},{\"internalType\":\"contract BeraSwapper\",\"name\":\"_beraSwapper\",\"type\":\"address\"},{\"internalType\":\"contract BeraPoolStandardRisk\",\"name\":\"_standardRiskPool\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"DAI_ADDRESS\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"WETH_ADDRESS\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"WETH_DAI_POOL\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"beraPoolStandardRisk\",\"outputs\":[{\"internalType\":\"contract BeraPoolStandardRisk\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"beraSwapper\",\"outputs\":[{\"internalType\":\"contract BeraSwapper\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"beraWrapper\",\"outputs\":[{\"internalType\":\"contract BeraWrapper\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/ancillary/Constants.sol\":\"Constants\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"@openzeppelin/contracts/token/ERC1155/ERC1155.sol\":{\"keccak256\":\"0x04d6d1342ece664085921a4fabc928a7bcf1cf2873fa81780f61a54dc2b9b66e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://c6d2b052effa2e9a7479b0fea53b46f4cbbd91947848ef632aadad20ae2e9275\",\"dweb:/ipfs/QmcZp7f5cooGZrhHE8RC1yQR53RFZt19d5fyVqNfbHmPgY\"]},\"@openzeppelin/contracts/token/ERC1155/IERC1155.sol\":{\"keccak256\":\"0x8e93de94c9062ebc94fb7e2e3929b0781ac6a2b7772e2f7a59045861c93e5be9\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://f920a631bf986c610fe573d3c70a2bb6f224f86f4a8550016470c7ee476c9ab5\",\"dweb:/ipfs/QmYzsyVMfnaREKHcHv5RPS8Xg5r1Q38E2SDsGBTnXeFWzb\"]},\"@openzeppelin/contracts/token/ERC1155/IERC1155Receiver.sol\":{\"keccak256\":\"0xc743d2235b8854045c308d2f8f1ed88efed6c2bebf2b7a4a51ea42480c82e566\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://05e54e397a053f319187999ef4d65446a7f15f693ddd66dfaed4d856f67dac4e\",\"dweb:/ipfs/QmbGTFVdZxShg76UPcuLAXm6HBjZx3Vn6CL1eaBhV9rST1\"]},\"@openzeppelin/contracts/token/ERC1155/extensions/IERC1155MetadataURI.sol\":{\"keccak256\":\"0xa66d18b9a85458d28fc3304717964502ae36f7f8a2ff35bc83f6f85d74b03574\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://e46c80ea068989111d6103e5521223f9ef337e93de76deed8b03f75c6f7b2797\",\"dweb:/ipfs/QmNoSE6knNfFncdDDLTb3fGR6oSQty1srG96Vsx3E9wQdw\"]},\"@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol\":{\"keccak256\":\"0xc17dae2baabdf6f414ee129c3f07324309aaa8ae63297ab55cada28a6969a81b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://80777f3b7c186477704a96b29deb2bce56c281a6618aeda284a2a0f94d635c3c\",\"dweb:/ipfs/QmPrbgsuseYdJ1hmLHZ2dnxdHfqiFHZBqBSZZANwCEjJQr\"]},\"@openzeppelin/contracts/token/ERC1155/utils/ERC1155Receiver.sol\":{\"keccak256\":\"0x3dd5e1a66a56f30302108a1da97d677a42b1daa60e503696b2bcbbf3e4c95bcb\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://0808de0ae4918c664643c885ca7fa6503e8ef2bd75609dfc85152c0128a3422d\",\"dweb:/ipfs/QmNrhFC1XgBKuuxfahFeiwi1MCdu3FLNpHj2uStgmf4iJj\"]},\"@openzeppelin/contracts/token/ERC20/ERC20.sol\":{\"keccak256\":\"0xd1d8caaeb45f78e0b0715664d56c220c283c89bf8b8c02954af86404d6b367f8\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://300a0cc7be3b26c96c22a47ffa9530a585e1c4f2dba3021d9bf309dc63007487\",\"dweb:/ipfs/QmQmxsvxK6CaJmQ4D8vDCYPLHMqcMmZLcBqedG4GFAbzu9\"]},\"@openzeppelin/contracts/token/ERC20/IERC20.sol\":{\"keccak256\":\"0x61437cb513a887a1bbad006e7b1c8b414478427d33de47c5600af3c748f108da\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://2c3d0973630ed74f2b5ce3944677a885dc70ec32fc83b35f55045a10224da32b\",\"dweb:/ipfs/QmbefZ5RoEZKNHXCALfh683PnaNYzKPcKMFjyY1DVAgq8A\"]},\"@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol\":{\"keccak256\":\"0x8de418a5503946cabe331f35fe242d3201a73f67f77aaeb7110acb1f30423aca\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://5a376d3dda2cb70536c0a45c208b29b34ac560c4cb4f513a42079f96ba47d2dd\",\"dweb:/ipfs/QmZQg6gn1sUpM8wHzwNvSnihumUCAhxD119MpXeKp8B9s8\"]},\"@openzeppelin/contracts/utils/Address.sol\":{\"keccak256\":\"0x51b758a8815ecc9596c66c37d56b1d33883a444631a3f916b9fe65cb863ef7c4\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://997ca03557985b3c6f9143a18b6c3a710b3bc1c7f189ee956d305a966ecfb922\",\"dweb:/ipfs/QmQaD3Wb62F88SHqmpLttvF6wKuPDQep2LLUcKPekeRzvz\"]},\"@openzeppelin/contracts/utils/Context.sol\":{\"keccak256\":\"0xe2e337e6dde9ef6b680e07338c493ebea1b5fd09b43424112868e9cc1706bca7\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://6df0ddf21ce9f58271bdfaa85cde98b200ef242a05a3f85c2bc10a8294800a92\",\"dweb:/ipfs/QmRK2Y5Yc6BK7tGKkgsgn3aJEQGi5aakeSPZvS65PV8Xp3\"]},\"@openzeppelin/contracts/utils/introspection/ERC165.sol\":{\"keccak256\":\"0xd10975de010d89fd1c78dc5e8a9a7e7f496198085c151648f20cba166b32582b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://fb0048dee081f6fffa5f74afc3fb328483c2a30504e94a0ddd2a5114d731ec4d\",\"dweb:/ipfs/QmZptt1nmYoA5SgjwnSgWqgUSDgm4q52Yos3xhnMv3MV43\"]},\"@openzeppelin/contracts/utils/introspection/IERC165.sol\":{\"keccak256\":\"0x447a5f3ddc18419d41ff92b3773fb86471b1db25773e07f877f548918a185bf1\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://be161e54f24e5c6fae81a12db1a8ae87bc5ae1b0ddc805d82a1440a68455088f\",\"dweb:/ipfs/QmP7C3CHdY9urF4dEMb9wmsp1wMxHF6nhA2yQE5SKiPAdy\"]},\"@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol\":{\"keccak256\":\"0xcc3d0c93fc9ac0febbe09f941b465b57f750bcf3b48432da0b97dc289cfdc489\",\"license\":\"GPL-2.0-or-later\",\"urls\":[\"bzz-raw://b9379ad954680c44a0bc523b314ae4c4da735f9fe1d02aa56ea5bdba6f1136f2\",\"dweb:/ipfs/QmZXdgQNXKAckrXWz9R3mc47F1fvDvr28a2ewJrwNAw71B\"]},\"@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol\":{\"keccak256\":\"0xfe6113d518466cd6652c85b111e01f33eb62157f49ae5ed7d5a3947a2044adb1\",\"license\":\"GPL-2.0-or-later\",\"urls\":[\"bzz-raw://1c42b9e6f5902ac38dd43e25750939baa7e0c1425dc75afd717c4412731065d5\",\"dweb:/ipfs/QmWaoacnzsucTvBME2o7YgZBZMhaHv7fkj83htHMVWJKWh\"]},\"@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol\":{\"keccak256\":\"0x3f485fb1a44e8fbeadefb5da07d66edab3cfe809f0ac4074b1e54e3eb3c4cf69\",\"license\":\"GPL-2.0-or-later\",\"urls\":[\"bzz-raw://095ce0626b41318c772b3ebf19d548282607f6a8f3d6c41c13edfbd5370c8652\",\"dweb:/ipfs/QmVDZfJJ89UUCE1hMyzqpkZAtQ8jUsBgZNE5AMRG7RzRFS\"]},\"@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolActions.sol\":{\"keccak256\":\"0x9453dd0e7442188667d01d9b65de3f1e14e9511ff3e303179a15f6fc267f7634\",\"license\":\"GPL-2.0-or-later\",\"urls\":[\"bzz-raw://982f4328f956c3e60e67501e759eb292ac487f76460c774c50e9ae4fcc92aae5\",\"dweb:/ipfs/QmRnzEDsaqtd9PJEVcgQi7p5aV5pMSvRUoGZJAdwFUJxgZ\"]},\"@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolDerivedState.sol\":{\"keccak256\":\"0xe603ac5b17ecdee73ba2b27efdf386c257a19c14206e87eee77e2017b742d9e5\",\"license\":\"GPL-2.0-or-later\",\"urls\":[\"bzz-raw://8febc9bdb399a4d94bb89f5377732652e2400e4a8dee808201ade6848f9004e7\",\"dweb:/ipfs/QmaKDqYYFU4d2W2iN77aDHptfbFmYZRrMYXHeGpJmM8C1c\"]},\"@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolEvents.sol\":{\"keccak256\":\"0x8071514d0fe5d17d6fbd31c191cdfb703031c24e0ece3621d88ab10e871375cd\",\"license\":\"GPL-2.0-or-later\",\"urls\":[\"bzz-raw://d0b571930cc7488b1d546a7e9cea7c52d8b3c4e207da657ed0e0db7343b8cd03\",\"dweb:/ipfs/QmaGK6vVwB95QSTR1XMYvrh7ivYAYZxi3fD7v6VMA4jZ39\"]},\"@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolImmutables.sol\":{\"keccak256\":\"0xf6e5d2cd1139c4c276bdbc8e1d2b256e456c866a91f1b868da265c6d2685c3f7\",\"license\":\"GPL-2.0-or-later\",\"urls\":[\"bzz-raw://b99c8c9ae8e27ee6559e5866bea82cbc9ffc8247f8d15b7422a4deb287d4d047\",\"dweb:/ipfs/QmfL8gaqt3ffAnm6nVj5ksuNpLygXuL3xq5VBqrkwC2JJ3\"]},\"@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolOwnerActions.sol\":{\"keccak256\":\"0x759b78a2918af9e99e246dc3af084f654e48ef32bb4e4cb8a966aa3dcaece235\",\"license\":\"GPL-2.0-or-later\",\"urls\":[\"bzz-raw://64144fb96e1c7fdba87305acadb98a198d26a3d46c097cb3a666e567f6f29735\",\"dweb:/ipfs/QmUnWVwN9FKB9uV5Pr8YfLpWZnYM2DENnRMaadZ492JS9u\"]},\"@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolState.sol\":{\"keccak256\":\"0x852dc1f5df7dcf7f11e7bb3eed79f0cea72ad4b25f6a9d2c35aafb48925fd49f\",\"license\":\"GPL-2.0-or-later\",\"urls\":[\"bzz-raw://ed63907c38ff36b0e22bc9ffc53e791ea74f0d4f0e7c257fdfb5aaf8825b1f0f\",\"dweb:/ipfs/QmSQrckghEjs6HVsA5GVgpNpZWvTXMY5eQLF7cN6deFeEg\"]},\"@uniswap/v3-core/contracts/libraries/LowGasSafeMath.sol\":{\"keccak256\":\"0x86715eb960f18e01ac94e3bba4614ed51a887fa3c5bd1c43bf80aa98e019cf2d\",\"license\":\"GPL-2.0-or-later\",\"urls\":[\"bzz-raw://bfc1d5d58e59015086b0e65a6c3a2ddad312e2350480510f6c0c8167f3d71a37\",\"dweb:/ipfs/QmQndULYjFsHKHjMAKLMfc12vWbVB5FawtioHtvwcWRJZp\"]},\"@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol\":{\"keccak256\":\"0x9bfaf1feb32814623e627ab70f2409760b15d95f1f9b058e2b3399a8bb732975\",\"license\":\"GPL-2.0-or-later\",\"urls\":[\"bzz-raw://a8a2c3e55965b61bcd91993d8e1d5d34b8b8a63e0fdfce87a85f6af92526fd53\",\"dweb:/ipfs/QmQj2CSCSwqDSU4KMNWxGsN2336Cy64WgpV1X1EHXNZWxM\"]},\"@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol\":{\"keccak256\":\"0x9af98b0908c96320ca6d08b22f0efca864742f6adbe5794cafe2d1d2e808b0cd\",\"license\":\"GPL-2.0-or-later\",\"urls\":[\"bzz-raw://da1d1e81e5bf534f0bf2934b3193db6cb1933f91ec006d2b88e9ad10a617a2d2\",\"dweb:/ipfs/QmcPBk47QLMFWcX2y2S9eMFsJgoYWBd3R8ey55Bgmv6w6v\"]},\"project:/contracts/BeraPoolStandardRisk.sol\":{\"keccak256\":\"0x48b4ccdfc4f5dd89f33f21394f442a1e0ec52860c8687d23375f559239f0b08e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://72af83b0d4f500e1eba10dfadc6bb23c6d652e0c0097209aa69aeec6d14f35d9\",\"dweb:/ipfs/QmNSFLYw6AvtFSGLYtJYXg3o8M97fY3AYJiGznkmA7P6dm\"]},\"project:/contracts/BeraSwapper.sol\":{\"keccak256\":\"0x3292920db4327237a05e1ba2b798673e5f0e495f5f159106847700f83bb5f8ae\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://55de9c9634e54aa428ecc1bba4592889e137d8a8652d0d493e3741598e10cf10\",\"dweb:/ipfs/QmecmTnjGEzSb9kCtTBESFo96cBiSzTcRfU94YkTvjSVGR\"]},\"project:/contracts/BeraWrapper.sol\":{\"keccak256\":\"0x5ce8c7be2d6c121100366b2f939c11a47dd16ce0e7f6af645e0160bc0f796d6e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://e5089679e625f777552b0bd21d3314e020e0887b370fc032075a9e3c021aca62\",\"dweb:/ipfs/QmXgg8RfsESt6y44dCpDn4XMWkuwhSWasyt9eM9uBurQkJ\"]},\"project:/contracts/ancillary/Constants.sol\":{\"keccak256\":\"0xa78146fe98b64b06b574049e5839155742744b2d24ca7d77fc012d4af1758777\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://b03603886113b0bb2b6262b5bb96682ba2d20b2a3aca78a0269d919ae4f77c00\",\"dweb:/ipfs/QmUPQNHuAuaHwkLPkSNMTCDj5HYt5W9fYJQUZyLZrDKEPE\"]},\"project:/contracts/ancillary/IOracle.sol\":{\"keccak256\":\"0x806a1e756b1bf50c191e702cc2cb0bbefc3aaab7e5b1a02142881ead157cf57e\",\"license\":\"GPL-3.0-or-later\",\"urls\":[\"bzz-raw://7c1d6af71f61ec671c5ba12ee696727c5a0e1878eb629e0d8968cefc0306d58d\",\"dweb:/ipfs/QmNoeRU7n5Jjg6cH9fyM4hdpmEjSLfw7LFTrtbFR5TrLBe\"]},\"project:/contracts/ancillary/PnLCalculator.sol\":{\"keccak256\":\"0x2f9343e5060b0fd2752acaa81e71ffc4fedbc1aa8efae396b13dd70efbc84c97\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://69ecf96b143eaa07a9f8324336de78a8a14b35dbee9e52b7b44ff4995a7bedd9\",\"dweb:/ipfs/QmXPYED2PCuUzeXDyJ29Va7p6kvZYfo8uWaPUUALHvA26v\"]},\"project:/contracts/ancillary/SwapOracle.sol\":{\"keccak256\":\"0xe7736ff8d3930466f4026d863876b0fdfbc826e3af82eebcf55c4448ce306142\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://b8fbe3cc9ca09a2ab8ee6e1d3fae52a4bfa0deb1d88a05e35b5ea654cb05c5e4\",\"dweb:/ipfs/QmV27ugvt3gxjtX3EcMG5sMsRWqQ2muMroBvaBuABPNuug\"]},\"project:/contracts/ancillary/TWAPoracle.sol\":{\"keccak256\":\"0x3c5dfd1c37af624804d2f202c0ee78dac11c90be6c81a08e4c32d27e122c55d4\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://175eac36842d887c4acbb035dc76b97fa940986ff57c070dd4b5cd9ac7443288\",\"dweb:/ipfs/QmNiGMY75MoPp11Azpt8iJvSzV9R9TG1Kp47BFxt36PjTc\"]},\"project:/contracts/uniswapv08/v3-core/FullMath.sol\":{\"keccak256\":\"0x952e725c56dbd289472791252895614d486c4653b6676294d44c903e6e526810\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://f81790f9011b80795190055af6ff083e0b66140945d616864d7abfedc2097018\",\"dweb:/ipfs/Qmep2qonPseT8sta3x8ncePyGGCi4AgRDWfE5v13PF4HGF\"]},\"project:/contracts/uniswapv08/v3-core/TickMath.sol\":{\"keccak256\":\"0x19498e907f73695e4222ac9fe2d5500039a280373b4df3e7fd655dcdbd80bafe\",\"license\":\"GPL-2.0-or-later\",\"urls\":[\"bzz-raw://625defdb4115d52e63566a581f61c9b19f3d28484a66606316477f8f79b6f579\",\"dweb:/ipfs/QmNiLfg3F7AJuPTKuiV8uqRjeM3vhSHvtGCPXkoAEsFAZs\"]},\"project:/contracts/uniswapv08/v3-periphery/OracleLibrary.sol\":{\"keccak256\":\"0x828faf50ae1f821569eb7b9d0071d0bbea3730eaf3cb39b2dc35a3aed842ac33\",\"license\":\"GPL-2.0-or-later\",\"urls\":[\"bzz-raw://55b79c53453a4551e5f702441c0aec46e83ca50e97c20dab14ef399342efdb7b\",\"dweb:/ipfs/QmfN6jzYRZvfvUrXFvE6ewevyrZq3fTKxKZZyn417ycBk1\"]},\"project:/contracts/uniswapv08/v3-periphery/PoolAddress.sol\":{\"keccak256\":\"0x6eaebb0d204470cbbc0f6ab5c595f35e78c4fcf494fff7abf4c8840705577adc\",\"license\":\"GPL-2.0-or-later\",\"urls\":[\"bzz-raw://a0b58bccb7003d0450d4d7b4f85276f2ae95cd1682cc8d6c70b79739e41268f9\",\"dweb:/ipfs/QmW6DejUL38FVv1fb71xpfkEYhdK17SiVwB3oGofG7QtWJ\"]}},\"version\":1}",
+  "bytecode": "0x610140604052736b175474e89094c44da98b954eedeac495271d0f73ffffffffffffffffffffffffffffffffffffffff1660809073ffffffffffffffffffffffffffffffffffffffff1681525073c2e9f25be6257c210d7adf0d4cd6e3e881ba25f873ffffffffffffffffffffffffffffffffffffffff1660a09073ffffffffffffffffffffffffffffffffffffffff1681525073c02aaa39b223fe8d0a0e5c4f27ead9083c756cc273ffffffffffffffffffffffffffffffffffffffff1660c09073ffffffffffffffffffffffffffffffffffffffff168152503480156100e657600080fd5b506040516106b83803806106b88339818101604052810190610108919061029f565b8273ffffffffffffffffffffffffffffffffffffffff1660e08173ffffffffffffffffffffffffffffffffffffffff16815250508173ffffffffffffffffffffffffffffffffffffffff166101008173ffffffffffffffffffffffffffffffffffffffff16815250508073ffffffffffffffffffffffffffffffffffffffff166101208173ffffffffffffffffffffffffffffffffffffffff16815250505050506102f2565b600080fd5b600073ffffffffffffffffffffffffffffffffffffffff82169050919050565b60006101de826101b3565b9050919050565b60006101f0826101d3565b9050919050565b610200816101e5565b811461020b57600080fd5b50565b60008151905061021d816101f7565b92915050565b600061022e826101d3565b9050919050565b61023e81610223565b811461024957600080fd5b50565b60008151905061025b81610235565b92915050565b600061026c826101d3565b9050919050565b61027c81610261565b811461028757600080fd5b50565b60008151905061029981610273565b92915050565b6000806000606084860312156102b8576102b76101ae565b5b60006102c68682870161020e565b93505060206102d78682870161024c565b92505060406102e88682870161028a565b9150509250925092565b60805160a05160c05160e05161010051610120516103776103416000396000610165015260006101d1015260006101ad0152600061011d015260006101890152600061014101526103776000f3fe608060405234801561001057600080fd5b50600436106100625760003560e01c8063040141e5146100675780632a4c0a1a146100855780632bcbeece146100a35780637475750a146100c1578063a29aa114146100df578063ffe28ca1146100fd575b600080fd5b61006f61011b565b60405161007c9190610234565b60405180910390f35b61008d61013f565b60405161009a9190610234565b60405180910390f35b6100ab610163565b6040516100b891906102ae565b60405180910390f35b6100c9610187565b6040516100d69190610234565b60405180910390f35b6100e76101ab565b6040516100f491906102ea565b60405180910390f35b6101056101cf565b6040516101129190610326565b60405180910390f35b7f000000000000000000000000000000000000000000000000000000000000000081565b7f000000000000000000000000000000000000000000000000000000000000000081565b7f000000000000000000000000000000000000000000000000000000000000000081565b7f000000000000000000000000000000000000000000000000000000000000000081565b7f000000000000000000000000000000000000000000000000000000000000000081565b7f000000000000000000000000000000000000000000000000000000000000000081565b600073ffffffffffffffffffffffffffffffffffffffff82169050919050565b600061021e826101f3565b9050919050565b61022e81610213565b82525050565b60006020820190506102496000830184610225565b92915050565b6000819050919050565b600061027461026f61026a846101f3565b61024f565b6101f3565b9050919050565b600061028682610259565b9050919050565b60006102988261027b565b9050919050565b6102a88161028d565b82525050565b60006020820190506102c3600083018461029f565b92915050565b60006102d48261027b565b9050919050565b6102e4816102c9565b82525050565b60006020820190506102ff60008301846102db565b92915050565b60006103108261027b565b9050919050565b61032081610305565b82525050565b600060208201905061033b6000830184610317565b9291505056fea26469706673582212208ee49e934f4b09bb7eb985932da0face2de7b787ea74f3f4d816bd4be30c83c464736f6c634300080b0033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100625760003560e01c8063040141e5146100675780632a4c0a1a146100855780632bcbeece146100a35780637475750a146100c1578063a29aa114146100df578063ffe28ca1146100fd575b600080fd5b61006f61011b565b60405161007c9190610234565b60405180910390f35b61008d61013f565b60405161009a9190610234565b60405180910390f35b6100ab610163565b6040516100b891906102ae565b60405180910390f35b6100c9610187565b6040516100d69190610234565b60405180910390f35b6100e76101ab565b6040516100f491906102ea565b60405180910390f35b6101056101cf565b6040516101129190610326565b60405180910390f35b7f000000000000000000000000000000000000000000000000000000000000000081565b7f000000000000000000000000000000000000000000000000000000000000000081565b7f000000000000000000000000000000000000000000000000000000000000000081565b7f000000000000000000000000000000000000000000000000000000000000000081565b7f000000000000000000000000000000000000000000000000000000000000000081565b7f000000000000000000000000000000000000000000000000000000000000000081565b600073ffffffffffffffffffffffffffffffffffffffff82169050919050565b600061021e826101f3565b9050919050565b61022e81610213565b82525050565b60006020820190506102496000830184610225565b92915050565b6000819050919050565b600061027461026f61026a846101f3565b61024f565b6101f3565b9050919050565b600061028682610259565b9050919050565b60006102988261027b565b9050919050565b6102a88161028d565b82525050565b60006020820190506102c3600083018461029f565b92915050565b60006102d48261027b565b9050919050565b6102e4816102c9565b82525050565b60006020820190506102ff60008301846102db565b92915050565b60006103108261027b565b9050919050565b61032081610305565b82525050565b600060208201905061033b6000830184610317565b9291505056fea26469706673582212208ee49e934f4b09bb7eb985932da0face2de7b787ea74f3f4d816bd4be30c83c464736f6c634300080b0033",
   "immutableReferences": {
-    "4415": [
+    "4524": [
       {
         "length": 32,
-        "start": 73
+        "start": 321
+      }
+    ],
+    "4527": [
+      {
+        "length": 32,
+        "start": 393
+      }
+    ],
+    "4530": [
+      {
+        "length": 32,
+        "start": 285
+      }
+    ],
+    "4533": [
+      {
+        "length": 32,
+        "start": 429
+      }
+    ],
+    "4536": [
+      {
+        "length": 32,
+        "start": 465
+      }
+    ],
+    "4539": [
+      {
+        "length": 32,
+        "start": 357
       }
     ]
   },
-  "generatedSources": [],
+  "generatedSources": [
+    {
+      "ast": {
+        "nodeType": "YulBlock",
+        "src": "0:2854:37",
+        "statements": [
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "47:35:37",
+              "statements": [
+                {
+                  "nodeType": "YulAssignment",
+                  "src": "57:19:37",
+                  "value": {
+                    "arguments": [
+                      {
+                        "kind": "number",
+                        "nodeType": "YulLiteral",
+                        "src": "73:2:37",
+                        "type": "",
+                        "value": "64"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "mload",
+                      "nodeType": "YulIdentifier",
+                      "src": "67:5:37"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "67:9:37"
+                  },
+                  "variableNames": [
+                    {
+                      "name": "memPtr",
+                      "nodeType": "YulIdentifier",
+                      "src": "57:6:37"
+                    }
+                  ]
+                }
+              ]
+            },
+            "name": "allocate_unbounded",
+            "nodeType": "YulFunctionDefinition",
+            "returnVariables": [
+              {
+                "name": "memPtr",
+                "nodeType": "YulTypedName",
+                "src": "40:6:37",
+                "type": ""
+              }
+            ],
+            "src": "7:75:37"
+          },
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "177:28:37",
+              "statements": [
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "kind": "number",
+                        "nodeType": "YulLiteral",
+                        "src": "194:1:37",
+                        "type": "",
+                        "value": "0"
+                      },
+                      {
+                        "kind": "number",
+                        "nodeType": "YulLiteral",
+                        "src": "197:1:37",
+                        "type": "",
+                        "value": "0"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "revert",
+                      "nodeType": "YulIdentifier",
+                      "src": "187:6:37"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "187:12:37"
+                  },
+                  "nodeType": "YulExpressionStatement",
+                  "src": "187:12:37"
+                }
+              ]
+            },
+            "name": "revert_error_dbdddcbe895c83990c08b3492a0e83918d802a52331272ac6fdb6a7c4aea3b1b",
+            "nodeType": "YulFunctionDefinition",
+            "src": "88:117:37"
+          },
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "300:28:37",
+              "statements": [
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "kind": "number",
+                        "nodeType": "YulLiteral",
+                        "src": "317:1:37",
+                        "type": "",
+                        "value": "0"
+                      },
+                      {
+                        "kind": "number",
+                        "nodeType": "YulLiteral",
+                        "src": "320:1:37",
+                        "type": "",
+                        "value": "0"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "revert",
+                      "nodeType": "YulIdentifier",
+                      "src": "310:6:37"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "310:12:37"
+                  },
+                  "nodeType": "YulExpressionStatement",
+                  "src": "310:12:37"
+                }
+              ]
+            },
+            "name": "revert_error_c1322bf8034eace5e0b5c7295db60986aa89aae5e0ea0873e4689e076861a5db",
+            "nodeType": "YulFunctionDefinition",
+            "src": "211:117:37"
+          },
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "379:81:37",
+              "statements": [
+                {
+                  "nodeType": "YulAssignment",
+                  "src": "389:65:37",
+                  "value": {
+                    "arguments": [
+                      {
+                        "name": "value",
+                        "nodeType": "YulIdentifier",
+                        "src": "404:5:37"
+                      },
+                      {
+                        "kind": "number",
+                        "nodeType": "YulLiteral",
+                        "src": "411:42:37",
+                        "type": "",
+                        "value": "0xffffffffffffffffffffffffffffffffffffffff"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "and",
+                      "nodeType": "YulIdentifier",
+                      "src": "400:3:37"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "400:54:37"
+                  },
+                  "variableNames": [
+                    {
+                      "name": "cleaned",
+                      "nodeType": "YulIdentifier",
+                      "src": "389:7:37"
+                    }
+                  ]
+                }
+              ]
+            },
+            "name": "cleanup_t_uint160",
+            "nodeType": "YulFunctionDefinition",
+            "parameters": [
+              {
+                "name": "value",
+                "nodeType": "YulTypedName",
+                "src": "361:5:37",
+                "type": ""
+              }
+            ],
+            "returnVariables": [
+              {
+                "name": "cleaned",
+                "nodeType": "YulTypedName",
+                "src": "371:7:37",
+                "type": ""
+              }
+            ],
+            "src": "334:126:37"
+          },
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "511:51:37",
+              "statements": [
+                {
+                  "nodeType": "YulAssignment",
+                  "src": "521:35:37",
+                  "value": {
+                    "arguments": [
+                      {
+                        "name": "value",
+                        "nodeType": "YulIdentifier",
+                        "src": "550:5:37"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "cleanup_t_uint160",
+                      "nodeType": "YulIdentifier",
+                      "src": "532:17:37"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "532:24:37"
+                  },
+                  "variableNames": [
+                    {
+                      "name": "cleaned",
+                      "nodeType": "YulIdentifier",
+                      "src": "521:7:37"
+                    }
+                  ]
+                }
+              ]
+            },
+            "name": "cleanup_t_address",
+            "nodeType": "YulFunctionDefinition",
+            "parameters": [
+              {
+                "name": "value",
+                "nodeType": "YulTypedName",
+                "src": "493:5:37",
+                "type": ""
+              }
+            ],
+            "returnVariables": [
+              {
+                "name": "cleaned",
+                "nodeType": "YulTypedName",
+                "src": "503:7:37",
+                "type": ""
+              }
+            ],
+            "src": "466:96:37"
+          },
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "633:51:37",
+              "statements": [
+                {
+                  "nodeType": "YulAssignment",
+                  "src": "643:35:37",
+                  "value": {
+                    "arguments": [
+                      {
+                        "name": "value",
+                        "nodeType": "YulIdentifier",
+                        "src": "672:5:37"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "cleanup_t_address",
+                      "nodeType": "YulIdentifier",
+                      "src": "654:17:37"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "654:24:37"
+                  },
+                  "variableNames": [
+                    {
+                      "name": "cleaned",
+                      "nodeType": "YulIdentifier",
+                      "src": "643:7:37"
+                    }
+                  ]
+                }
+              ]
+            },
+            "name": "cleanup_t_contract$_BeraWrapper_$4516",
+            "nodeType": "YulFunctionDefinition",
+            "parameters": [
+              {
+                "name": "value",
+                "nodeType": "YulTypedName",
+                "src": "615:5:37",
+                "type": ""
+              }
+            ],
+            "returnVariables": [
+              {
+                "name": "cleaned",
+                "nodeType": "YulTypedName",
+                "src": "625:7:37",
+                "type": ""
+              }
+            ],
+            "src": "568:116:37"
+          },
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "753:99:37",
+              "statements": [
+                {
+                  "body": {
+                    "nodeType": "YulBlock",
+                    "src": "830:16:37",
+                    "statements": [
+                      {
+                        "expression": {
+                          "arguments": [
+                            {
+                              "kind": "number",
+                              "nodeType": "YulLiteral",
+                              "src": "839:1:37",
+                              "type": "",
+                              "value": "0"
+                            },
+                            {
+                              "kind": "number",
+                              "nodeType": "YulLiteral",
+                              "src": "842:1:37",
+                              "type": "",
+                              "value": "0"
+                            }
+                          ],
+                          "functionName": {
+                            "name": "revert",
+                            "nodeType": "YulIdentifier",
+                            "src": "832:6:37"
+                          },
+                          "nodeType": "YulFunctionCall",
+                          "src": "832:12:37"
+                        },
+                        "nodeType": "YulExpressionStatement",
+                        "src": "832:12:37"
+                      }
+                    ]
+                  },
+                  "condition": {
+                    "arguments": [
+                      {
+                        "arguments": [
+                          {
+                            "name": "value",
+                            "nodeType": "YulIdentifier",
+                            "src": "776:5:37"
+                          },
+                          {
+                            "arguments": [
+                              {
+                                "name": "value",
+                                "nodeType": "YulIdentifier",
+                                "src": "821:5:37"
+                              }
+                            ],
+                            "functionName": {
+                              "name": "cleanup_t_contract$_BeraWrapper_$4516",
+                              "nodeType": "YulIdentifier",
+                              "src": "783:37:37"
+                            },
+                            "nodeType": "YulFunctionCall",
+                            "src": "783:44:37"
+                          }
+                        ],
+                        "functionName": {
+                          "name": "eq",
+                          "nodeType": "YulIdentifier",
+                          "src": "773:2:37"
+                        },
+                        "nodeType": "YulFunctionCall",
+                        "src": "773:55:37"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "iszero",
+                      "nodeType": "YulIdentifier",
+                      "src": "766:6:37"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "766:63:37"
+                  },
+                  "nodeType": "YulIf",
+                  "src": "763:83:37"
+                }
+              ]
+            },
+            "name": "validator_revert_t_contract$_BeraWrapper_$4516",
+            "nodeType": "YulFunctionDefinition",
+            "parameters": [
+              {
+                "name": "value",
+                "nodeType": "YulTypedName",
+                "src": "746:5:37",
+                "type": ""
+              }
+            ],
+            "src": "690:162:37"
+          },
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "941:100:37",
+              "statements": [
+                {
+                  "nodeType": "YulAssignment",
+                  "src": "951:22:37",
+                  "value": {
+                    "arguments": [
+                      {
+                        "name": "offset",
+                        "nodeType": "YulIdentifier",
+                        "src": "966:6:37"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "mload",
+                      "nodeType": "YulIdentifier",
+                      "src": "960:5:37"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "960:13:37"
+                  },
+                  "variableNames": [
+                    {
+                      "name": "value",
+                      "nodeType": "YulIdentifier",
+                      "src": "951:5:37"
+                    }
+                  ]
+                },
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "name": "value",
+                        "nodeType": "YulIdentifier",
+                        "src": "1029:5:37"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "validator_revert_t_contract$_BeraWrapper_$4516",
+                      "nodeType": "YulIdentifier",
+                      "src": "982:46:37"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "982:53:37"
+                  },
+                  "nodeType": "YulExpressionStatement",
+                  "src": "982:53:37"
+                }
+              ]
+            },
+            "name": "abi_decode_t_contract$_BeraWrapper_$4516_fromMemory",
+            "nodeType": "YulFunctionDefinition",
+            "parameters": [
+              {
+                "name": "offset",
+                "nodeType": "YulTypedName",
+                "src": "919:6:37",
+                "type": ""
+              },
+              {
+                "name": "end",
+                "nodeType": "YulTypedName",
+                "src": "927:3:37",
+                "type": ""
+              }
+            ],
+            "returnVariables": [
+              {
+                "name": "value",
+                "nodeType": "YulTypedName",
+                "src": "935:5:37",
+                "type": ""
+              }
+            ],
+            "src": "858:183:37"
+          },
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "1112:51:37",
+              "statements": [
+                {
+                  "nodeType": "YulAssignment",
+                  "src": "1122:35:37",
+                  "value": {
+                    "arguments": [
+                      {
+                        "name": "value",
+                        "nodeType": "YulIdentifier",
+                        "src": "1151:5:37"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "cleanup_t_address",
+                      "nodeType": "YulIdentifier",
+                      "src": "1133:17:37"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "1133:24:37"
+                  },
+                  "variableNames": [
+                    {
+                      "name": "cleaned",
+                      "nodeType": "YulIdentifier",
+                      "src": "1122:7:37"
+                    }
+                  ]
+                }
+              ]
+            },
+            "name": "cleanup_t_contract$_BeraSwapper_$4394",
+            "nodeType": "YulFunctionDefinition",
+            "parameters": [
+              {
+                "name": "value",
+                "nodeType": "YulTypedName",
+                "src": "1094:5:37",
+                "type": ""
+              }
+            ],
+            "returnVariables": [
+              {
+                "name": "cleaned",
+                "nodeType": "YulTypedName",
+                "src": "1104:7:37",
+                "type": ""
+              }
+            ],
+            "src": "1047:116:37"
+          },
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "1232:99:37",
+              "statements": [
+                {
+                  "body": {
+                    "nodeType": "YulBlock",
+                    "src": "1309:16:37",
+                    "statements": [
+                      {
+                        "expression": {
+                          "arguments": [
+                            {
+                              "kind": "number",
+                              "nodeType": "YulLiteral",
+                              "src": "1318:1:37",
+                              "type": "",
+                              "value": "0"
+                            },
+                            {
+                              "kind": "number",
+                              "nodeType": "YulLiteral",
+                              "src": "1321:1:37",
+                              "type": "",
+                              "value": "0"
+                            }
+                          ],
+                          "functionName": {
+                            "name": "revert",
+                            "nodeType": "YulIdentifier",
+                            "src": "1311:6:37"
+                          },
+                          "nodeType": "YulFunctionCall",
+                          "src": "1311:12:37"
+                        },
+                        "nodeType": "YulExpressionStatement",
+                        "src": "1311:12:37"
+                      }
+                    ]
+                  },
+                  "condition": {
+                    "arguments": [
+                      {
+                        "arguments": [
+                          {
+                            "name": "value",
+                            "nodeType": "YulIdentifier",
+                            "src": "1255:5:37"
+                          },
+                          {
+                            "arguments": [
+                              {
+                                "name": "value",
+                                "nodeType": "YulIdentifier",
+                                "src": "1300:5:37"
+                              }
+                            ],
+                            "functionName": {
+                              "name": "cleanup_t_contract$_BeraSwapper_$4394",
+                              "nodeType": "YulIdentifier",
+                              "src": "1262:37:37"
+                            },
+                            "nodeType": "YulFunctionCall",
+                            "src": "1262:44:37"
+                          }
+                        ],
+                        "functionName": {
+                          "name": "eq",
+                          "nodeType": "YulIdentifier",
+                          "src": "1252:2:37"
+                        },
+                        "nodeType": "YulFunctionCall",
+                        "src": "1252:55:37"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "iszero",
+                      "nodeType": "YulIdentifier",
+                      "src": "1245:6:37"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "1245:63:37"
+                  },
+                  "nodeType": "YulIf",
+                  "src": "1242:83:37"
+                }
+              ]
+            },
+            "name": "validator_revert_t_contract$_BeraSwapper_$4394",
+            "nodeType": "YulFunctionDefinition",
+            "parameters": [
+              {
+                "name": "value",
+                "nodeType": "YulTypedName",
+                "src": "1225:5:37",
+                "type": ""
+              }
+            ],
+            "src": "1169:162:37"
+          },
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "1420:100:37",
+              "statements": [
+                {
+                  "nodeType": "YulAssignment",
+                  "src": "1430:22:37",
+                  "value": {
+                    "arguments": [
+                      {
+                        "name": "offset",
+                        "nodeType": "YulIdentifier",
+                        "src": "1445:6:37"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "mload",
+                      "nodeType": "YulIdentifier",
+                      "src": "1439:5:37"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "1439:13:37"
+                  },
+                  "variableNames": [
+                    {
+                      "name": "value",
+                      "nodeType": "YulIdentifier",
+                      "src": "1430:5:37"
+                    }
+                  ]
+                },
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "name": "value",
+                        "nodeType": "YulIdentifier",
+                        "src": "1508:5:37"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "validator_revert_t_contract$_BeraSwapper_$4394",
+                      "nodeType": "YulIdentifier",
+                      "src": "1461:46:37"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "1461:53:37"
+                  },
+                  "nodeType": "YulExpressionStatement",
+                  "src": "1461:53:37"
+                }
+              ]
+            },
+            "name": "abi_decode_t_contract$_BeraSwapper_$4394_fromMemory",
+            "nodeType": "YulFunctionDefinition",
+            "parameters": [
+              {
+                "name": "offset",
+                "nodeType": "YulTypedName",
+                "src": "1398:6:37",
+                "type": ""
+              },
+              {
+                "name": "end",
+                "nodeType": "YulTypedName",
+                "src": "1406:3:37",
+                "type": ""
+              }
+            ],
+            "returnVariables": [
+              {
+                "name": "value",
+                "nodeType": "YulTypedName",
+                "src": "1414:5:37",
+                "type": ""
+              }
+            ],
+            "src": "1337:183:37"
+          },
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "1600:51:37",
+              "statements": [
+                {
+                  "nodeType": "YulAssignment",
+                  "src": "1610:35:37",
+                  "value": {
+                    "arguments": [
+                      {
+                        "name": "value",
+                        "nodeType": "YulIdentifier",
+                        "src": "1639:5:37"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "cleanup_t_address",
+                      "nodeType": "YulIdentifier",
+                      "src": "1621:17:37"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "1621:24:37"
+                  },
+                  "variableNames": [
+                    {
+                      "name": "cleaned",
+                      "nodeType": "YulIdentifier",
+                      "src": "1610:7:37"
+                    }
+                  ]
+                }
+              ]
+            },
+            "name": "cleanup_t_contract$_BeraPoolStandardRisk_$4193",
+            "nodeType": "YulFunctionDefinition",
+            "parameters": [
+              {
+                "name": "value",
+                "nodeType": "YulTypedName",
+                "src": "1582:5:37",
+                "type": ""
+              }
+            ],
+            "returnVariables": [
+              {
+                "name": "cleaned",
+                "nodeType": "YulTypedName",
+                "src": "1592:7:37",
+                "type": ""
+              }
+            ],
+            "src": "1526:125:37"
+          },
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "1729:108:37",
+              "statements": [
+                {
+                  "body": {
+                    "nodeType": "YulBlock",
+                    "src": "1815:16:37",
+                    "statements": [
+                      {
+                        "expression": {
+                          "arguments": [
+                            {
+                              "kind": "number",
+                              "nodeType": "YulLiteral",
+                              "src": "1824:1:37",
+                              "type": "",
+                              "value": "0"
+                            },
+                            {
+                              "kind": "number",
+                              "nodeType": "YulLiteral",
+                              "src": "1827:1:37",
+                              "type": "",
+                              "value": "0"
+                            }
+                          ],
+                          "functionName": {
+                            "name": "revert",
+                            "nodeType": "YulIdentifier",
+                            "src": "1817:6:37"
+                          },
+                          "nodeType": "YulFunctionCall",
+                          "src": "1817:12:37"
+                        },
+                        "nodeType": "YulExpressionStatement",
+                        "src": "1817:12:37"
+                      }
+                    ]
+                  },
+                  "condition": {
+                    "arguments": [
+                      {
+                        "arguments": [
+                          {
+                            "name": "value",
+                            "nodeType": "YulIdentifier",
+                            "src": "1752:5:37"
+                          },
+                          {
+                            "arguments": [
+                              {
+                                "name": "value",
+                                "nodeType": "YulIdentifier",
+                                "src": "1806:5:37"
+                              }
+                            ],
+                            "functionName": {
+                              "name": "cleanup_t_contract$_BeraPoolStandardRisk_$4193",
+                              "nodeType": "YulIdentifier",
+                              "src": "1759:46:37"
+                            },
+                            "nodeType": "YulFunctionCall",
+                            "src": "1759:53:37"
+                          }
+                        ],
+                        "functionName": {
+                          "name": "eq",
+                          "nodeType": "YulIdentifier",
+                          "src": "1749:2:37"
+                        },
+                        "nodeType": "YulFunctionCall",
+                        "src": "1749:64:37"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "iszero",
+                      "nodeType": "YulIdentifier",
+                      "src": "1742:6:37"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "1742:72:37"
+                  },
+                  "nodeType": "YulIf",
+                  "src": "1739:92:37"
+                }
+              ]
+            },
+            "name": "validator_revert_t_contract$_BeraPoolStandardRisk_$4193",
+            "nodeType": "YulFunctionDefinition",
+            "parameters": [
+              {
+                "name": "value",
+                "nodeType": "YulTypedName",
+                "src": "1722:5:37",
+                "type": ""
+              }
+            ],
+            "src": "1657:180:37"
+          },
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "1935:109:37",
+              "statements": [
+                {
+                  "nodeType": "YulAssignment",
+                  "src": "1945:22:37",
+                  "value": {
+                    "arguments": [
+                      {
+                        "name": "offset",
+                        "nodeType": "YulIdentifier",
+                        "src": "1960:6:37"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "mload",
+                      "nodeType": "YulIdentifier",
+                      "src": "1954:5:37"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "1954:13:37"
+                  },
+                  "variableNames": [
+                    {
+                      "name": "value",
+                      "nodeType": "YulIdentifier",
+                      "src": "1945:5:37"
+                    }
+                  ]
+                },
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "name": "value",
+                        "nodeType": "YulIdentifier",
+                        "src": "2032:5:37"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "validator_revert_t_contract$_BeraPoolStandardRisk_$4193",
+                      "nodeType": "YulIdentifier",
+                      "src": "1976:55:37"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "1976:62:37"
+                  },
+                  "nodeType": "YulExpressionStatement",
+                  "src": "1976:62:37"
+                }
+              ]
+            },
+            "name": "abi_decode_t_contract$_BeraPoolStandardRisk_$4193_fromMemory",
+            "nodeType": "YulFunctionDefinition",
+            "parameters": [
+              {
+                "name": "offset",
+                "nodeType": "YulTypedName",
+                "src": "1913:6:37",
+                "type": ""
+              },
+              {
+                "name": "end",
+                "nodeType": "YulTypedName",
+                "src": "1921:3:37",
+                "type": ""
+              }
+            ],
+            "returnVariables": [
+              {
+                "name": "value",
+                "nodeType": "YulTypedName",
+                "src": "1929:5:37",
+                "type": ""
+              }
+            ],
+            "src": "1843:201:37"
+          },
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "2230:621:37",
+              "statements": [
+                {
+                  "body": {
+                    "nodeType": "YulBlock",
+                    "src": "2276:83:37",
+                    "statements": [
+                      {
+                        "expression": {
+                          "arguments": [],
+                          "functionName": {
+                            "name": "revert_error_dbdddcbe895c83990c08b3492a0e83918d802a52331272ac6fdb6a7c4aea3b1b",
+                            "nodeType": "YulIdentifier",
+                            "src": "2278:77:37"
+                          },
+                          "nodeType": "YulFunctionCall",
+                          "src": "2278:79:37"
+                        },
+                        "nodeType": "YulExpressionStatement",
+                        "src": "2278:79:37"
+                      }
+                    ]
+                  },
+                  "condition": {
+                    "arguments": [
+                      {
+                        "arguments": [
+                          {
+                            "name": "dataEnd",
+                            "nodeType": "YulIdentifier",
+                            "src": "2251:7:37"
+                          },
+                          {
+                            "name": "headStart",
+                            "nodeType": "YulIdentifier",
+                            "src": "2260:9:37"
+                          }
+                        ],
+                        "functionName": {
+                          "name": "sub",
+                          "nodeType": "YulIdentifier",
+                          "src": "2247:3:37"
+                        },
+                        "nodeType": "YulFunctionCall",
+                        "src": "2247:23:37"
+                      },
+                      {
+                        "kind": "number",
+                        "nodeType": "YulLiteral",
+                        "src": "2272:2:37",
+                        "type": "",
+                        "value": "96"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "slt",
+                      "nodeType": "YulIdentifier",
+                      "src": "2243:3:37"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "2243:32:37"
+                  },
+                  "nodeType": "YulIf",
+                  "src": "2240:119:37"
+                },
+                {
+                  "nodeType": "YulBlock",
+                  "src": "2369:148:37",
+                  "statements": [
+                    {
+                      "nodeType": "YulVariableDeclaration",
+                      "src": "2384:15:37",
+                      "value": {
+                        "kind": "number",
+                        "nodeType": "YulLiteral",
+                        "src": "2398:1:37",
+                        "type": "",
+                        "value": "0"
+                      },
+                      "variables": [
+                        {
+                          "name": "offset",
+                          "nodeType": "YulTypedName",
+                          "src": "2388:6:37",
+                          "type": ""
+                        }
+                      ]
+                    },
+                    {
+                      "nodeType": "YulAssignment",
+                      "src": "2413:94:37",
+                      "value": {
+                        "arguments": [
+                          {
+                            "arguments": [
+                              {
+                                "name": "headStart",
+                                "nodeType": "YulIdentifier",
+                                "src": "2479:9:37"
+                              },
+                              {
+                                "name": "offset",
+                                "nodeType": "YulIdentifier",
+                                "src": "2490:6:37"
+                              }
+                            ],
+                            "functionName": {
+                              "name": "add",
+                              "nodeType": "YulIdentifier",
+                              "src": "2475:3:37"
+                            },
+                            "nodeType": "YulFunctionCall",
+                            "src": "2475:22:37"
+                          },
+                          {
+                            "name": "dataEnd",
+                            "nodeType": "YulIdentifier",
+                            "src": "2499:7:37"
+                          }
+                        ],
+                        "functionName": {
+                          "name": "abi_decode_t_contract$_BeraWrapper_$4516_fromMemory",
+                          "nodeType": "YulIdentifier",
+                          "src": "2423:51:37"
+                        },
+                        "nodeType": "YulFunctionCall",
+                        "src": "2423:84:37"
+                      },
+                      "variableNames": [
+                        {
+                          "name": "value0",
+                          "nodeType": "YulIdentifier",
+                          "src": "2413:6:37"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "nodeType": "YulBlock",
+                  "src": "2527:149:37",
+                  "statements": [
+                    {
+                      "nodeType": "YulVariableDeclaration",
+                      "src": "2542:16:37",
+                      "value": {
+                        "kind": "number",
+                        "nodeType": "YulLiteral",
+                        "src": "2556:2:37",
+                        "type": "",
+                        "value": "32"
+                      },
+                      "variables": [
+                        {
+                          "name": "offset",
+                          "nodeType": "YulTypedName",
+                          "src": "2546:6:37",
+                          "type": ""
+                        }
+                      ]
+                    },
+                    {
+                      "nodeType": "YulAssignment",
+                      "src": "2572:94:37",
+                      "value": {
+                        "arguments": [
+                          {
+                            "arguments": [
+                              {
+                                "name": "headStart",
+                                "nodeType": "YulIdentifier",
+                                "src": "2638:9:37"
+                              },
+                              {
+                                "name": "offset",
+                                "nodeType": "YulIdentifier",
+                                "src": "2649:6:37"
+                              }
+                            ],
+                            "functionName": {
+                              "name": "add",
+                              "nodeType": "YulIdentifier",
+                              "src": "2634:3:37"
+                            },
+                            "nodeType": "YulFunctionCall",
+                            "src": "2634:22:37"
+                          },
+                          {
+                            "name": "dataEnd",
+                            "nodeType": "YulIdentifier",
+                            "src": "2658:7:37"
+                          }
+                        ],
+                        "functionName": {
+                          "name": "abi_decode_t_contract$_BeraSwapper_$4394_fromMemory",
+                          "nodeType": "YulIdentifier",
+                          "src": "2582:51:37"
+                        },
+                        "nodeType": "YulFunctionCall",
+                        "src": "2582:84:37"
+                      },
+                      "variableNames": [
+                        {
+                          "name": "value1",
+                          "nodeType": "YulIdentifier",
+                          "src": "2572:6:37"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "nodeType": "YulBlock",
+                  "src": "2686:158:37",
+                  "statements": [
+                    {
+                      "nodeType": "YulVariableDeclaration",
+                      "src": "2701:16:37",
+                      "value": {
+                        "kind": "number",
+                        "nodeType": "YulLiteral",
+                        "src": "2715:2:37",
+                        "type": "",
+                        "value": "64"
+                      },
+                      "variables": [
+                        {
+                          "name": "offset",
+                          "nodeType": "YulTypedName",
+                          "src": "2705:6:37",
+                          "type": ""
+                        }
+                      ]
+                    },
+                    {
+                      "nodeType": "YulAssignment",
+                      "src": "2731:103:37",
+                      "value": {
+                        "arguments": [
+                          {
+                            "arguments": [
+                              {
+                                "name": "headStart",
+                                "nodeType": "YulIdentifier",
+                                "src": "2806:9:37"
+                              },
+                              {
+                                "name": "offset",
+                                "nodeType": "YulIdentifier",
+                                "src": "2817:6:37"
+                              }
+                            ],
+                            "functionName": {
+                              "name": "add",
+                              "nodeType": "YulIdentifier",
+                              "src": "2802:3:37"
+                            },
+                            "nodeType": "YulFunctionCall",
+                            "src": "2802:22:37"
+                          },
+                          {
+                            "name": "dataEnd",
+                            "nodeType": "YulIdentifier",
+                            "src": "2826:7:37"
+                          }
+                        ],
+                        "functionName": {
+                          "name": "abi_decode_t_contract$_BeraPoolStandardRisk_$4193_fromMemory",
+                          "nodeType": "YulIdentifier",
+                          "src": "2741:60:37"
+                        },
+                        "nodeType": "YulFunctionCall",
+                        "src": "2741:93:37"
+                      },
+                      "variableNames": [
+                        {
+                          "name": "value2",
+                          "nodeType": "YulIdentifier",
+                          "src": "2731:6:37"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "name": "abi_decode_tuple_t_contract$_BeraWrapper_$4516t_contract$_BeraSwapper_$4394t_contract$_BeraPoolStandardRisk_$4193_fromMemory",
+            "nodeType": "YulFunctionDefinition",
+            "parameters": [
+              {
+                "name": "headStart",
+                "nodeType": "YulTypedName",
+                "src": "2184:9:37",
+                "type": ""
+              },
+              {
+                "name": "dataEnd",
+                "nodeType": "YulTypedName",
+                "src": "2195:7:37",
+                "type": ""
+              }
+            ],
+            "returnVariables": [
+              {
+                "name": "value0",
+                "nodeType": "YulTypedName",
+                "src": "2207:6:37",
+                "type": ""
+              },
+              {
+                "name": "value1",
+                "nodeType": "YulTypedName",
+                "src": "2215:6:37",
+                "type": ""
+              },
+              {
+                "name": "value2",
+                "nodeType": "YulTypedName",
+                "src": "2223:6:37",
+                "type": ""
+              }
+            ],
+            "src": "2050:801:37"
+          }
+        ]
+      },
+      "contents": "{\n\n    function allocate_unbounded() -> memPtr {\n        memPtr := mload(64)\n    }\n\n    function revert_error_dbdddcbe895c83990c08b3492a0e83918d802a52331272ac6fdb6a7c4aea3b1b() {\n        revert(0, 0)\n    }\n\n    function revert_error_c1322bf8034eace5e0b5c7295db60986aa89aae5e0ea0873e4689e076861a5db() {\n        revert(0, 0)\n    }\n\n    function cleanup_t_uint160(value) -> cleaned {\n        cleaned := and(value, 0xffffffffffffffffffffffffffffffffffffffff)\n    }\n\n    function cleanup_t_address(value) -> cleaned {\n        cleaned := cleanup_t_uint160(value)\n    }\n\n    function cleanup_t_contract$_BeraWrapper_$4516(value) -> cleaned {\n        cleaned := cleanup_t_address(value)\n    }\n\n    function validator_revert_t_contract$_BeraWrapper_$4516(value) {\n        if iszero(eq(value, cleanup_t_contract$_BeraWrapper_$4516(value))) { revert(0, 0) }\n    }\n\n    function abi_decode_t_contract$_BeraWrapper_$4516_fromMemory(offset, end) -> value {\n        value := mload(offset)\n        validator_revert_t_contract$_BeraWrapper_$4516(value)\n    }\n\n    function cleanup_t_contract$_BeraSwapper_$4394(value) -> cleaned {\n        cleaned := cleanup_t_address(value)\n    }\n\n    function validator_revert_t_contract$_BeraSwapper_$4394(value) {\n        if iszero(eq(value, cleanup_t_contract$_BeraSwapper_$4394(value))) { revert(0, 0) }\n    }\n\n    function abi_decode_t_contract$_BeraSwapper_$4394_fromMemory(offset, end) -> value {\n        value := mload(offset)\n        validator_revert_t_contract$_BeraSwapper_$4394(value)\n    }\n\n    function cleanup_t_contract$_BeraPoolStandardRisk_$4193(value) -> cleaned {\n        cleaned := cleanup_t_address(value)\n    }\n\n    function validator_revert_t_contract$_BeraPoolStandardRisk_$4193(value) {\n        if iszero(eq(value, cleanup_t_contract$_BeraPoolStandardRisk_$4193(value))) { revert(0, 0) }\n    }\n\n    function abi_decode_t_contract$_BeraPoolStandardRisk_$4193_fromMemory(offset, end) -> value {\n        value := mload(offset)\n        validator_revert_t_contract$_BeraPoolStandardRisk_$4193(value)\n    }\n\n    function abi_decode_tuple_t_contract$_BeraWrapper_$4516t_contract$_BeraSwapper_$4394t_contract$_BeraPoolStandardRisk_$4193_fromMemory(headStart, dataEnd) -> value0, value1, value2 {\n        if slt(sub(dataEnd, headStart), 96) { revert_error_dbdddcbe895c83990c08b3492a0e83918d802a52331272ac6fdb6a7c4aea3b1b() }\n\n        {\n\n            let offset := 0\n\n            value0 := abi_decode_t_contract$_BeraWrapper_$4516_fromMemory(add(headStart, offset), dataEnd)\n        }\n\n        {\n\n            let offset := 32\n\n            value1 := abi_decode_t_contract$_BeraSwapper_$4394_fromMemory(add(headStart, offset), dataEnd)\n        }\n\n        {\n\n            let offset := 64\n\n            value2 := abi_decode_t_contract$_BeraPoolStandardRisk_$4193_fromMemory(add(headStart, offset), dataEnd)\n        }\n\n    }\n\n}\n",
+      "id": 37,
+      "language": "Yul",
+      "name": "#utility.yul"
+    }
+  ],
   "deployedGeneratedSources": [
     {
       "ast": {
         "nodeType": "YulBlock",
-        "src": "0:590:37",
+        "src": "0:2772:37",
         "statements": [
           {
             "body": {
@@ -318,32 +1722,988 @@
               }
             ],
             "src": "365:222:37"
+          },
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "625:28:37",
+              "statements": [
+                {
+                  "nodeType": "YulAssignment",
+                  "src": "635:12:37",
+                  "value": {
+                    "name": "value",
+                    "nodeType": "YulIdentifier",
+                    "src": "642:5:37"
+                  },
+                  "variableNames": [
+                    {
+                      "name": "ret",
+                      "nodeType": "YulIdentifier",
+                      "src": "635:3:37"
+                    }
+                  ]
+                }
+              ]
+            },
+            "name": "identity",
+            "nodeType": "YulFunctionDefinition",
+            "parameters": [
+              {
+                "name": "value",
+                "nodeType": "YulTypedName",
+                "src": "611:5:37",
+                "type": ""
+              }
+            ],
+            "returnVariables": [
+              {
+                "name": "ret",
+                "nodeType": "YulTypedName",
+                "src": "621:3:37",
+                "type": ""
+              }
+            ],
+            "src": "593:60:37"
+          },
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "719:82:37",
+              "statements": [
+                {
+                  "nodeType": "YulAssignment",
+                  "src": "729:66:37",
+                  "value": {
+                    "arguments": [
+                      {
+                        "arguments": [
+                          {
+                            "arguments": [
+                              {
+                                "name": "value",
+                                "nodeType": "YulIdentifier",
+                                "src": "787:5:37"
+                              }
+                            ],
+                            "functionName": {
+                              "name": "cleanup_t_uint160",
+                              "nodeType": "YulIdentifier",
+                              "src": "769:17:37"
+                            },
+                            "nodeType": "YulFunctionCall",
+                            "src": "769:24:37"
+                          }
+                        ],
+                        "functionName": {
+                          "name": "identity",
+                          "nodeType": "YulIdentifier",
+                          "src": "760:8:37"
+                        },
+                        "nodeType": "YulFunctionCall",
+                        "src": "760:34:37"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "cleanup_t_uint160",
+                      "nodeType": "YulIdentifier",
+                      "src": "742:17:37"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "742:53:37"
+                  },
+                  "variableNames": [
+                    {
+                      "name": "converted",
+                      "nodeType": "YulIdentifier",
+                      "src": "729:9:37"
+                    }
+                  ]
+                }
+              ]
+            },
+            "name": "convert_t_uint160_to_t_uint160",
+            "nodeType": "YulFunctionDefinition",
+            "parameters": [
+              {
+                "name": "value",
+                "nodeType": "YulTypedName",
+                "src": "699:5:37",
+                "type": ""
+              }
+            ],
+            "returnVariables": [
+              {
+                "name": "converted",
+                "nodeType": "YulTypedName",
+                "src": "709:9:37",
+                "type": ""
+              }
+            ],
+            "src": "659:142:37"
+          },
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "867:66:37",
+              "statements": [
+                {
+                  "nodeType": "YulAssignment",
+                  "src": "877:50:37",
+                  "value": {
+                    "arguments": [
+                      {
+                        "name": "value",
+                        "nodeType": "YulIdentifier",
+                        "src": "921:5:37"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "convert_t_uint160_to_t_uint160",
+                      "nodeType": "YulIdentifier",
+                      "src": "890:30:37"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "890:37:37"
+                  },
+                  "variableNames": [
+                    {
+                      "name": "converted",
+                      "nodeType": "YulIdentifier",
+                      "src": "877:9:37"
+                    }
+                  ]
+                }
+              ]
+            },
+            "name": "convert_t_uint160_to_t_address",
+            "nodeType": "YulFunctionDefinition",
+            "parameters": [
+              {
+                "name": "value",
+                "nodeType": "YulTypedName",
+                "src": "847:5:37",
+                "type": ""
+              }
+            ],
+            "returnVariables": [
+              {
+                "name": "converted",
+                "nodeType": "YulTypedName",
+                "src": "857:9:37",
+                "type": ""
+              }
+            ],
+            "src": "807:126:37"
+          },
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "1028:66:37",
+              "statements": [
+                {
+                  "nodeType": "YulAssignment",
+                  "src": "1038:50:37",
+                  "value": {
+                    "arguments": [
+                      {
+                        "name": "value",
+                        "nodeType": "YulIdentifier",
+                        "src": "1082:5:37"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "convert_t_uint160_to_t_address",
+                      "nodeType": "YulIdentifier",
+                      "src": "1051:30:37"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "1051:37:37"
+                  },
+                  "variableNames": [
+                    {
+                      "name": "converted",
+                      "nodeType": "YulIdentifier",
+                      "src": "1038:9:37"
+                    }
+                  ]
+                }
+              ]
+            },
+            "name": "convert_t_contract$_BeraPoolStandardRisk_$4193_to_t_address",
+            "nodeType": "YulFunctionDefinition",
+            "parameters": [
+              {
+                "name": "value",
+                "nodeType": "YulTypedName",
+                "src": "1008:5:37",
+                "type": ""
+              }
+            ],
+            "returnVariables": [
+              {
+                "name": "converted",
+                "nodeType": "YulTypedName",
+                "src": "1018:9:37",
+                "type": ""
+              }
+            ],
+            "src": "939:155:37"
+          },
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "1194:95:37",
+              "statements": [
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "name": "pos",
+                        "nodeType": "YulIdentifier",
+                        "src": "1211:3:37"
+                      },
+                      {
+                        "arguments": [
+                          {
+                            "name": "value",
+                            "nodeType": "YulIdentifier",
+                            "src": "1276:5:37"
+                          }
+                        ],
+                        "functionName": {
+                          "name": "convert_t_contract$_BeraPoolStandardRisk_$4193_to_t_address",
+                          "nodeType": "YulIdentifier",
+                          "src": "1216:59:37"
+                        },
+                        "nodeType": "YulFunctionCall",
+                        "src": "1216:66:37"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "mstore",
+                      "nodeType": "YulIdentifier",
+                      "src": "1204:6:37"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "1204:79:37"
+                  },
+                  "nodeType": "YulExpressionStatement",
+                  "src": "1204:79:37"
+                }
+              ]
+            },
+            "name": "abi_encode_t_contract$_BeraPoolStandardRisk_$4193_to_t_address_fromStack",
+            "nodeType": "YulFunctionDefinition",
+            "parameters": [
+              {
+                "name": "value",
+                "nodeType": "YulTypedName",
+                "src": "1182:5:37",
+                "type": ""
+              },
+              {
+                "name": "pos",
+                "nodeType": "YulTypedName",
+                "src": "1189:3:37",
+                "type": ""
+              }
+            ],
+            "src": "1100:189:37"
+          },
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "1422:153:37",
+              "statements": [
+                {
+                  "nodeType": "YulAssignment",
+                  "src": "1432:26:37",
+                  "value": {
+                    "arguments": [
+                      {
+                        "name": "headStart",
+                        "nodeType": "YulIdentifier",
+                        "src": "1444:9:37"
+                      },
+                      {
+                        "kind": "number",
+                        "nodeType": "YulLiteral",
+                        "src": "1455:2:37",
+                        "type": "",
+                        "value": "32"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "add",
+                      "nodeType": "YulIdentifier",
+                      "src": "1440:3:37"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "1440:18:37"
+                  },
+                  "variableNames": [
+                    {
+                      "name": "tail",
+                      "nodeType": "YulIdentifier",
+                      "src": "1432:4:37"
+                    }
+                  ]
+                },
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "name": "value0",
+                        "nodeType": "YulIdentifier",
+                        "src": "1541:6:37"
+                      },
+                      {
+                        "arguments": [
+                          {
+                            "name": "headStart",
+                            "nodeType": "YulIdentifier",
+                            "src": "1554:9:37"
+                          },
+                          {
+                            "kind": "number",
+                            "nodeType": "YulLiteral",
+                            "src": "1565:1:37",
+                            "type": "",
+                            "value": "0"
+                          }
+                        ],
+                        "functionName": {
+                          "name": "add",
+                          "nodeType": "YulIdentifier",
+                          "src": "1550:3:37"
+                        },
+                        "nodeType": "YulFunctionCall",
+                        "src": "1550:17:37"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "abi_encode_t_contract$_BeraPoolStandardRisk_$4193_to_t_address_fromStack",
+                      "nodeType": "YulIdentifier",
+                      "src": "1468:72:37"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "1468:100:37"
+                  },
+                  "nodeType": "YulExpressionStatement",
+                  "src": "1468:100:37"
+                }
+              ]
+            },
+            "name": "abi_encode_tuple_t_contract$_BeraPoolStandardRisk_$4193__to_t_address__fromStack_reversed",
+            "nodeType": "YulFunctionDefinition",
+            "parameters": [
+              {
+                "name": "headStart",
+                "nodeType": "YulTypedName",
+                "src": "1394:9:37",
+                "type": ""
+              },
+              {
+                "name": "value0",
+                "nodeType": "YulTypedName",
+                "src": "1406:6:37",
+                "type": ""
+              }
+            ],
+            "returnVariables": [
+              {
+                "name": "tail",
+                "nodeType": "YulTypedName",
+                "src": "1417:4:37",
+                "type": ""
+              }
+            ],
+            "src": "1295:280:37"
+          },
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "1661:66:37",
+              "statements": [
+                {
+                  "nodeType": "YulAssignment",
+                  "src": "1671:50:37",
+                  "value": {
+                    "arguments": [
+                      {
+                        "name": "value",
+                        "nodeType": "YulIdentifier",
+                        "src": "1715:5:37"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "convert_t_uint160_to_t_address",
+                      "nodeType": "YulIdentifier",
+                      "src": "1684:30:37"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "1684:37:37"
+                  },
+                  "variableNames": [
+                    {
+                      "name": "converted",
+                      "nodeType": "YulIdentifier",
+                      "src": "1671:9:37"
+                    }
+                  ]
+                }
+              ]
+            },
+            "name": "convert_t_contract$_BeraWrapper_$4516_to_t_address",
+            "nodeType": "YulFunctionDefinition",
+            "parameters": [
+              {
+                "name": "value",
+                "nodeType": "YulTypedName",
+                "src": "1641:5:37",
+                "type": ""
+              }
+            ],
+            "returnVariables": [
+              {
+                "name": "converted",
+                "nodeType": "YulTypedName",
+                "src": "1651:9:37",
+                "type": ""
+              }
+            ],
+            "src": "1581:146:37"
+          },
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "1818:86:37",
+              "statements": [
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "name": "pos",
+                        "nodeType": "YulIdentifier",
+                        "src": "1835:3:37"
+                      },
+                      {
+                        "arguments": [
+                          {
+                            "name": "value",
+                            "nodeType": "YulIdentifier",
+                            "src": "1891:5:37"
+                          }
+                        ],
+                        "functionName": {
+                          "name": "convert_t_contract$_BeraWrapper_$4516_to_t_address",
+                          "nodeType": "YulIdentifier",
+                          "src": "1840:50:37"
+                        },
+                        "nodeType": "YulFunctionCall",
+                        "src": "1840:57:37"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "mstore",
+                      "nodeType": "YulIdentifier",
+                      "src": "1828:6:37"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "1828:70:37"
+                  },
+                  "nodeType": "YulExpressionStatement",
+                  "src": "1828:70:37"
+                }
+              ]
+            },
+            "name": "abi_encode_t_contract$_BeraWrapper_$4516_to_t_address_fromStack",
+            "nodeType": "YulFunctionDefinition",
+            "parameters": [
+              {
+                "name": "value",
+                "nodeType": "YulTypedName",
+                "src": "1806:5:37",
+                "type": ""
+              },
+              {
+                "name": "pos",
+                "nodeType": "YulTypedName",
+                "src": "1813:3:37",
+                "type": ""
+              }
+            ],
+            "src": "1733:171:37"
+          },
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "2028:144:37",
+              "statements": [
+                {
+                  "nodeType": "YulAssignment",
+                  "src": "2038:26:37",
+                  "value": {
+                    "arguments": [
+                      {
+                        "name": "headStart",
+                        "nodeType": "YulIdentifier",
+                        "src": "2050:9:37"
+                      },
+                      {
+                        "kind": "number",
+                        "nodeType": "YulLiteral",
+                        "src": "2061:2:37",
+                        "type": "",
+                        "value": "32"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "add",
+                      "nodeType": "YulIdentifier",
+                      "src": "2046:3:37"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "2046:18:37"
+                  },
+                  "variableNames": [
+                    {
+                      "name": "tail",
+                      "nodeType": "YulIdentifier",
+                      "src": "2038:4:37"
+                    }
+                  ]
+                },
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "name": "value0",
+                        "nodeType": "YulIdentifier",
+                        "src": "2138:6:37"
+                      },
+                      {
+                        "arguments": [
+                          {
+                            "name": "headStart",
+                            "nodeType": "YulIdentifier",
+                            "src": "2151:9:37"
+                          },
+                          {
+                            "kind": "number",
+                            "nodeType": "YulLiteral",
+                            "src": "2162:1:37",
+                            "type": "",
+                            "value": "0"
+                          }
+                        ],
+                        "functionName": {
+                          "name": "add",
+                          "nodeType": "YulIdentifier",
+                          "src": "2147:3:37"
+                        },
+                        "nodeType": "YulFunctionCall",
+                        "src": "2147:17:37"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "abi_encode_t_contract$_BeraWrapper_$4516_to_t_address_fromStack",
+                      "nodeType": "YulIdentifier",
+                      "src": "2074:63:37"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "2074:91:37"
+                  },
+                  "nodeType": "YulExpressionStatement",
+                  "src": "2074:91:37"
+                }
+              ]
+            },
+            "name": "abi_encode_tuple_t_contract$_BeraWrapper_$4516__to_t_address__fromStack_reversed",
+            "nodeType": "YulFunctionDefinition",
+            "parameters": [
+              {
+                "name": "headStart",
+                "nodeType": "YulTypedName",
+                "src": "2000:9:37",
+                "type": ""
+              },
+              {
+                "name": "value0",
+                "nodeType": "YulTypedName",
+                "src": "2012:6:37",
+                "type": ""
+              }
+            ],
+            "returnVariables": [
+              {
+                "name": "tail",
+                "nodeType": "YulTypedName",
+                "src": "2023:4:37",
+                "type": ""
+              }
+            ],
+            "src": "1910:262:37"
+          },
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "2258:66:37",
+              "statements": [
+                {
+                  "nodeType": "YulAssignment",
+                  "src": "2268:50:37",
+                  "value": {
+                    "arguments": [
+                      {
+                        "name": "value",
+                        "nodeType": "YulIdentifier",
+                        "src": "2312:5:37"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "convert_t_uint160_to_t_address",
+                      "nodeType": "YulIdentifier",
+                      "src": "2281:30:37"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "2281:37:37"
+                  },
+                  "variableNames": [
+                    {
+                      "name": "converted",
+                      "nodeType": "YulIdentifier",
+                      "src": "2268:9:37"
+                    }
+                  ]
+                }
+              ]
+            },
+            "name": "convert_t_contract$_BeraSwapper_$4394_to_t_address",
+            "nodeType": "YulFunctionDefinition",
+            "parameters": [
+              {
+                "name": "value",
+                "nodeType": "YulTypedName",
+                "src": "2238:5:37",
+                "type": ""
+              }
+            ],
+            "returnVariables": [
+              {
+                "name": "converted",
+                "nodeType": "YulTypedName",
+                "src": "2248:9:37",
+                "type": ""
+              }
+            ],
+            "src": "2178:146:37"
+          },
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "2415:86:37",
+              "statements": [
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "name": "pos",
+                        "nodeType": "YulIdentifier",
+                        "src": "2432:3:37"
+                      },
+                      {
+                        "arguments": [
+                          {
+                            "name": "value",
+                            "nodeType": "YulIdentifier",
+                            "src": "2488:5:37"
+                          }
+                        ],
+                        "functionName": {
+                          "name": "convert_t_contract$_BeraSwapper_$4394_to_t_address",
+                          "nodeType": "YulIdentifier",
+                          "src": "2437:50:37"
+                        },
+                        "nodeType": "YulFunctionCall",
+                        "src": "2437:57:37"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "mstore",
+                      "nodeType": "YulIdentifier",
+                      "src": "2425:6:37"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "2425:70:37"
+                  },
+                  "nodeType": "YulExpressionStatement",
+                  "src": "2425:70:37"
+                }
+              ]
+            },
+            "name": "abi_encode_t_contract$_BeraSwapper_$4394_to_t_address_fromStack",
+            "nodeType": "YulFunctionDefinition",
+            "parameters": [
+              {
+                "name": "value",
+                "nodeType": "YulTypedName",
+                "src": "2403:5:37",
+                "type": ""
+              },
+              {
+                "name": "pos",
+                "nodeType": "YulTypedName",
+                "src": "2410:3:37",
+                "type": ""
+              }
+            ],
+            "src": "2330:171:37"
+          },
+          {
+            "body": {
+              "nodeType": "YulBlock",
+              "src": "2625:144:37",
+              "statements": [
+                {
+                  "nodeType": "YulAssignment",
+                  "src": "2635:26:37",
+                  "value": {
+                    "arguments": [
+                      {
+                        "name": "headStart",
+                        "nodeType": "YulIdentifier",
+                        "src": "2647:9:37"
+                      },
+                      {
+                        "kind": "number",
+                        "nodeType": "YulLiteral",
+                        "src": "2658:2:37",
+                        "type": "",
+                        "value": "32"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "add",
+                      "nodeType": "YulIdentifier",
+                      "src": "2643:3:37"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "2643:18:37"
+                  },
+                  "variableNames": [
+                    {
+                      "name": "tail",
+                      "nodeType": "YulIdentifier",
+                      "src": "2635:4:37"
+                    }
+                  ]
+                },
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "name": "value0",
+                        "nodeType": "YulIdentifier",
+                        "src": "2735:6:37"
+                      },
+                      {
+                        "arguments": [
+                          {
+                            "name": "headStart",
+                            "nodeType": "YulIdentifier",
+                            "src": "2748:9:37"
+                          },
+                          {
+                            "kind": "number",
+                            "nodeType": "YulLiteral",
+                            "src": "2759:1:37",
+                            "type": "",
+                            "value": "0"
+                          }
+                        ],
+                        "functionName": {
+                          "name": "add",
+                          "nodeType": "YulIdentifier",
+                          "src": "2744:3:37"
+                        },
+                        "nodeType": "YulFunctionCall",
+                        "src": "2744:17:37"
+                      }
+                    ],
+                    "functionName": {
+                      "name": "abi_encode_t_contract$_BeraSwapper_$4394_to_t_address_fromStack",
+                      "nodeType": "YulIdentifier",
+                      "src": "2671:63:37"
+                    },
+                    "nodeType": "YulFunctionCall",
+                    "src": "2671:91:37"
+                  },
+                  "nodeType": "YulExpressionStatement",
+                  "src": "2671:91:37"
+                }
+              ]
+            },
+            "name": "abi_encode_tuple_t_contract$_BeraSwapper_$4394__to_t_address__fromStack_reversed",
+            "nodeType": "YulFunctionDefinition",
+            "parameters": [
+              {
+                "name": "headStart",
+                "nodeType": "YulTypedName",
+                "src": "2597:9:37",
+                "type": ""
+              },
+              {
+                "name": "value0",
+                "nodeType": "YulTypedName",
+                "src": "2609:6:37",
+                "type": ""
+              }
+            ],
+            "returnVariables": [
+              {
+                "name": "tail",
+                "nodeType": "YulTypedName",
+                "src": "2620:4:37",
+                "type": ""
+              }
+            ],
+            "src": "2507:262:37"
           }
         ]
       },
-      "contents": "{\n\n    function cleanup_t_uint160(value) -> cleaned {\n        cleaned := and(value, 0xffffffffffffffffffffffffffffffffffffffff)\n    }\n\n    function cleanup_t_address(value) -> cleaned {\n        cleaned := cleanup_t_uint160(value)\n    }\n\n    function abi_encode_t_address_to_t_address_fromStack(value, pos) {\n        mstore(pos, cleanup_t_address(value))\n    }\n\n    function abi_encode_tuple_t_address__to_t_address__fromStack_reversed(headStart , value0) -> tail {\n        tail := add(headStart, 32)\n\n        abi_encode_t_address_to_t_address_fromStack(value0,  add(headStart, 0))\n\n    }\n\n}\n",
+      "contents": "{\n\n    function cleanup_t_uint160(value) -> cleaned {\n        cleaned := and(value, 0xffffffffffffffffffffffffffffffffffffffff)\n    }\n\n    function cleanup_t_address(value) -> cleaned {\n        cleaned := cleanup_t_uint160(value)\n    }\n\n    function abi_encode_t_address_to_t_address_fromStack(value, pos) {\n        mstore(pos, cleanup_t_address(value))\n    }\n\n    function abi_encode_tuple_t_address__to_t_address__fromStack_reversed(headStart , value0) -> tail {\n        tail := add(headStart, 32)\n\n        abi_encode_t_address_to_t_address_fromStack(value0,  add(headStart, 0))\n\n    }\n\n    function identity(value) -> ret {\n        ret := value\n    }\n\n    function convert_t_uint160_to_t_uint160(value) -> converted {\n        converted := cleanup_t_uint160(identity(cleanup_t_uint160(value)))\n    }\n\n    function convert_t_uint160_to_t_address(value) -> converted {\n        converted := convert_t_uint160_to_t_uint160(value)\n    }\n\n    function convert_t_contract$_BeraPoolStandardRisk_$4193_to_t_address(value) -> converted {\n        converted := convert_t_uint160_to_t_address(value)\n    }\n\n    function abi_encode_t_contract$_BeraPoolStandardRisk_$4193_to_t_address_fromStack(value, pos) {\n        mstore(pos, convert_t_contract$_BeraPoolStandardRisk_$4193_to_t_address(value))\n    }\n\n    function abi_encode_tuple_t_contract$_BeraPoolStandardRisk_$4193__to_t_address__fromStack_reversed(headStart , value0) -> tail {\n        tail := add(headStart, 32)\n\n        abi_encode_t_contract$_BeraPoolStandardRisk_$4193_to_t_address_fromStack(value0,  add(headStart, 0))\n\n    }\n\n    function convert_t_contract$_BeraWrapper_$4516_to_t_address(value) -> converted {\n        converted := convert_t_uint160_to_t_address(value)\n    }\n\n    function abi_encode_t_contract$_BeraWrapper_$4516_to_t_address_fromStack(value, pos) {\n        mstore(pos, convert_t_contract$_BeraWrapper_$4516_to_t_address(value))\n    }\n\n    function abi_encode_tuple_t_contract$_BeraWrapper_$4516__to_t_address__fromStack_reversed(headStart , value0) -> tail {\n        tail := add(headStart, 32)\n\n        abi_encode_t_contract$_BeraWrapper_$4516_to_t_address_fromStack(value0,  add(headStart, 0))\n\n    }\n\n    function convert_t_contract$_BeraSwapper_$4394_to_t_address(value) -> converted {\n        converted := convert_t_uint160_to_t_address(value)\n    }\n\n    function abi_encode_t_contract$_BeraSwapper_$4394_to_t_address_fromStack(value, pos) {\n        mstore(pos, convert_t_contract$_BeraSwapper_$4394_to_t_address(value))\n    }\n\n    function abi_encode_tuple_t_contract$_BeraSwapper_$4394__to_t_address__fromStack_reversed(headStart , value0) -> tail {\n        tail := add(headStart, 32)\n\n        abi_encode_t_contract$_BeraSwapper_$4394_to_t_address_fromStack(value0,  add(headStart, 0))\n\n    }\n\n}\n",
       "id": 37,
       "language": "Yul",
       "name": "#utility.yul"
     }
   ],
-  "sourceMap": "91:113:28:-:0;;;156:42;117:81;;;;;;;;;91:113;;;;;;;;;;;;;;;;;;;;;;",
-  "deployedSourceMap": "91:113:28:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;117:81;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;;;;:::o;7:126:37:-;44:7;84:42;77:5;73:54;62:65;;7:126;;;:::o;139:96::-;176:7;205:24;223:5;205:24;:::i;:::-;194:35;;139:96;;;:::o;241:118::-;328:24;346:5;328:24;:::i;:::-;323:3;316:37;241:118;;:::o;365:222::-;458:4;496:2;485:9;481:18;473:26;;509:71;577:1;566:9;562:17;553:6;509:71;:::i;:::-;365:222;;;;:::o",
-  "source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0; //solhint-disable compiler-fixed\n\n\ncontract Constants {\n\n    address public immutable DAI_ADDRESS = 0x6B175474E89094C44Da98b954EedeAC495271d0F;\n\n\n\n}\n",
+  "sourceMap": "188:705:28:-:0;;;253:42;214:81;;;;;;;;;342:42;301:83;;;;;;;;;430:42;390:82;;;;;;;;;657:233;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;785:12;771:26;;;;;;;;;;821:12;807:26;;;;;;;;;;866:17;843:40;;;;;;;;;;657:233;;;188:705;;88:117:37;197:1;194;187:12;334:126;371:7;411:42;404:5;400:54;389:65;;334:126;;;:::o;466:96::-;503:7;532:24;550:5;532:24;:::i;:::-;521:35;;466:96;;;:::o;568:116::-;625:7;654:24;672:5;654:24;:::i;:::-;643:35;;568:116;;;:::o;690:162::-;783:44;821:5;783:44;:::i;:::-;776:5;773:55;763:83;;842:1;839;832:12;763:83;690:162;:::o;858:183::-;935:5;966:6;960:13;951:22;;982:53;1029:5;982:53;:::i;:::-;858:183;;;;:::o;1047:116::-;1104:7;1133:24;1151:5;1133:24;:::i;:::-;1122:35;;1047:116;;;:::o;1169:162::-;1262:44;1300:5;1262:44;:::i;:::-;1255:5;1252:55;1242:83;;1321:1;1318;1311:12;1242:83;1169:162;:::o;1337:183::-;1414:5;1445:6;1439:13;1430:22;;1461:53;1508:5;1461:53;:::i;:::-;1337:183;;;;:::o;1526:125::-;1592:7;1621:24;1639:5;1621:24;:::i;:::-;1610:35;;1526:125;;;:::o;1657:180::-;1759:53;1806:5;1759:53;:::i;:::-;1752:5;1749:64;1739:92;;1827:1;1824;1817:12;1739:92;1657:180;:::o;1843:201::-;1929:5;1960:6;1954:13;1945:22;;1976:62;2032:5;1976:62;:::i;:::-;1843:201;;;;:::o;2050:801::-;2207:6;2215;2223;2272:2;2260:9;2251:7;2247:23;2243:32;2240:119;;;2278:79;;:::i;:::-;2240:119;2398:1;2423:84;2499:7;2490:6;2479:9;2475:22;2423:84;:::i;:::-;2413:94;;2369:148;2556:2;2582:84;2658:7;2649:6;2638:9;2634:22;2582:84;:::i;:::-;2572:94;;2527:149;2715:2;2741:93;2826:7;2817:6;2806:9;2802:22;2741:93;:::i;:::-;2731:103;;2686:158;2050:801;;;;;:::o;188:705:28:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "188:705:28:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;390:82;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;214:81;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;592:58;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;301:83;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;500:40;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;546;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;390:82;;;:::o;214:81::-;;;:::o;592:58::-;;;:::o;301:83::-;;;:::o;500:40::-;;;:::o;546:::-;;;:::o;7:126:37:-;44:7;84:42;77:5;73:54;62:65;;7:126;;;:::o;139:96::-;176:7;205:24;223:5;205:24;:::i;:::-;194:35;;139:96;;;:::o;241:118::-;328:24;346:5;328:24;:::i;:::-;323:3;316:37;241:118;;:::o;365:222::-;458:4;496:2;485:9;481:18;473:26;;509:71;577:1;566:9;562:17;553:6;509:71;:::i;:::-;365:222;;;;:::o;593:60::-;621:3;642:5;635:12;;593:60;;;:::o;659:142::-;709:9;742:53;760:34;769:24;787:5;769:24;:::i;:::-;760:34;:::i;:::-;742:53;:::i;:::-;729:66;;659:142;;;:::o;807:126::-;857:9;890:37;921:5;890:37;:::i;:::-;877:50;;807:126;;;:::o;939:155::-;1018:9;1051:37;1082:5;1051:37;:::i;:::-;1038:50;;939:155;;;:::o;1100:189::-;1216:66;1276:5;1216:66;:::i;:::-;1211:3;1204:79;1100:189;;:::o;1295:280::-;1417:4;1455:2;1444:9;1440:18;1432:26;;1468:100;1565:1;1554:9;1550:17;1541:6;1468:100;:::i;:::-;1295:280;;;;:::o;1581:146::-;1651:9;1684:37;1715:5;1684:37;:::i;:::-;1671:50;;1581:146;;;:::o;1733:171::-;1840:57;1891:5;1840:57;:::i;:::-;1835:3;1828:70;1733:171;;:::o;1910:262::-;2023:4;2061:2;2050:9;2046:18;2038:26;;2074:91;2162:1;2151:9;2147:17;2138:6;2074:91;:::i;:::-;1910:262;;;;:::o;2178:146::-;2248:9;2281:37;2312:5;2281:37;:::i;:::-;2268:50;;2178:146;;;:::o;2330:171::-;2437:57;2488:5;2437:57;:::i;:::-;2432:3;2425:70;2330:171;;:::o;2507:262::-;2620:4;2658:2;2647:9;2643:18;2635:26;;2671:91;2759:1;2748:9;2744:17;2735:6;2671:91;:::i;:::-;2507:262;;;;:::o",
+  "source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0; //solhint-disable compiler-fixed\n\nimport \"../BeraWrapper.sol\";\nimport \"../BeraSwapper.sol\";\nimport \"../BeraPoolStandardRisk.sol\";\n\n\ncontract Constants {\n\n    address public immutable DAI_ADDRESS = 0x6B175474E89094C44Da98b954EedeAC495271d0F;\n    address public immutable WETH_DAI_POOL = 0xC2e9F25Be6257c210d7Adf0D4Cd6E3E881ba25f8;\n    address public immutable WETH_ADDRESS = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;\n\n    //core contracts\n    BeraWrapper public immutable beraWrapper;\n    BeraSwapper public immutable beraSwapper;\n    BeraPoolStandardRisk public immutable beraPoolStandardRisk;\n\n    constructor(BeraWrapper _beraWrapper, BeraSwapper _beraSwapper, BeraPoolStandardRisk _standardRiskPool) {\n        beraWrapper = _beraWrapper;\n        beraSwapper = _beraSwapper;\n        beraPoolStandardRisk = _standardRiskPool;\n    }\n\n}\n",
   "sourcePath": "/home/kevin/Code/solidity_projects/beraMarket/contracts/ancillary/Constants.sol",
   "ast": {
     "absolutePath": "project:/contracts/ancillary/Constants.sol",
     "exportedSymbols": {
+      "Address": [
+        2304
+      ],
+      "BeraPoolStandardRisk": [
+        4193
+      ],
+      "BeraSwapper": [
+        4394
+      ],
+      "BeraWrapper": [
+        4516
+      ],
       "Constants": [
-        4416
+        4565
+      ],
+      "Context": [
+        2326
+      ],
+      "ERC1155": [
+        1095
+      ],
+      "ERC1155Holder": [
+        1324
+      ],
+      "ERC1155Receiver": [
+        1358
+      ],
+      "ERC165": [
+        2350
+      ],
+      "ERC20": [
+        1904
+      ],
+      "FullMath": [
+        5102
+      ],
+      "IERC1155": [
+        1217
+      ],
+      "IERC1155MetadataURI": [
+        1273
+      ],
+      "IERC1155Receiver": [
+        1258
+      ],
+      "IERC165": [
+        2362
+      ],
+      "IERC20": [
+        1982
+      ],
+      "IERC20Metadata": [
+        2007
+      ],
+      "IOracle": [
+        4587
+      ],
+      "ISwapRouter": [
+        3131
+      ],
+      "IUniswapV3Factory": [
+        2445
+      ],
+      "IUniswapV3Pool": [
+        2467
+      ],
+      "IUniswapV3PoolActions": [
+        2577
+      ],
+      "IUniswapV3PoolDerivedState": [
+        2608
+      ],
+      "IUniswapV3PoolEvents": [
+        2727
+      ],
+      "IUniswapV3PoolImmutables": [
+        2767
+      ],
+      "IUniswapV3PoolOwnerActions": [
+        2793
+      ],
+      "IUniswapV3PoolState": [
+        2901
+      ],
+      "IUniswapV3SwapCallback": [
+        2481
+      ],
+      "LowGasSafeMath": [
+        3031
+      ],
+      "OracleLibrary": [
+        5911
+      ],
+      "PnLCalculator": [
+        4665
+      ],
+      "PoolAddress": [
+        6010
+      ],
+      "SwapOracle": [
+        4743
+      ],
+      "TWAPOracle": [
+        4924
+      ],
+      "TickMath": [
+        5639
+      ],
+      "TransferHelper": [
+        3302
       ]
     },
-    "id": 4417,
+    "id": 4566,
     "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 4412,
+        "id": 4518,
         "literals": [
           "solidity",
           "^",
@@ -354,30 +2714,66 @@
         "src": "32:23:28"
       },
       {
+        "absolutePath": "project:/contracts/BeraWrapper.sol",
+        "file": "../BeraWrapper.sol",
+        "id": 4519,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 4566,
+        "sourceUnit": 4517,
+        "src": "90:28:28",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "project:/contracts/BeraSwapper.sol",
+        "file": "../BeraSwapper.sol",
+        "id": 4520,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 4566,
+        "sourceUnit": 4395,
+        "src": "119:28:28",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "project:/contracts/BeraPoolStandardRisk.sol",
+        "file": "../BeraPoolStandardRisk.sol",
+        "id": 4521,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 4566,
+        "sourceUnit": 4194,
+        "src": "148:37:28",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
         "abstract": false,
         "baseContracts": [],
         "canonicalName": "Constants",
         "contractDependencies": [],
         "contractKind": "contract",
         "fullyImplemented": true,
-        "id": 4416,
+        "id": 4565,
         "linearizedBaseContracts": [
-          4416
+          4565
         ],
         "name": "Constants",
-        "nameLocation": "100:9:28",
+        "nameLocation": "197:9:28",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "constant": false,
             "functionSelector": "2a4c0a1a",
-            "id": 4415,
+            "id": 4524,
             "mutability": "immutable",
             "name": "DAI_ADDRESS",
-            "nameLocation": "142:11:28",
+            "nameLocation": "239:11:28",
             "nodeType": "VariableDeclaration",
-            "scope": 4416,
-            "src": "117:81:28",
+            "scope": 4565,
+            "src": "214:81:28",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -385,10 +2781,10 @@
               "typeString": "address"
             },
             "typeName": {
-              "id": 4413,
+              "id": 4522,
               "name": "address",
               "nodeType": "ElementaryTypeName",
-              "src": "117:7:28",
+              "src": "214:7:28",
               "stateMutability": "nonpayable",
               "typeDescriptions": {
                 "typeIdentifier": "t_address",
@@ -397,14 +2793,14 @@
             },
             "value": {
               "hexValue": "307836423137353437344538393039344334344461393862393534456564654143343935323731643046",
-              "id": 4414,
+              "id": 4523,
               "isConstant": false,
               "isLValue": false,
               "isPure": true,
               "kind": "number",
               "lValueRequested": false,
               "nodeType": "Literal",
-              "src": "156:42:28",
+              "src": "253:42:28",
               "typeDescriptions": {
                 "typeIdentifier": "t_address",
                 "typeString": "address"
@@ -412,28 +2808,596 @@
               "value": "0x6B175474E89094C44Da98b954EedeAC495271d0F"
             },
             "visibility": "public"
+          },
+          {
+            "constant": false,
+            "functionSelector": "7475750a",
+            "id": 4527,
+            "mutability": "immutable",
+            "name": "WETH_DAI_POOL",
+            "nameLocation": "326:13:28",
+            "nodeType": "VariableDeclaration",
+            "scope": 4565,
+            "src": "301:83:28",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 4525,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "301:7:28",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": {
+              "hexValue": "307843326539463235426536323537633231306437416466304434436436453345383831626132356638",
+              "id": 4526,
+              "isConstant": false,
+              "isLValue": false,
+              "isPure": true,
+              "kind": "number",
+              "lValueRequested": false,
+              "nodeType": "Literal",
+              "src": "342:42:28",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              },
+              "value": "0xC2e9F25Be6257c210d7Adf0D4Cd6E3E881ba25f8"
+            },
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "functionSelector": "040141e5",
+            "id": 4530,
+            "mutability": "immutable",
+            "name": "WETH_ADDRESS",
+            "nameLocation": "415:12:28",
+            "nodeType": "VariableDeclaration",
+            "scope": 4565,
+            "src": "390:82:28",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 4528,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "390:7:28",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": {
+              "hexValue": "307843303261614133396232323346453844304130653543344632376541443930383343373536436332",
+              "id": 4529,
+              "isConstant": false,
+              "isLValue": false,
+              "isPure": true,
+              "kind": "number",
+              "lValueRequested": false,
+              "nodeType": "Literal",
+              "src": "430:42:28",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              },
+              "value": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+            },
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "functionSelector": "a29aa114",
+            "id": 4533,
+            "mutability": "immutable",
+            "name": "beraWrapper",
+            "nameLocation": "529:11:28",
+            "nodeType": "VariableDeclaration",
+            "scope": 4565,
+            "src": "500:40:28",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_contract$_BeraWrapper_$4516",
+              "typeString": "contract BeraWrapper"
+            },
+            "typeName": {
+              "id": 4532,
+              "nodeType": "UserDefinedTypeName",
+              "pathNode": {
+                "id": 4531,
+                "name": "BeraWrapper",
+                "nodeType": "IdentifierPath",
+                "referencedDeclaration": 4516,
+                "src": "500:11:28"
+              },
+              "referencedDeclaration": 4516,
+              "src": "500:11:28",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_BeraWrapper_$4516",
+                "typeString": "contract BeraWrapper"
+              }
+            },
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "functionSelector": "ffe28ca1",
+            "id": 4536,
+            "mutability": "immutable",
+            "name": "beraSwapper",
+            "nameLocation": "575:11:28",
+            "nodeType": "VariableDeclaration",
+            "scope": 4565,
+            "src": "546:40:28",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_contract$_BeraSwapper_$4394",
+              "typeString": "contract BeraSwapper"
+            },
+            "typeName": {
+              "id": 4535,
+              "nodeType": "UserDefinedTypeName",
+              "pathNode": {
+                "id": 4534,
+                "name": "BeraSwapper",
+                "nodeType": "IdentifierPath",
+                "referencedDeclaration": 4394,
+                "src": "546:11:28"
+              },
+              "referencedDeclaration": 4394,
+              "src": "546:11:28",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_BeraSwapper_$4394",
+                "typeString": "contract BeraSwapper"
+              }
+            },
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "functionSelector": "2bcbeece",
+            "id": 4539,
+            "mutability": "immutable",
+            "name": "beraPoolStandardRisk",
+            "nameLocation": "630:20:28",
+            "nodeType": "VariableDeclaration",
+            "scope": 4565,
+            "src": "592:58:28",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_contract$_BeraPoolStandardRisk_$4193",
+              "typeString": "contract BeraPoolStandardRisk"
+            },
+            "typeName": {
+              "id": 4538,
+              "nodeType": "UserDefinedTypeName",
+              "pathNode": {
+                "id": 4537,
+                "name": "BeraPoolStandardRisk",
+                "nodeType": "IdentifierPath",
+                "referencedDeclaration": 4193,
+                "src": "592:20:28"
+              },
+              "referencedDeclaration": 4193,
+              "src": "592:20:28",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_BeraPoolStandardRisk_$4193",
+                "typeString": "contract BeraPoolStandardRisk"
+              }
+            },
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 4563,
+              "nodeType": "Block",
+              "src": "761:129:28",
+              "statements": [
+                {
+                  "expression": {
+                    "id": 4553,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "id": 4551,
+                      "name": "beraWrapper",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 4533,
+                      "src": "771:11:28",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_BeraWrapper_$4516",
+                        "typeString": "contract BeraWrapper"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "id": 4552,
+                      "name": "_beraWrapper",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 4542,
+                      "src": "785:12:28",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_BeraWrapper_$4516",
+                        "typeString": "contract BeraWrapper"
+                      }
+                    },
+                    "src": "771:26:28",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_BeraWrapper_$4516",
+                      "typeString": "contract BeraWrapper"
+                    }
+                  },
+                  "id": 4554,
+                  "nodeType": "ExpressionStatement",
+                  "src": "771:26:28"
+                },
+                {
+                  "expression": {
+                    "id": 4557,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "id": 4555,
+                      "name": "beraSwapper",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 4536,
+                      "src": "807:11:28",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_BeraSwapper_$4394",
+                        "typeString": "contract BeraSwapper"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "id": 4556,
+                      "name": "_beraSwapper",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 4545,
+                      "src": "821:12:28",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_BeraSwapper_$4394",
+                        "typeString": "contract BeraSwapper"
+                      }
+                    },
+                    "src": "807:26:28",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_BeraSwapper_$4394",
+                      "typeString": "contract BeraSwapper"
+                    }
+                  },
+                  "id": 4558,
+                  "nodeType": "ExpressionStatement",
+                  "src": "807:26:28"
+                },
+                {
+                  "expression": {
+                    "id": 4561,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "id": 4559,
+                      "name": "beraPoolStandardRisk",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 4539,
+                      "src": "843:20:28",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_BeraPoolStandardRisk_$4193",
+                        "typeString": "contract BeraPoolStandardRisk"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "id": 4560,
+                      "name": "_standardRiskPool",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 4548,
+                      "src": "866:17:28",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_BeraPoolStandardRisk_$4193",
+                        "typeString": "contract BeraPoolStandardRisk"
+                      }
+                    },
+                    "src": "843:40:28",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_BeraPoolStandardRisk_$4193",
+                      "typeString": "contract BeraPoolStandardRisk"
+                    }
+                  },
+                  "id": 4562,
+                  "nodeType": "ExpressionStatement",
+                  "src": "843:40:28"
+                }
+              ]
+            },
+            "id": 4564,
+            "implemented": true,
+            "kind": "constructor",
+            "modifiers": [],
+            "name": "",
+            "nameLocation": "-1:-1:-1",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 4549,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4542,
+                  "mutability": "mutable",
+                  "name": "_beraWrapper",
+                  "nameLocation": "681:12:28",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4564,
+                  "src": "669:24:28",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_BeraWrapper_$4516",
+                    "typeString": "contract BeraWrapper"
+                  },
+                  "typeName": {
+                    "id": 4541,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 4540,
+                      "name": "BeraWrapper",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 4516,
+                      "src": "669:11:28"
+                    },
+                    "referencedDeclaration": 4516,
+                    "src": "669:11:28",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_BeraWrapper_$4516",
+                      "typeString": "contract BeraWrapper"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 4545,
+                  "mutability": "mutable",
+                  "name": "_beraSwapper",
+                  "nameLocation": "707:12:28",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4564,
+                  "src": "695:24:28",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_BeraSwapper_$4394",
+                    "typeString": "contract BeraSwapper"
+                  },
+                  "typeName": {
+                    "id": 4544,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 4543,
+                      "name": "BeraSwapper",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 4394,
+                      "src": "695:11:28"
+                    },
+                    "referencedDeclaration": 4394,
+                    "src": "695:11:28",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_BeraSwapper_$4394",
+                      "typeString": "contract BeraSwapper"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 4548,
+                  "mutability": "mutable",
+                  "name": "_standardRiskPool",
+                  "nameLocation": "742:17:28",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4564,
+                  "src": "721:38:28",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_BeraPoolStandardRisk_$4193",
+                    "typeString": "contract BeraPoolStandardRisk"
+                  },
+                  "typeName": {
+                    "id": 4547,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 4546,
+                      "name": "BeraPoolStandardRisk",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 4193,
+                      "src": "721:20:28"
+                    },
+                    "referencedDeclaration": 4193,
+                    "src": "721:20:28",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_BeraPoolStandardRisk_$4193",
+                      "typeString": "contract BeraPoolStandardRisk"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "668:92:28"
+            },
+            "returnParameters": {
+              "id": 4550,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "761:0:28"
+            },
+            "scope": 4565,
+            "src": "657:233:28",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "public"
           }
         ],
-        "scope": 4417,
-        "src": "91:113:28",
+        "scope": 4566,
+        "src": "188:705:28",
         "usedErrors": []
       }
     ],
-    "src": "32:173:28"
+    "src": "32:862:28"
   },
   "legacyAST": {
     "absolutePath": "project:/contracts/ancillary/Constants.sol",
     "exportedSymbols": {
+      "Address": [
+        2304
+      ],
+      "BeraPoolStandardRisk": [
+        4193
+      ],
+      "BeraSwapper": [
+        4394
+      ],
+      "BeraWrapper": [
+        4516
+      ],
       "Constants": [
-        4416
+        4565
+      ],
+      "Context": [
+        2326
+      ],
+      "ERC1155": [
+        1095
+      ],
+      "ERC1155Holder": [
+        1324
+      ],
+      "ERC1155Receiver": [
+        1358
+      ],
+      "ERC165": [
+        2350
+      ],
+      "ERC20": [
+        1904
+      ],
+      "FullMath": [
+        5102
+      ],
+      "IERC1155": [
+        1217
+      ],
+      "IERC1155MetadataURI": [
+        1273
+      ],
+      "IERC1155Receiver": [
+        1258
+      ],
+      "IERC165": [
+        2362
+      ],
+      "IERC20": [
+        1982
+      ],
+      "IERC20Metadata": [
+        2007
+      ],
+      "IOracle": [
+        4587
+      ],
+      "ISwapRouter": [
+        3131
+      ],
+      "IUniswapV3Factory": [
+        2445
+      ],
+      "IUniswapV3Pool": [
+        2467
+      ],
+      "IUniswapV3PoolActions": [
+        2577
+      ],
+      "IUniswapV3PoolDerivedState": [
+        2608
+      ],
+      "IUniswapV3PoolEvents": [
+        2727
+      ],
+      "IUniswapV3PoolImmutables": [
+        2767
+      ],
+      "IUniswapV3PoolOwnerActions": [
+        2793
+      ],
+      "IUniswapV3PoolState": [
+        2901
+      ],
+      "IUniswapV3SwapCallback": [
+        2481
+      ],
+      "LowGasSafeMath": [
+        3031
+      ],
+      "OracleLibrary": [
+        5911
+      ],
+      "PnLCalculator": [
+        4665
+      ],
+      "PoolAddress": [
+        6010
+      ],
+      "SwapOracle": [
+        4743
+      ],
+      "TWAPOracle": [
+        4924
+      ],
+      "TickMath": [
+        5639
+      ],
+      "TransferHelper": [
+        3302
       ]
     },
-    "id": 4417,
+    "id": 4566,
     "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 4412,
+        "id": 4518,
         "literals": [
           "solidity",
           "^",
@@ -444,30 +3408,66 @@
         "src": "32:23:28"
       },
       {
+        "absolutePath": "project:/contracts/BeraWrapper.sol",
+        "file": "../BeraWrapper.sol",
+        "id": 4519,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 4566,
+        "sourceUnit": 4517,
+        "src": "90:28:28",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "project:/contracts/BeraSwapper.sol",
+        "file": "../BeraSwapper.sol",
+        "id": 4520,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 4566,
+        "sourceUnit": 4395,
+        "src": "119:28:28",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "project:/contracts/BeraPoolStandardRisk.sol",
+        "file": "../BeraPoolStandardRisk.sol",
+        "id": 4521,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 4566,
+        "sourceUnit": 4194,
+        "src": "148:37:28",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
         "abstract": false,
         "baseContracts": [],
         "canonicalName": "Constants",
         "contractDependencies": [],
         "contractKind": "contract",
         "fullyImplemented": true,
-        "id": 4416,
+        "id": 4565,
         "linearizedBaseContracts": [
-          4416
+          4565
         ],
         "name": "Constants",
-        "nameLocation": "100:9:28",
+        "nameLocation": "197:9:28",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "constant": false,
             "functionSelector": "2a4c0a1a",
-            "id": 4415,
+            "id": 4524,
             "mutability": "immutable",
             "name": "DAI_ADDRESS",
-            "nameLocation": "142:11:28",
+            "nameLocation": "239:11:28",
             "nodeType": "VariableDeclaration",
-            "scope": 4416,
-            "src": "117:81:28",
+            "scope": 4565,
+            "src": "214:81:28",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -475,10 +3475,10 @@
               "typeString": "address"
             },
             "typeName": {
-              "id": 4413,
+              "id": 4522,
               "name": "address",
               "nodeType": "ElementaryTypeName",
-              "src": "117:7:28",
+              "src": "214:7:28",
               "stateMutability": "nonpayable",
               "typeDescriptions": {
                 "typeIdentifier": "t_address",
@@ -487,14 +3487,14 @@
             },
             "value": {
               "hexValue": "307836423137353437344538393039344334344461393862393534456564654143343935323731643046",
-              "id": 4414,
+              "id": 4523,
               "isConstant": false,
               "isLValue": false,
               "isPure": true,
               "kind": "number",
               "lValueRequested": false,
               "nodeType": "Literal",
-              "src": "156:42:28",
+              "src": "253:42:28",
               "typeDescriptions": {
                 "typeIdentifier": "t_address",
                 "typeString": "address"
@@ -502,14 +3502,474 @@
               "value": "0x6B175474E89094C44Da98b954EedeAC495271d0F"
             },
             "visibility": "public"
+          },
+          {
+            "constant": false,
+            "functionSelector": "7475750a",
+            "id": 4527,
+            "mutability": "immutable",
+            "name": "WETH_DAI_POOL",
+            "nameLocation": "326:13:28",
+            "nodeType": "VariableDeclaration",
+            "scope": 4565,
+            "src": "301:83:28",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 4525,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "301:7:28",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": {
+              "hexValue": "307843326539463235426536323537633231306437416466304434436436453345383831626132356638",
+              "id": 4526,
+              "isConstant": false,
+              "isLValue": false,
+              "isPure": true,
+              "kind": "number",
+              "lValueRequested": false,
+              "nodeType": "Literal",
+              "src": "342:42:28",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              },
+              "value": "0xC2e9F25Be6257c210d7Adf0D4Cd6E3E881ba25f8"
+            },
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "functionSelector": "040141e5",
+            "id": 4530,
+            "mutability": "immutable",
+            "name": "WETH_ADDRESS",
+            "nameLocation": "415:12:28",
+            "nodeType": "VariableDeclaration",
+            "scope": 4565,
+            "src": "390:82:28",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 4528,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "390:7:28",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": {
+              "hexValue": "307843303261614133396232323346453844304130653543344632376541443930383343373536436332",
+              "id": 4529,
+              "isConstant": false,
+              "isLValue": false,
+              "isPure": true,
+              "kind": "number",
+              "lValueRequested": false,
+              "nodeType": "Literal",
+              "src": "430:42:28",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              },
+              "value": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+            },
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "functionSelector": "a29aa114",
+            "id": 4533,
+            "mutability": "immutable",
+            "name": "beraWrapper",
+            "nameLocation": "529:11:28",
+            "nodeType": "VariableDeclaration",
+            "scope": 4565,
+            "src": "500:40:28",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_contract$_BeraWrapper_$4516",
+              "typeString": "contract BeraWrapper"
+            },
+            "typeName": {
+              "id": 4532,
+              "nodeType": "UserDefinedTypeName",
+              "pathNode": {
+                "id": 4531,
+                "name": "BeraWrapper",
+                "nodeType": "IdentifierPath",
+                "referencedDeclaration": 4516,
+                "src": "500:11:28"
+              },
+              "referencedDeclaration": 4516,
+              "src": "500:11:28",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_BeraWrapper_$4516",
+                "typeString": "contract BeraWrapper"
+              }
+            },
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "functionSelector": "ffe28ca1",
+            "id": 4536,
+            "mutability": "immutable",
+            "name": "beraSwapper",
+            "nameLocation": "575:11:28",
+            "nodeType": "VariableDeclaration",
+            "scope": 4565,
+            "src": "546:40:28",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_contract$_BeraSwapper_$4394",
+              "typeString": "contract BeraSwapper"
+            },
+            "typeName": {
+              "id": 4535,
+              "nodeType": "UserDefinedTypeName",
+              "pathNode": {
+                "id": 4534,
+                "name": "BeraSwapper",
+                "nodeType": "IdentifierPath",
+                "referencedDeclaration": 4394,
+                "src": "546:11:28"
+              },
+              "referencedDeclaration": 4394,
+              "src": "546:11:28",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_BeraSwapper_$4394",
+                "typeString": "contract BeraSwapper"
+              }
+            },
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "functionSelector": "2bcbeece",
+            "id": 4539,
+            "mutability": "immutable",
+            "name": "beraPoolStandardRisk",
+            "nameLocation": "630:20:28",
+            "nodeType": "VariableDeclaration",
+            "scope": 4565,
+            "src": "592:58:28",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_contract$_BeraPoolStandardRisk_$4193",
+              "typeString": "contract BeraPoolStandardRisk"
+            },
+            "typeName": {
+              "id": 4538,
+              "nodeType": "UserDefinedTypeName",
+              "pathNode": {
+                "id": 4537,
+                "name": "BeraPoolStandardRisk",
+                "nodeType": "IdentifierPath",
+                "referencedDeclaration": 4193,
+                "src": "592:20:28"
+              },
+              "referencedDeclaration": 4193,
+              "src": "592:20:28",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_BeraPoolStandardRisk_$4193",
+                "typeString": "contract BeraPoolStandardRisk"
+              }
+            },
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 4563,
+              "nodeType": "Block",
+              "src": "761:129:28",
+              "statements": [
+                {
+                  "expression": {
+                    "id": 4553,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "id": 4551,
+                      "name": "beraWrapper",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 4533,
+                      "src": "771:11:28",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_BeraWrapper_$4516",
+                        "typeString": "contract BeraWrapper"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "id": 4552,
+                      "name": "_beraWrapper",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 4542,
+                      "src": "785:12:28",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_BeraWrapper_$4516",
+                        "typeString": "contract BeraWrapper"
+                      }
+                    },
+                    "src": "771:26:28",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_BeraWrapper_$4516",
+                      "typeString": "contract BeraWrapper"
+                    }
+                  },
+                  "id": 4554,
+                  "nodeType": "ExpressionStatement",
+                  "src": "771:26:28"
+                },
+                {
+                  "expression": {
+                    "id": 4557,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "id": 4555,
+                      "name": "beraSwapper",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 4536,
+                      "src": "807:11:28",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_BeraSwapper_$4394",
+                        "typeString": "contract BeraSwapper"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "id": 4556,
+                      "name": "_beraSwapper",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 4545,
+                      "src": "821:12:28",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_BeraSwapper_$4394",
+                        "typeString": "contract BeraSwapper"
+                      }
+                    },
+                    "src": "807:26:28",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_BeraSwapper_$4394",
+                      "typeString": "contract BeraSwapper"
+                    }
+                  },
+                  "id": 4558,
+                  "nodeType": "ExpressionStatement",
+                  "src": "807:26:28"
+                },
+                {
+                  "expression": {
+                    "id": 4561,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "id": 4559,
+                      "name": "beraPoolStandardRisk",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 4539,
+                      "src": "843:20:28",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_BeraPoolStandardRisk_$4193",
+                        "typeString": "contract BeraPoolStandardRisk"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "id": 4560,
+                      "name": "_standardRiskPool",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 4548,
+                      "src": "866:17:28",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_BeraPoolStandardRisk_$4193",
+                        "typeString": "contract BeraPoolStandardRisk"
+                      }
+                    },
+                    "src": "843:40:28",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_BeraPoolStandardRisk_$4193",
+                      "typeString": "contract BeraPoolStandardRisk"
+                    }
+                  },
+                  "id": 4562,
+                  "nodeType": "ExpressionStatement",
+                  "src": "843:40:28"
+                }
+              ]
+            },
+            "id": 4564,
+            "implemented": true,
+            "kind": "constructor",
+            "modifiers": [],
+            "name": "",
+            "nameLocation": "-1:-1:-1",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 4549,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4542,
+                  "mutability": "mutable",
+                  "name": "_beraWrapper",
+                  "nameLocation": "681:12:28",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4564,
+                  "src": "669:24:28",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_BeraWrapper_$4516",
+                    "typeString": "contract BeraWrapper"
+                  },
+                  "typeName": {
+                    "id": 4541,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 4540,
+                      "name": "BeraWrapper",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 4516,
+                      "src": "669:11:28"
+                    },
+                    "referencedDeclaration": 4516,
+                    "src": "669:11:28",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_BeraWrapper_$4516",
+                      "typeString": "contract BeraWrapper"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 4545,
+                  "mutability": "mutable",
+                  "name": "_beraSwapper",
+                  "nameLocation": "707:12:28",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4564,
+                  "src": "695:24:28",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_BeraSwapper_$4394",
+                    "typeString": "contract BeraSwapper"
+                  },
+                  "typeName": {
+                    "id": 4544,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 4543,
+                      "name": "BeraSwapper",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 4394,
+                      "src": "695:11:28"
+                    },
+                    "referencedDeclaration": 4394,
+                    "src": "695:11:28",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_BeraSwapper_$4394",
+                      "typeString": "contract BeraSwapper"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 4548,
+                  "mutability": "mutable",
+                  "name": "_standardRiskPool",
+                  "nameLocation": "742:17:28",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4564,
+                  "src": "721:38:28",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_BeraPoolStandardRisk_$4193",
+                    "typeString": "contract BeraPoolStandardRisk"
+                  },
+                  "typeName": {
+                    "id": 4547,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 4546,
+                      "name": "BeraPoolStandardRisk",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 4193,
+                      "src": "721:20:28"
+                    },
+                    "referencedDeclaration": 4193,
+                    "src": "721:20:28",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_BeraPoolStandardRisk_$4193",
+                      "typeString": "contract BeraPoolStandardRisk"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "668:92:28"
+            },
+            "returnParameters": {
+              "id": 4550,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "761:0:28"
+            },
+            "scope": 4565,
+            "src": "657:233:28",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "public"
           }
         ],
-        "scope": 4417,
-        "src": "91:113:28",
+        "scope": 4566,
+        "src": "188:705:28",
         "usedErrors": []
       }
     ],
-    "src": "32:173:28"
+    "src": "32:862:28"
   },
   "compiler": {
     "name": "solc",
@@ -517,7 +3977,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.3",
-  "updatedAt": "2022-01-08T12:36:48.165Z",
+  "updatedAt": "2022-01-15T15:37:16.948Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},
