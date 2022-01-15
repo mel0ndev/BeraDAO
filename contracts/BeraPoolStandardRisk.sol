@@ -14,32 +14,36 @@ import "./ancillary/SwapOracle.sol";
 
 contract BeraPoolStandardRisk is ERC1155Holder {
 
-    address public owner;
-    uint public protocolOwnedLiquidity;
-
-    mapping(address => Account) public users;
-
     struct Liquidation {
         bool isUnderwater;
         bool wasLiquidated;
         address liquidator;
     }
 
-    struct Account {
-        uint userDepositBalance;
-        uint lastClaimedRewards;
-        uint userShortID;
-        mapping(uint => uint) entryPrice;
-        mapping(uint => uint) userShortBalanceByID;
-        mapping(uint => address) tokenShortedByPositionID;
-        mapping(uint => uint) tokenAmountByPositionID;
-        mapping(uint => uint24) poolFeeByPositionID;
-        mapping(uint => bool) isPositionInShort;
-        mapping(uint => Liquidation) liqData;
+    struct UserPositionData {
+        uint256 entryPrice; //32 bytes
+        uint128 userShortBalanceByID; //16 bytes
+        uint128 tokenAmountByPositionID; //16 bytes
+        uint64 globalPositionID; //8 bytes
+        uint24 poolFeeByPositionID; //4 bytes
+        address tokenShortedByPositionID; //20 bytes
     }
 
-    uint public globalRewards;
+    //removed position bool >> if the position is active there will be a token
+    //if it has been closed the token is burned
+    struct Account {
+        uint lastClaimedRewards;
+        uint128 userDepositBalance;
+        uint128 userShortID; //maps to positionDetails and liqData
+        mapping(uint128 => UserPositionData) userPositionData;
+        mapping(uint128 => Liquidation) liqData;
+    }
 
+    mapping(address => Account) public users;
+    address public owner;
+
+    uint public protocolOwnedLiquidity;
+    uint public globalRewards;
     address private constant DAI_ADDRESS = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
 
     BeraWrapper private beraWrapper;
@@ -94,26 +98,16 @@ contract BeraPoolStandardRisk is ERC1155Holder {
             external { //solhint-disable function-max-lines
                 require(amount <= users[msg.sender].userDepositBalance, "SWAP: not enough collateral");
                 require(poolFee == 3000 || poolFee == 500, "SWAP: Not high risk pool");
-                //get TWAP price (3 min) to wrap position
-                uint priceAtWrap = swapOracle.getSwapPrice(tokenToShort, poolFee);
-
-                users[msg.sender].userShortID += 1;
-                //get total amount of collateral in shorts if user has opened a position before
-                if (getTotalCollateral(msg.sender) > 0) {
-                    require(getTotalCollateral(msg.sender) <= users[msg.sender].userDepositBalance,
-                        "SWAP: not enough collateral");
-                }
-
-                //1% is kept as fee to protocol to assist in paying out users
-                uint amountToSend = amount * 99 / 100;
-                //update global so we know how much of deposited amount belongs to users vs protocol
-                protocolOwnedLiquidity += amount - amountToSend;
+                //gets TWAP price, updates globals and user short ID) &&
+                //reverts here if total collateral is > total deposit amount
+                (uint priceAtWrap, uint amountToSend) =
+                    updateGlobalsAndCheckCollateral(msg.sender, amount, tokenToShort, poolFee);
 
                 //execute swapShort via swapper contract
                 uint amountOut = beraSwapper._swapShort(
                     msg.sender,
                     tokenToShort,
-                    DAI_ADDRESS,
+                    DAI_ADDRESS, //this contract receives dai back
                     poolFee,
                     amountToSend, //amount being sent to swapper
                     amountOutMin
@@ -145,19 +139,31 @@ contract BeraPoolStandardRisk is ERC1155Holder {
     function supplyShort(
         address tokenToShort,
         uint24 poolFee,
-        uint amount) external returns(amountOut) {
+        uint amount) external returns(uint amountOut) {
+        require(poolFee == 3000 || poolFee == 500, "SWAP: Not high risk pool");
 
         amountOut = beraSwapper._supplyShort(
-            msg.sender,
-            tokenToShort,
+            msg.sender, //transfer token from msg.sender
+            tokenToShort, // what token the user wants us to hold -- must be in their wallet
             poolFee, //used to get price
-            amount,
-            address(this) // sends tokent to this contract 
+            amount, //how much they are sending
+            address(this) // sends tokent to this contract
         );
-        //check that dai amount is lte deposit balance
-        require(amountOut <= users[msg.sender].userDepositBalance, "SHORT: Not enough collateral");
-        //send dai back at market price
-        IERC20(DAI_ADDRESS).transfer(msg.sender, amountOut).
+
+        //check that dai amount is lte deposit balance &&
+        //update globals with dai value && update user position ID
+        (uint priceAtWrap, uint amountToSend) =
+            updateGlobalsAndCheckCollateral(msg.sender, amountOut, tokenToShort, poolFee);
+
+        beraWrapper.wrapPosition(
+            address(this), //the associated pool
+            amount,  //the amount of token shorted
+            tokenToShort, //what token was shorted
+            priceAtWrap //the price of 1 tokenToShort in dai
+        );
+
+        //send dai back at market price minus fee
+        IERC20(DAI_ADDRESS).transfer(msg.sender, amountToSend);
     }
 
     // if you are reading this comment, this is a way for you to make some money
@@ -166,7 +172,7 @@ contract BeraPoolStandardRisk is ERC1155Holder {
     function liquidateUser(address userUnderwater, address liquidator, uint shortID) external {
         //get entry price by shortID and subtract by current price
         (address token, uint24 fee) = getTokenAndFeeShortedByUser(userUnderwater, shortID);
-        //REDO
+
     }
 
     function getLiquidator(address user, uint shortID) public view returns(address liquidator) {
@@ -196,10 +202,6 @@ contract BeraPoolStandardRisk is ERC1155Holder {
         return entry = users[user].entryPrice[shortID];
     }
 
-    function getUserShortBool(address user, uint shortID) public view returns(bool isShort) {
-        return isShort = users[user].isPositionInShort[shortID];
-    }
-
     function getTokenAndFeeShortedByUser(address user, uint shortID) public view returns(address token, uint24 fee) {
         token = users[user].tokenShortedByPositionID[shortID];
         fee = uint24(users[user].poolFeeByPositionID[shortID]);
@@ -208,24 +210,28 @@ contract BeraPoolStandardRisk is ERC1155Holder {
 
     //TODO
     // if you are liquidating an underwater position make sure to first update the user's liqData
-    function closeSwapShort(
-        address user, //we pass in a user instead of msg.sender in the case of liquidation
+    function closeShort(
+        address user, //we pass in a user instead of msg.sender to accounts for liquidations
         uint userShortID,
+        uint publicPositionID,
         uint amountOutMin)
         public {
-            require(beraWrapper.balanceOf(user, userShortID) > 0 ||
-                users[user].liqData[userShortID].isUnderwater == true, "CLOSE: Not your position OR not underwater");
-            require(users[user].isPositionInShort[userShortID] == true, "CLOSE: Positon inactive");
+            require(beraWrapper.balanceOf(user, publicPositionID) > 0 ||
+                users[user].liqData[userShortID].isUnderwater == true,
+                    "CLOSE: Not your position OR not underwater OR inactive");
+
             //get price at pool for shortBal of positionID
             (address token, uint24 fee) = getTokenAndFeeShortedByUser(user, userShortID);
             uint priceAtClose = swapOracle.getSwapPrice(token, fee);
-            //unwrwap and free funds
-            beraWrapper.unwrapPosition(userShortID);
-            users[user].isPositionInShort[userShortID] = false;
-            users[user].userShortBalanceByID[userShortID] = 0;
-            require(users[msg.sender].isPositionInShort[userShortID] == false,
-                "CLOSE: Position still active");
 
+            //unwrwap and free funds
+            //delegatecall so msg.sender is user and not contract
+            beraWrapper.delegatecall( //solhint-disable avoid-low-level-calls
+                abi.encodeWithSelector(BeraWrapper.unwrapPosition.selector, userShortID));
+
+            users[user].userShortBalanceByID[userShortID] = 0;
+
+            require(beraWrapper.balanceOf(user, globalPositionID) == 0, "CLOSE: Position Active");
             //swap back to DAI
             uint amountOut = beraSwapper._swapShort(
                 msg.sender,
@@ -246,8 +252,8 @@ contract BeraPoolStandardRisk is ERC1155Holder {
             if (returnValue == 1) {
                 globalRewards += amountPNL;
             }
-            //transfer funds back from user -- they are keeping the difference on a win and paying more for a loss
-            //amountOut will be used for the current market rate
+            // transfer funds back from user, they are keeping the difference on a win and paying more for a loss
+            // amountOut will be used for the current market rate
             // regardless of win/loss so we can use it in both situations
             IERC20(DAI_ADDRESS).transferFrom(user, address(this), amountOut);
         }
@@ -264,13 +270,35 @@ contract BeraPoolStandardRisk is ERC1155Holder {
         users[user].entryPrice[shortID] = entryPrice;
         //this is used to keep track of how much of the users deposit is currently being used by which positionID
         users[user].userShortBalanceByID[shortID] = shortBalanceByID;
-        //update userPositionNumber current short status
-        users[user].isPositionInShort[shortID] = true;
         //update token and fee by ID
         users[user].tokenShortedByPositionID[shortID] = tokenToShort;
         users[user].tokenAmountByPositionID[shortID] = tokenTradeSize;
         users[user].poolFeeByPositionID[shortID] = poolFee;
     }
+
+    function updateGlobalsAndCheckCollateral(
+        address user,
+        uint amount,
+        address tokenToShort,
+        uint24 poolFee)
+        internal returns(uint priceAtWrap, uint amountToSend) {
+            priceAtWrap = swapOracle.getSwapPrice(tokenToShort, poolFee);
+
+            users[user].userShortID += 1;
+            //get total amount of collateral in shorts if user has opened a position before
+            //also check that current amount + total < deposit balance
+            if (getTotalCollateral(user) > 0) {
+                require(getTotalCollateral(user) <= users[user].userDepositBalance,
+                    "SWAP: not enough collateral");
+                require(amount + getTotalCollateral(user) <= users[user].userDepositBalance,
+                    "SWAP: not enough collateral");
+            }
+
+            //1% is kept as fee to protocol to assist in paying out users
+            amountToSend = amount * 99 / 100;
+            //update global so we know how much of deposited amount belongs to users vs protocol
+            protocolOwnedLiquidity += amount - amountToSend;
+        }
 
     //the percentage reward is based on the last time they claimed vs the total reward calculated
     //this will allow us to avoid using a loop for reward distribution

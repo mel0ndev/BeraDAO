@@ -1,22 +1,25 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.0; //solhint-disable compiler-fixed
 pragma abicoder v2;
 
 import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
 import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
 import "./ancillary/IOracle.sol";
+import "./ancillary/SwapOracle.sol";
 
 
 contract BeraSwapper {
 
     ISwapRouter public immutable swapRouter;
-    IOracle public oracle;
+    IOracle private immutable oracle;
+    SwapOracle private immutable swapOracle;
     address private constant WETH_ADDRESS = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
     uint24 private constant DAI_FEE = 3000;
 
-    constructor(ISwapRouter _swapRouter, IOracle _oracle) {
+    constructor(ISwapRouter _swapRouter, IOracle _oracle, SwapOracle _swapOracle) { //solhint-disable func-visibility
         swapRouter = _swapRouter;
         oracle = _oracle;
+        swapOracle = _swapOracle;
     }
 
     // amount here refers to how much of the token shorted is passed back into the swapRouter

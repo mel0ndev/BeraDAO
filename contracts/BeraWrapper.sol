@@ -7,70 +7,52 @@ import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 contract BeraWrapper is ERC1155 {
 
     address public owner;
-
     uint public positionIDTotal;
+    mapping(uint => WrappedPosition) public positionData;
 
-    mapping(uint => Position) public positionData;
-
-    struct Position {
+    struct WrappedPosition {
         address associatedPool; //standard or high risk pool
         uint shortAmount;
         address tokenShorted;
         uint priceAtWrap;
+        uint publicPositionID;
     }
 
-    constructor() ERC1155("") { //solhint-disable func-visibility
+    constructor() ERC1155("BeraWrapped Position V1") { //solhint-disable func-visibility
         owner = msg.sender;
     }
 
-    function wrapPosition(address associatedPool,
-                uint shortAmount,
-                address tokenShorted,
-                uint priceAtWrap)
-                external {
-                    //increase global position counter
-                    positionIDTotal++;
+    function wrapPosition(
+        address associatedPool,
+        uint shortAmount,
+        address tokenShorted,
+        uint priceAtWrap)
+        external {
+            //increase global position counter
+            positionIDTotal++;
 
-                    positionData[positionIDTotal] = Position({
-                        associatedPool: associatedPool,
-                        shortAmount: shortAmount,
-                        tokenShorted: tokenShorted,
-                        priceAtWrap: priceAtWrap
-                    });
+            positionData[positionIDTotal] = WrappedPosition({
+                associatedPool: associatedPool,
+                shortAmount: shortAmount,
+                tokenShorted: tokenShorted,
+                priceAtWrap: priceAtWrap,
+                publicPositionID: positionIDTotal
+            });
 
-                    _mint(msg.sender, positionIDTotal, 1, "");
-                }
+            //to, id, number of tokens per id, uri data
+            //using erc1155 because it might be useful to use later
+            _mint(msg.sender, positionIDTotal, 1, "");
+        }
 
     function unwrapPosition(uint positionID) external {
-        // require(msg.sender == address(beraPoolStandardRisk),
-        //     "Wrapper: only the owner can unwrap the position");
-
+        require(IERC1155.balanaceOf(msg.sender, positionID) > 0, "UNWRAP: Position not yours or not found");
         //we burn the token to release the funds
-        //broken rn
         _burn(msg.sender, positionID, 1);
     }
 
     //SHOULD BE USED TO TRANSFER POSITIONS
-    function transferPosition(address to, uint _positionID, uint amount) external {
-        //require(msg.sender == positionData[_positionID].positionOwner,
-            //"Wrapper: only the owner can transfer a position");
-            //check that msg.sender has the token in their balance
-        require(balanceOf(msg.sender, _positionID) == amount,
-            "Wrapper: not correct position or position size");
-
-        //update new owner
-        //positionData[_positionID].positionOwner = to;
-
-        //send position
-        safeTransferFrom(to, msg.sender, _positionID, amount, "");
-    }
-
-    //if position happens to get sent without the transferPosition() func being called then
-    //users can update it manually with this func
-    function updatePosition(address newPositionOwner, uint _positionID) external {
-        if (balanceOf(newPositionOwner, _positionID) > 0) {
-            //update new owner
-            //positionData[_positionID].positionOwner = newPositionOwner;
-        }
+    function transferPosition(address to, uint positionID) external {
+        //to, from, globalID, number of tokens, metadata
+        IERC1155.safeTransferFrom(to, msg.sender, positionID, 1, "");
     }
 }
