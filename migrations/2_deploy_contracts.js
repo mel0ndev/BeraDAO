@@ -5,7 +5,7 @@ const PnLCalculator = artifacts.require("PnLCalculator");
 const TWAPOracle = artifacts.require("TWAPOracle");
 const SwapOracle = artifacts.require("SwapOracle");
 
-const swapRouter = '0xE592427A0AEce92De3Edee1F18E0157C05861564';
+const swapRouter = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D';
 const USDCETHPool = '0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640';
 const factory = '0x1F98431c8aD98523631AE4a59f267346ea31F984';
 

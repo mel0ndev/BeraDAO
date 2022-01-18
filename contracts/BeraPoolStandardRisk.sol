@@ -22,17 +22,16 @@ contract BeraPoolStandardRisk is ERC1155Holder {
 
     struct UserPositionData {
         uint256 entryPrice; //32 bytes
+        uint256 tokenAmountByPositionID; //32 bytes
         uint128 userShortBalanceByID; //16 bytes
-        uint128 tokenAmountByPositionID; //16 bytes
-        uint64 globalPositionID; //8 bytes
-        uint24 poolFeeByPositionID; //4 bytes
+        uint128 globalPositionID; //16 bytes
         address tokenShortedByPositionID; //20 bytes
     }
 
     //removed position bool >> if the position is active there will be a token
     //if it has been closed the token is burned
     struct Account {
-        uint lastClaimedRewards;
+        uint256 lastClaimedRewards;
         uint128 userDepositBalance;
         uint128 userShortID; //maps to positionDetails and liqData
         mapping(uint128 => UserPositionData) userPositionData;
@@ -40,8 +39,8 @@ contract BeraPoolStandardRisk is ERC1155Holder {
     }
 
     mapping(address => Account) public users;
-    address public owner;
 
+    address public owner;
     uint public protocolOwnedLiquidity;
     uint public globalRewards;
 
@@ -84,24 +83,22 @@ contract BeraPoolStandardRisk is ERC1155Holder {
     // deposit collateral into user account before being allowed to short
     // amount refers to how much dai to swap for amountOut of the token the user wants to short
     function swapShort(
-            uint amount,
             address tokenToShort,
-            uint24 poolFee, //needed for uniswap pool
+            uint amount,
             uint amountOutMin)
             external { //solhint-disable function-max-lines
                 require(amount <= users[msg.sender].userDepositBalance, "SWAP: not enough collateral");
-                require(poolFee == 3000 || poolFee == 500, "SWAP: Not high risk pool");
+
                 //gets TWAP price, updates globals and user short ID) &&
                 //reverts here if total collateral is > total deposit amount
                 (uint priceAtWrap, uint amountToSend) =
                     updateGlobalsAndCheckCollateral(msg.sender, amount, tokenToShort, poolFee);
 
                 //execute swapShort via swapper contract
-                uint amountOut = beraSwapper._swapShort(
+                beraSwapper._swapShort(
                     msg.sender,
                     tokenToShort,
                     DAI_ADDRESS, //this contract receives dai back
-                    poolFee,
                     amountToSend, //amount being sent to swapper
                     amountOutMin
                 );
@@ -114,6 +111,7 @@ contract BeraPoolStandardRisk is ERC1155Holder {
                 );
 
                 //update Account details
+                users[msg.sender].userShortID += 1;
                 updateUserMappings(
                     msg.sender, // the user
                     users[msg.sender].userShortID, //the position ID
@@ -195,10 +193,8 @@ contract BeraPoolStandardRisk is ERC1155Holder {
         return entry = users[user].userPositionData[shortID].entryPrice;
     }
 
-    function getTokenAndFeeShortedByUser(address user, uint128 shortID) public view returns(address token, uint24 fee) {
-        token = users[user].userPositionData[shortID].tokenShortedByPositionID;
-        fee = users[user].userPositionData[shortID].poolFeeByPositionID;
-        return (token, fee);
+    function getTokenAndFeeShortedByUser(address user, uint128 shortID) public view returns(address token) {
+        return token = users[user].userPositionData[shortID].tokenShortedByPositionID;
     }
 
     //TODO

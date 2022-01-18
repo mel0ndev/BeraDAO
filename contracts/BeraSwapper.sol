@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0; //solhint-disable compiler-fixed
 pragma abicoder v2;
 
-import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
+import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
 import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
 import "./ancillary/IOracle.sol";
 import "./ancillary/SwapOracle.sol";
@@ -11,13 +11,15 @@ import "./ancillary/Constants.sol";
 
 contract BeraSwapper {
 
-    ISwapRouter public immutable swapRouter;
+    IUniswapV2Router02 public immutable swapRouter;
     IOracle private immutable oracle;
     SwapOracle private immutable swapOracle;
     uint24 private constant DAI_FEE = 3000;
     address public immutable WETH_ADDRESS = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
 
-    constructor(ISwapRouter _swapRouter, IOracle _oracle, SwapOracle _swapOracle) {
+    ufixed8x2 private constant MAX_SLIPPAGE = 5 / 100; //max slippage for pool is 5%  
+
+    constructor(IUniswapV2Router02 _swapRouter, IOracle _oracle, SwapOracle _swapOracle) {
         swapRouter = _swapRouter;
         oracle = _oracle;
         swapOracle = _swapOracle;
@@ -27,43 +29,33 @@ contract BeraSwapper {
     // used for both opening and closing positions
     function _swapShort(
         address user,
-        address tokenToShort, //what token is shorted //opposite on close
-        address tokenSupplied, //dai on open //opposite on close
-        uint24 poolFee,
+        address tokenIn,
+        address tokenOut, //what token is shorted //opposite on close
         uint amount,
-        uint amountOutMin) external returns(uint amountOut) {
+        uint amountOutMin) external {
 
-        TransferHelper.safeTransferFrom(tokenSupplied, user, address(this), amount);
-        TransferHelper.safeApprove(tokenSupplied, address(swapRouter), amount);
+        IERC20(tokenIn).transferFrom(user, address(this), amount);
+        IERC20(tokenIn).approve(tokenIn, amount);
 
-        (, uint8 returnValue) = oracle.getPoolForTWAP(tokenToShort, poolFee);
-        if (returnValue == 1) {
-            ISwapRouter.ExactInputParams memory multiParams =
-            ISwapRouter.ExactInputParams({
-                path: abi.encodePacked(tokenSupplied, DAI_FEE, WETH_ADDRESS, poolFee, tokenToShort),
-                recipient: msg.sender,
-                deadline: block.timestamp, //solhint-disable not-rely-on-time
-                amountIn: amount,
-                amountOutMinimum: amountOutMin
-            });
+        if (tokenOut == swapRouter.WETH()) {
+            address[] memory path = new address[](2);
+            path[0] = tokenIn;
+            path[1] = swapRouter.WETH();
 
-            // Executes the swap.
-            amountOut = swapRouter.exactInput(multiParams);
-          //don't judge me for using else it is readable >:(
         } else {
-            ISwapRouter.ExactInputSingleParams memory params =
-            ISwapRouter.ExactInputSingleParams({
-                tokenIn: tokenSupplied,
-                tokenOut: tokenToShort,
-                fee: poolFee,
-                recipient: msg.sender, //refers to pool that calls function
-                deadline: block.timestamp, //solhint-disable not-rely-on-time
-                amountIn: amount, //amountToSend
-                amountOutMinimum: amountOutMin, //used to check price
-                sqrtPriceLimitX96: 0
-            });
-            //execute the swap
-            amountOut = swapRouter.exactInputSingle(params);
+            address[] memory path = new address[](3);
+            path[0] = tokenIn;
+            path[1] = swapRouter.WETH();
+            path[2] = tokenOut;
+
+            //check for protocol max slippage tolerance
+            (, uint amount2) = swapRouter.getAmountsOut(amount, path);
+            require(amount2 >= amount * MAX_SLIPPAGE, "Exceeds max slippage");
+
+            swapRouter.swapExactTokensForTokensSupportingFeeOnTransferTokens(
+                amount, amountOutMin, path, msg.sender, block.timestamp
+            );
+
         }
     }
 
